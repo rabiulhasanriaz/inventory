@@ -1,0 +1,110 @@
+@extends('layout.master')
+@section('inventory_class','menu-open')
+@section('supplier_class','menu-open')
+@section('inv_supplier_class','menu-open')
+@section('supplier_list','active')
+@section('content')
+<section class="content">
+    <section class="content-header">
+        @if(session()->has('del'))
+        <div class="alert alert-success alert-dismissible" role="alert">
+          {{ session('del') }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @endif
+        @if(session()->has('update'))
+        <div class="alert alert-success alert-dismissible" role="alert">
+          {{ session('update') }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @endif
+          <h1>
+            Supplier
+          </h1>
+        </section>
+        <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">Supplier List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th>SL</th>
+                      <th>Supplier Name</th>
+                      <th>Address</th>
+                      <th>Person</th>
+                      <th>Mobile</th>
+                      <th>Email</th>
+                      <th>Complain Number</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @php($sl=0)
+                    @foreach ($suppliers as $sup)
+                    <tr>
+                        <td>{{ ++$sl }}</td>
+                        <td>{{ $sup->inv_sup_com_name }}</td>
+                        <td>{{ $sup->inv_sup_address }}</td>
+                        <td>{{ $sup->inv_sup_person }}</td>
+                        <td>{{ $sup->inv_sup_mobile }}</td>
+                        <td>{{ $sup->inv_sup_email }}</td>
+                        <td>{{ $sup->inv_sup_complain_num }}</td>
+                        <td align="center">
+                            <a href="{{ route('inventory.list_show',['id' => $sup->inv_sup_id]) }}" class="action_btn btn_show">
+                              <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ route('inventory.supplier_delete',['id' => $sup->inv_sup_id]) }}" class="action_btn btn_delete" onclick="return deletesup()">
+                              <i class="fa fa-trash"></i>
+                            </a>
+                            <a href="{{ route('inventory.supplier_show',['id' => $sup->inv_sup_id]) }}" class="action_btn btn_edit">
+                              <i class="fa fa-edit"></i>
+                            </a>
+                        </td>
+                      </tr>
+                    @endforeach
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+             </section>
+@endsection
+@section('custom_style')
+<style>
+    .action_btn{
+        border: 1px solid;
+        padding: 5px;
+    }
+    .btn_show{
+        background-color: green;
+        color: white;
+    }
+    .btn_delete{
+        background-color: red;
+        color: white;
+    }
+    .btn_edit{
+        background-color: cornflowerblue;
+        color: white;
+    }
+</style>
+@endsection
+@section('custom_script')
+<script type="text/javascript">
+  function deletesup(){
+    let clickDel = confirm("Are you sure want to delete this?");
+    if (clickDel == true) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+</script>
+@endsection

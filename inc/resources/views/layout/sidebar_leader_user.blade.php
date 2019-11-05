@@ -1,0 +1,750 @@
+@php
+    $user_access = auth()->user()->au_permission_status;
+    $user_accesses = explode('-', $user_access);
+    function check_or_permission($permission_array) {
+      $user_access = auth()->user()->au_permission_status;
+      $user_accesses = explode('-', $user_access);
+      $return_value = false;
+      foreach ($permission_array as $permission_key){
+        if(in_array($permission_key, $user_accesses)) {
+          return true;
+        } else {
+          $return_value = false;
+        }
+      }
+      return $return_value;
+    }
+@endphp
+<aside class="main-sidebar" >
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="{{ asset('/asset/image/')}}/{{ Auth::user()->au_company_img }}" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>{{ Auth::user()->au_name }}</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+        </div>
+      </div>
+      <!-- search form -->
+      <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
+<ul class="sidebar-menu" data-widget="tree">
+        <li class="header"></li>
+        <li class="">
+          <a href="{{ url('/index')}}" style="text-decoration: none;">
+            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+          </a>
+        </li>
+        <!-- @if( Auth::user()->au_user_type == 4 ||  Auth::user()->au_user_type == 5 || Auth::user()->au_user_type == 6)
+        <li class="">
+          <a href="{{ url('/todays_followup')}}" style="text-decoration: none;">
+            <i class="fa fa-dashboard"></i> <span>Todays Follow up</span>
+          </a>
+        </li>
+        @endif -->
+        @if(check_or_permission([40,41,42,43]) == true)
+        <li class="treeview @yield('user_register_class')">
+          <a href="#" style="text-decoration: none;">
+            <i class="fa fa-dashboard"></i> <span>User Registration</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            @if(in_array('40', $user_accesses))
+              <li class="@yield('user_register_create')"><a href="{{ url('/create_team')}}"><i class="fa fa-circle-o"></i> Create Team</a></li>
+            @endif
+            @if(in_array('41', $user_accesses))
+              <li class="@yield('user_register_user_reg')"><a href="{{ url('/user_register')}}"><i class="fa fa-circle-o"></i> User Register</a></li>
+            @endif
+            @if(in_array('42', $user_accesses))
+              <li class="@yield('user_register_team_leader')"><a href="{{ url('/team_leaders')}}"><i class="fa fa-circle-o"></i> Team Leader</a></li>
+            @endif
+            @if(in_array('43', $user_accesses))
+              <li class="@yield('user_register_user_list')"><a href="{{ url('/user_list')}}"><i class="fa fa-circle-o"></i> User</a></li>
+            @endif
+          </ul>
+        </li>
+        @endif
+
+        @if(check_or_permission([11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]) == true)
+        <li class="treeview @yield('sds_menu_class')">
+          <a href="#" style="text-decoration: none;">
+            <i class="fa fa-dashboard"></i> <span>CRM</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            @if(check_or_permission([11,12,13,14,15]) == true)
+            <li class="treeview @yield('customer_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>Customer</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                @if(in_array('11', $user_accesses))
+		            <li class="@yield('create_customer_class')">
+                  <a href="{{ url('/create_customer')}}">
+                    <i class="fa fa-circle-o"></i> Create Customer
+                  </a>
+                </li>
+                @endif
+                @if(in_array('12', $user_accesses))
+		            <li class="@yield('my_customer_list_class')">
+                  <a href="{{ url('/customer_list')}}">
+                    <i class="fa fa-circle-o"></i> My Customer List
+                  </a>
+                </li>
+                @endif
+                @if(in_array('13', $user_accesses))
+		            <li class="@yield('total_customer_list_class')">
+                  <a href="{{ url('/total_customer_list')}}">
+                    <i class="fa fa-circle-o"></i> Total Customer List
+                  </a>
+                </li>
+                @endif
+                @if(in_array('14', $user_accesses))
+		            <li class="@yield('order_customer_class')">
+                  <a href="{{ url('/order_customer')}}">
+                    <i class="fa fa-circle-o"></i>Ordered Customers
+                  </a>
+                </li>
+                @endif
+                @if(in_array('15', $user_accesses))
+		            <li class="@yield('admins_created_class')">
+                  <a href="{{ url('/admin_customer' ,['id' => Auth::user()->au_id]) }}">
+                    <i class="fa fa-circle-o"></i> Admin's Created
+                  </a>
+                </li>
+                @endif
+ <!--            @if( Auth::user()->au_user_type == 4 )
+		            <li><a href="{{ url('/visited_customer')}}"><i class="fa fa-circle-o"></i> Visited Customers</a></li>
+            @endif -->
+		          </ul>
+            </li>
+            @endif
+
+            @if(check_or_permission([19]) == true)
+            <li class="treeview @yield('team_member_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>Team Member</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                @if(in_array('19', $user_accesses))
+		            <li class="@yield('team_member_list_class')">
+                  <a href="{{ url('/members_list',['id' => Auth::user()->au_team_id]) }}">
+                    <i class="fa fa-circle-o"></i> Team Member List
+                  </a>
+                </li>
+                @endif
+		          </ul>
+            </li>
+            @endif
+
+            @if(check_or_permission([20,21]) == true)
+            <li class="treeview @yield('followup_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>Followup Customer</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                @if(in_array('20', $user_accesses))
+		            <li class="@yield('follow_cus_class')">
+                  <a href="{{ url('/followup')}}">
+                    <i class="fa fa-circle-o"></i> Followup
+                  </a>
+                </li>
+                @endif
+                @if(in_array('21', $user_accesses))
+		            <li class="@yield('nonfollow_cus_class')">
+                  <a href="{{ url('/non_followup')}}">
+                    <i class="fa fa-circle-o"></i> Non Followup
+                  </a>
+                </li>
+                @endif
+		          </ul>
+            </li>
+            @endif
+
+            @if(check_or_permission([22,23,24,25]) == true)
+            <li class="treeview @yield('intelligent_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>Intelligence Search</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                @if(in_array('22', $user_accesses))
+		            <li class="@yield('search_find_class')">
+                  <a href="{{ url('/search_findus')}}">
+                    <i class="fa fa-circle-o"></i> Search By Find Us
+                  </a>
+                </li>
+                @endif
+                @if(in_array('23', $user_accesses))
+		            <li class="@yield('search_reason_class')">
+                  <a href="{{ url('/search_reason')}}">
+                    <i class="fa fa-circle-o"></i> Search By Reason
+                  </a>
+                </li>
+                @endif
+                @if(in_array('24', $user_accesses))
+		            <li class="@yield('search_result_class')">
+                  <a href="{{ url('/search_result')}}">
+                    <i class="fa fa-circle-o"></i> Search By Result
+                  </a>
+                </li>
+                @endif
+                @if(in_array('25', $user_accesses))
+		            <li class="@yield('search_feedback_class')">
+                  <a href="{{ url('/search_feedback')}}">
+                    <i class="fa fa-circle-o"></i> Search By Feedback
+                  </a>
+                </li>
+                @endif
+		          </ul>
+            </li>
+            @endif
+
+            @if(in_array('16', $user_accesses))
+            <li class="@yield('today_customer_list_class')">
+              <a href="{{ url('/todays_customer_list')}}">
+                <i class="fa fa-circle-o"></i> Customer Entry Info
+              </a>
+            </li>
+            @endif
+            @if(in_array('17', $user_accesses))
+            <li class="@yield('weekly_summery_class')">
+              <a href="{{ url('/weekly_summery') }}">
+                <i class="fa fa-circle-o"></i> Weekly Summery
+              </a>
+            </li>
+            @endif
+            @if(in_array('18', $user_accesses))
+            <li class="@yield('monthly_summery_class')">
+              <a href="{{ url('/monthly_summery') }}">
+                <i class="fa fa-circle-o"></i> Monthly Summery
+              </a>
+            </li>
+            @endif
+          </ul>
+        </li>
+        @endif
+        <!-- end crm -->
+
+
+        <!-- Start OMS -->
+        @if(check_or_permission([26,27,28,29,30,31,32,33,34,35,36,44,45]) == true)
+        <li class="treeview @yield('oms_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>OMS</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                @if(check_or_permission([26,27,28,29,30,44]) == true)
+		            <li class="treeview @yield('oms_convence_class')">
+			          <a href="#" style="text-decoration: none;">
+			            <i class="fa fa-dashboard"></i> <span>Convence</span>
+			            <span class="pull-right-container">
+			              <i class="fa fa-angle-left pull-right"></i>
+			            </span>
+			          </a>
+
+			          <ul class="treeview-menu">
+                  @if(in_array('26', $user_accesses))
+			            <li class="@yield('convence_users')">
+                    <a href="{{ url('/oms_convence_users')}}">
+                      <i class="fa fa-circle-o"></i> Users
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('27', $user_accesses))
+			            <li class="@yield('convence_add_new_bill')">
+                    <a href="{{ url('/convence_add_new_bill')}}">
+                      <i class="fa fa-circle-o"></i> Add New Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('44', $user_accesses))
+			            <li class="@yield('convence_my_pending_bill')">
+                    <a href="{{ url('/convence_my_pending_bill') }}">
+                      <i class="fa fa-circle-o"></i> My Pending Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('28', $user_accesses))
+			            <li class="@yield('convence_pending_bill')">
+                    <a href="{{ url('/convence_pending_bill')}}">
+                      <i class="fa fa-circle-o"></i> Pending Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('29', $user_accesses))
+			            <li class="@yield('convence_reject_bill')">
+                    <a href="{{ url('/convence_reject_bill')}}">
+                      <i class="fa fa-circle-o"></i> Reject Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('30', $user_accesses))
+			            <li class="@yield('convence_paid_bill')">
+                    <a href="{{ url('/convence_paid_bill')}}">
+                      <i class="fa fa-circle-o"></i> Paid/Final Bill
+                    </a>
+                  </li>
+                  @endif
+			          </ul>
+		            </li>
+                @endif
+
+                @if(check_or_permission([31,32,33,34,35,45]) == true)
+		            <li class="treeview @yield('oms_lunch_class')">
+		            	<a href="#" style="text-decoration: none;">
+			            <i class="fa fa-dashboard"></i> <span>Lunch</span>
+			            <span class="pull-right-container">
+			              <i class="fa fa-angle-left pull-right"></i>
+			            </span>
+			          </a>
+			          <ul class="treeview-menu">
+                  @if(in_array('31', $user_accesses))
+			            <li class="@yield('lunch_users')">
+                    <a href="{{ url('/oms_lunch_users')}}">
+                      <i class="fa fa-circle-o"></i> Users
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('32', $user_accesses))
+			            <li class="@yield('lunch_add_new_bill')">
+                    <a href="{{ url('/lunch_add_new_bill')}}">
+                      <i class="fa fa-circle-o"></i> Add New Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('45', $user_accesses))
+			            <li class="@yield('lunch_my_pending_bill')">
+                    <a href="{{ url('/lunch_my_pending_bill') }}">
+                      <i class="fa fa-circle-o"></i> My Pending Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('33', $user_accesses))
+			            <li class="@yield('lunch_pending_bill')">
+                    <a href="{{ url('/lunch_pending_bill')}}">
+                      <i class="fa fa-circle-o"></i> Pending Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('34', $user_accesses))
+			            <li class="@yield('lunch_reject_bill')">
+                    <a href="{{ url('/lunch_reject_bill')}}">
+                      <i class="fa fa-circle-o"></i> Reject Bill
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('35', $user_accesses))
+			            <li class="@yield('lunch_paid_bill')">
+                    <a href="{{ url('/lunch_paid_bill')}}">
+                      <i class="fa fa-circle-o"></i> Paid/Final Bill
+                    </a>
+                  </li>
+                  @endif
+			          </ul>
+		            </li>
+                @endif
+
+                @if(in_array('36', $user_accesses))
+                <li>
+                  <a href="#">
+                    <i class="fa fa-circle-o"></i> Accounts
+                  </a>
+                </li>
+                @endif
+		          </ul>
+            </li>
+            @endif
+            <!-- End OMS -->
+            <!--start Invenory-->
+        <li class="treeview @yield('inventory_class')">
+	          <a href="#" style="text-decoration: none;">
+	            <i class="fa fa-dashboard"></i> <span>Inventory</span>
+	            <span class="pull-right-container">
+	              <i class="fa fa-angle-left pull-right"></i>
+	            </span>
+	          </a>
+		          <ul class="treeview-menu">
+                  <li class="treeview @yield('product_class')">
+                      <a href="#" style="text-decoration: none;">
+                        <i class="fa fa-dashboard"></i> <span>Product</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                      </a>
+                        <ul class="treeview-menu">
+                          
+                          <li class="treeview @yield('inv_pro_grp')">
+                            <a href="#" style="text-decoration: none;">
+                            <i class="fa fa-dashboard"></i> <span>Product Group</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                          </a>
+                          <ul class="treeview-menu">
+                            
+                            <li class="@yield('add_pro_grp')">
+                              <a href="{{ route('inventory.add_group') }}">
+                                <i class="fa fa-circle-o"></i> Add Group
+                              </a>
+                            </li>
+                           
+                            <li class="@yield('pro_grp_list')">
+                              <a href="{{ route('inventory.group_list') }}">
+                                <i class="fa fa-circle-o"></i> Group List
+                              </a>
+                            </li>
+                           
+                          </ul>
+                          </li>
+                          
+                          <li class="treeview @yield('inv_pro_type')">
+                            <a href="#" style="text-decoration: none;">
+                            <i class="fa fa-dashboard"></i> <span>Product Type</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                          </a>
+                          <ul class="treeview-menu">
+                            
+                            <li class="@yield('add_type')">
+                              <a href="{{ route('inventory.type_add')}}">
+                                <i class="fa fa-circle-o"></i> Add Type
+                              </a>
+                            </li>
+                           
+                            <li class="@yield('type_list')">
+                              <a href="{{ route('inventory.type_list')}}">
+                                <i class="fa fa-circle-o"></i> Type List
+                              </a>
+                            </li>
+                           
+                          </ul>
+                          </li>
+          
+                          <li class="treeview @yield('inv_pro_class')">
+                              <a href="#" style="text-decoration: none;">
+                              <i class="fa fa-dashboard"></i> <span>Product</span>
+                              <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                              </span>
+                            </a>
+                            <ul class="treeview-menu">
+                              
+                              <li class="@yield('pro_add')">
+                                <a href="{{ route('inventory.add_product')}}">
+                                  <i class="fa fa-circle-o"></i> Add Product
+                                </a>
+                              </li>
+                             
+                              <li class="@yield('pro_list')">
+                                <a href="{{ route('inventory.product_list')}}">
+                                  <i class="fa fa-circle-o"></i> Product List
+                                </a>
+                              </li>
+                             
+                            </ul>
+                            </li>
+                            {{-- <li class="@yield('list_sup_pro')">
+                                <a href="{{ route('inventory.pro_list') }}">
+                                  <i class="fa fa-circle-o"></i>Supplier Product List
+                                </a>
+                              </li> --}}
+                        </ul>
+                      </li>
+
+                      <li class="treeview @yield('supplier_class')">
+                          <a href="#" style="text-decoration: none;">
+                            <i class="fa fa-dashboard"></i> <span>Supplier</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                          </a>
+                            <ul class="treeview-menu">
+                              <li class="treeview @yield('inv_supplier_class')">
+                                  <a href="#" style="text-decoration: none;">
+                                    <i class="fa fa-dashboard"></i> <span>Supplier</span>
+                                    <span class="pull-right-container">
+                                      <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                  </a>
+                  
+                                  <ul class="treeview-menu">
+                                    
+                                    <li class="@yield('supplier_add')">
+                                      <a href="{{ route('inventory.add') }}">
+                                        <i class="fa fa-circle-o"></i> Add Supplier
+                                      </a>
+                                    </li>
+                                    
+                                    
+                                    <li class="@yield('supplier_list')">
+                                      <a href="{{ route('inventory.list') }}">
+                                        <i class="fa fa-circle-o"></i> Supplier List
+                                      </a>
+                                    </li>
+                                    
+                                  </ul>
+                                  </li>
+
+                                  {{-- <li class="treeview @yield('supplier_product')">
+                                      <a href="#" style="text-decoration: none;">
+                                      <i class="fa fa-dashboard"></i> <span>Supplier Product</span>
+                                      <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                      </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                      
+                                      <li class="@yield('add_sup_pro')">
+                                        <a href="{{ route('inventory.pro_add')}}">
+                                          <i class="fa fa-circle-o"></i> Add Product
+                                        </a>
+                                      </li>
+                                     
+                                      
+                                     
+                                    </ul>
+                                    </li> --}}
+                            </ul>
+                          </li>
+
+                          <li class="treeview @yield('customer_class')">
+                              <a href="#" style="text-decoration: none;">
+                                <i class="fa fa-dashboard"></i> <span>Customer</span>
+                                <span class="pull-right-container">
+                                  <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                              </a>
+                                <ul class="treeview-menu">
+                                  <li class="treeview @yield('inv_customer_class')">
+                                      <a href="#" style="text-decoration: none;">
+                                        <i class="fa fa-dashboard"></i> <span>Customer</span>
+                                        <span class="pull-right-container">
+                                          <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                      </a>
+                      
+                                      <ul class="treeview-menu">
+                                        
+                                        <li class="@yield('customer_add')">
+                                          <a href="{{ route('customer.customer_add') }}">
+                                            <i class="fa fa-circle-o"></i> Add Customer
+                                          </a>
+                                        </li>
+                                        
+                                        
+                                        <li class="@yield('customer_list')">
+                                          <a href="{{ route('customer.customer_list') }}">
+                                            <i class="fa fa-circle-o"></i> Customer List
+                                          </a>
+                                        </li>
+                                        
+                                      </ul>
+                                      </li>
+                                </ul>
+                              </li>
+
+                              <li class="treeview @yield('pro_inv_class')">
+                                <a href="#" style="text-decoration: none;">
+                                  <i class="fa fa-dashboard"></i> <span>Product Inventory</span>
+                                  <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                  </span>
+                                </a>
+                                  <ul class="treeview-menu">
+                                    <li class="treeview @yield('inv_buy_class')">
+                                        <a href="#" style="text-decoration: none;">
+                                          <i class="fa fa-dashboard"></i> <span>Purchase Product</span>
+                                          <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                          </span>
+                                        </a>
+                        
+                                        <ul class="treeview-menu">
+                                          
+                                          <li class="@yield('buy_add')">
+                                            <a href="{{ route('buy.buy_add') }}">
+                                              <i class="fa fa-circle-o"></i> Add Product
+                                            </a>
+                                          </li>
+                                          
+                                          
+                                          <li class="@yield('available_list')">
+                                            <a href="{{ route('buy.available') }}">
+                                              <i class="fa fa-circle-o"></i> Available Product
+                                            </a>
+                                          </li>
+                                          
+                                        </ul>
+                                        </li>
+                                  </ul>
+                                </li>
+
+
+
+                                <li class="treeview @yield('accounts_class')">
+                                    <a href="#" style="text-decoration: none;">
+                                      <i class="fa fa-dashboard"></i> <span>Accounts</span>
+                                      <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                      </span>
+                                    </a>
+                                   <!--  Bank Accounts -->
+          
+                                      <ul class="treeview-menu">
+                                        <li class="treeview @yield('bank_class')">
+                                            <a href="#" style="text-decoration: none;">
+                                              <i class="fa fa-dashboard"></i> <span>Bank</span>
+                                              <span class="pull-right-container">
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                              </span>
+                                            </a>
+                            
+                                            <ul class="treeview-menu">
+                                              <li class="@yield('bank_add')">
+                                                <a href="{{ route('accounts.add-bank') }}">
+                                                  <i class="fa fa-circle-o"></i> Add Bank
+                                                </a>
+                                              </li>
+                                              
+                                              <li class="@yield('bank_list')">
+                                                <a href="{{ route('accounts.bank-list') }}">
+                                                  <i class="fa fa-circle-o"></i> Bank List
+                                                </a>
+                                              </li>
+          
+                                              <li class="@yield('bank_deposit_withdraw')">
+                                                <a href="{{ route('accounts.bank-diposit-withdraw') }}">
+                                                  <i class="fa fa-circle-o"></i> Diposit/Withdraw
+                                                </a>
+                                              </li>
+                                            </ul>
+                                            </li>
+                                      </ul>
+                                      <!-- End Bank Accounts -->
+                                     <!-- Start Expenses -->
+                                     <ul class="treeview-menu">
+                                        <li class="treeview @yield('expense_class')">
+                                            <a href="#" style="text-decoration: none;">
+                                              <i class="fa fa-dashboard"></i> <span>Expense</span>
+                                              <span class="pull-right-container">
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                              </span>
+                                            </a>
+                            
+                                            <ul class="treeview-menu">
+                                              <li class="@yield('expense_category')">
+                                                <a href="{{ route('accounts.expense-categories') }}">
+                                                  <i class="fa fa-circle-o"></i> Expense Categories
+                                                </a>
+                                              </li>
+                                              
+                                              <li class="@yield('expenses')">
+                                                <a href="{{ route('accounts.expenses') }}">
+                                                  <i class="fa fa-circle-o"></i> Expenses
+                                                </a>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                        </ul>
+                                          <!--   End Expenses -->
+                                          <!-- Strat Contra Menu -->
+                                          <!-- Start Expenses -->
+                                     <ul class="treeview-menu">
+                                        <li class="treeview @yield('voucher_class')">
+                                            <a href="#" style="text-decoration: none;">
+                                              <i class="fa fa-dashboard"></i> <span>Voucher</span>
+                                              <span class="pull-right-container">
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                              </span>
+                                            </a>
+                            
+                                            <ul class="treeview-menu">
+                                              <li class="@yield('contra_create')">
+                                                <a href="{{ route('accounts.create-contra') }}">
+                                                  <i class="fa fa-circle-o"></i> Create Contra
+                                                </a>
+                                              </li>
+                                              
+                                              <li class="@yield('contra_list')">
+                                                <a href="{{ route('accounts.contra-list') }}">
+                                                  <i class="fa fa-circle-o"></i> Contra List
+                                                </a>
+                                              </li>
+                                            </ul>
+                                          <!--   End Expenses -->
+                                        <!--   End Contra Menu -->
+                                            </li>
+                                      </ul> 
+                                    </li>
+		          </ul>
+            </li>
+            <!-- end inventory -->
+
+
+            @if(check_or_permission([37,38,39]) == true)
+            <li class="treeview @yield('sms_class')">
+			          <a href="#" style="text-decoration: none;">
+			            <i class="fa fa-dashboard"></i> <span>SMS</span>
+			            <span class="pull-right-container">
+			              <i class="fa fa-angle-left pull-right"></i>
+			            </span>
+			          </a>
+			          <ul class="treeview-menu">
+                  @if(in_array('37', $user_accesses))
+			            <li class="@yield('sms_setup_class')">
+                    <a href="{{ url('/sms_setup')}}">
+                      <i class="fa fa-circle-o"></i> SMS Setup
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('38', $user_accesses))
+			            <li class="@yield('sms_campaign_class')">
+                    <a href="{{ url('/sms_campaign')}}">
+                      <i class="fa fa-circle-o"></i> SMS Campaign
+                    </a>
+                  </li>
+                  @endif
+                  @if(in_array('39', $user_accesses))
+			            <li class="@yield('template_class')">
+                    <a href="{{ url('/sms_temp_edit')}}">
+                      <i class="fa fa-circle-o"></i> Template
+                    </a>
+                  </li>
+                  @endif
+			          </ul>
+		        </li>
+            @endif
+
+            
+    </section>
+    </aside>
