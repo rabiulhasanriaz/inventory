@@ -17,6 +17,7 @@ class Inv_product_detail extends Model
         'inv_pro_det_pro_name',
         'inv_pro_det_buy_price',
         'inv_pro_det_sell_price',
+        'inv_pro_det_pro_warranty',
         'inv_pro_det_pro_description',
         'inv_pro_det_available_qty',
         'inv_pro_det_short_qty',
@@ -49,4 +50,16 @@ class Inv_product_detail extends Model
             return null;
         }
     }
+
+
+    public static function get_type_name($pro_id)
+    {
+        $product = Inv_product_detail::where('inv_pro_det_id', $pro_id)->first();
+        if(!empty($product)) {
+            return Inv_product_type::select('inv_pro_type_name')->where('inv_pro_type_id', $product->inv_pro_det_type_id)->first()->inv_pro_type_name;
+        }
+        return '';
+    }
+
+    
 }

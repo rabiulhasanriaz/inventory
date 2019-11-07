@@ -182,6 +182,26 @@ Route::group(['prefix' => 'supplier' , 'as' => 'inventory.'],function(){
     Route::get('supplier_pro/{id}','Inventory\InvSupplierController@supplier_pro_edit_page')->name('sup_pro_edit');
     Route::post('supplier_pro_edit/{id}','Inventory\InvSupplierController@supplier_pro_edit')->name('edit_pro');
     Route::get('supplier_product_list','Inventory\InvSupplierController@supplier_product_list')->name('pro_list');
+
+
+
+    // ================= Supplier Accounts Routes List Start============= 
+
+    Route::group(['prefix' => 'supplier' , 'as' => 'supplier.'],function(){ 
+        Route::get('accounts.deposit-withdraw','Inventory\SupplierAccountsController@depositWithdrawForm')->name('accounts.deposit-withdraw');
+        Route::post('accounts.deposit-withdraw','Inventory\SupplierAccountsController@depositWithdrawStore')->name('accounts.deposit-withdraw');
+        Route::get('accounts.payment','Inventory\SupplierAccountsController@supplierPaymentForm')->name('accounts.payment');
+        Route::post('accounts.payment','Inventory\SupplierAccountsController@supplierPaymentStore')->name('accounts.payment');
+        Route::get('accounts.payment-collection','Inventory\SupplierAccountsController@supplierPaymentCollectionForm')->name('accounts.payment-collection');
+        Route::post('accounts.payment-collection','Inventory\SupplierAccountsController@supplierPaymentCollectionStore')->name('accounts.payment-collection');
+        Route::get('accounts.account-statement','Inventory\SupplierAccountsController@showAccountStatement')->name('accounts.account-statement');
+        Route::get('accounts.account-statement-details/{supplier_id}','Inventory\SupplierAccountsController@showAccountStatementDetails')->name('accounts.account-statement-details');
+        
+        Route::get('accounts.download-supplier-account-statement-details/{supplier_id}','Inventory\SupplierAccountsController@downloadAccountStatementDetails')->name('accounts.download-supplier-account-statement-details');
+
+    });
+    // ================= Supplier Accounts Routes List End============= 
+
 });
 
 Route::group(['prefix' => 'customer' , 'as' => 'customer.'],function(){
@@ -193,17 +213,44 @@ Route::group(['prefix' => 'customer' , 'as' => 'customer.'],function(){
     Route::get('customer_edit_page/{id}','Inventory\InvCustomerController@customer_edit_page')->name('customer_edit_page');
     Route::post('customer_edit/{id}','Inventory\InvCustomerController@customer_edit')->name('customer_edit');
     Route::get('customer_exist','Inventory\InvCustomerController@customer_exist')->name('customer_exist');
+
+
+
+    //==============Inventory Customer Account Routes Start======================
+   
+    Route::group(['prefix' => 'accounts' , 'as' => 'accounts.'],function(){
+        Route::get('deposit-withdraw','Inventory\CustomerAccountsController@depositWithdrawForm')->name('deposit-withdraw');
+        Route::post('deposit-withdraw','Inventory\CustomerAccountsController@depositWithdrawStore')->name('deposit-withdraw');
+        Route::get('payment','Inventory\CustomerAccountsController@customerPaymentForm')->name('payment');
+        Route::post('payment','Inventory\CustomerAccountsController@customerPaymentStore')->name('payment');
+        Route::get('payment-refund','Inventory\CustomerAccountsController@customerPaymentRedfundForm')->name('payment-refund');
+        Route::post('payment-refund','Inventory\CustomerAccountsController@customerPaymentRedfundStore')->name('payment-refund');
+        Route::get('account-statement','Inventory\CustomerAccountsController@showAccountStatement')->name('account-statement');
+         
+        Route::get('account-statement-details/{customer_id}','Inventory\CustomerAccountsController@showAccountStatementDetails')->name('account-statement-details');
+
+        Route::get('download-customer-account-statement-details/{customer_id}','Inventory\CustomerAccountsController@downloadAccountStatementDetails')->name('download-customer-account-statement-details');
+    });
+
+    //==============Inventory Customer Account Routes End======================
+
 });
 
 Route::group(['prefix' => 'product_inventory' , 'as' => 'buy.'],function(){
     Route::get('buy_product','Inventory\ProductInventoryController@buy_product_add')->name('buy_add');
     Route::post('buy_product_add','Inventory\ProductInventoryController@buy_product_submit')->name('buy_submit');
     Route::get('available_list','Inventory\ProductInventoryController@available_list')->name('available');
+
+    Route::get('sell_product','Inventory\ProductInventoryController@sell_product')->name('pro_sell');
+    Route::get('sell_product/add-to-cart','Inventory\InventoryCartController@addToCart')->name('add-to-cart');
+    Route::get('sell_product/add-to-cart-warrenty-product','Inventory\InventoryCartController@addToCartWarrentyProduct')->name('add-to-cart-warrenty-product');
+    Route::get('sell_product/add-warrenty-product-sl-no','Inventory\InventoryCartController@addWarrentyProductSlNo')->name('add-warrenty-product-sl-no');
+    Route::get('sell_product/remove-warrenty-product-sl','Inventory\InventoryCartController@removeWarrentyProductSlNo')->name('remove-warrenty-product-sl');
+    Route::get('sell_product/get-cart','Inventory\InventoryCartController@getCartContent')->name('get-cart');
+    Route::get('sell_product/cart-remove','Inventory\InventoryCartController@removecart')->name('remove-cart');
+    Route::get('sell_product/cart-update','Inventory\InventoryCartController@updatecart')->name('update-cart');
+    Route::post('sell_product/car-submit','Inventory\InventoryCartController@cartSubmit')->name('car-submit');
 });
-
-
-
-
 
 
 //=============Inventory Account Controller Start================

@@ -535,7 +535,52 @@
                                     </ul>
                                     </li> --}}
                             </ul>
+
+
+                               {{--=================   Supplier Accounts Menu Start   ===================--}}
+
+                            <ul class="treeview-menu">
+                              <li class="treeview @yield('inv_supplier_acc_class')">
+                                  <a href="#" style="text-decoration: none;">
+                                    <i class="fa fa-dashboard"></i> <span>Supplier Accounts</span>
+                                    <span class="pull-right-container">
+                                      <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                  </a>
+
+                                  <ul class="treeview-menu">
+                                    
+                                    <li class="@yield('supplier_deposit_withdraw')">
+                                      <a href="{{ route('inventory.supplier.accounts.deposit-withdraw') }}">
+                                        <i class="fa fa-circle-o"></i> Deposit/Withdraw
+                                      </a>
+                                    </li>
+                                    <li class="@yield('supplier_payment')">
+                                          <a href="{{ route('inventory.supplier.accounts.payment') }}">
+                                            <i class="fa fa-circle-o"></i> Payment 
+                                          </a>
+                                        </li>
+
+                                        <li class="@yield('supplier_payment_collection')">
+                                          <a href="{{ route('inventory.supplier.accounts.payment-collection') }}">
+                                            <i class="fa fa-circle-o"></i> Payment Collection
+                                          </a>
+                                        </li>
+                                        <li class="@yield('supplier_account_statement')">
+                                          <a href="{{ route('inventory.supplier.accounts.account-statement') }}">
+                                            <i class="fa fa-circle-o"></i> Account Statements
+                                          </a>
+                                        </li>
+                                      </ul>
+                                      </li>
+                                </ul>
+
+                          {{--====================== End Supplier Accounts Menu======================--}}
+
                           </li>
+
+                          
+ 
 
                           <li class="treeview @yield('customer_class')">
                               <a href="#" style="text-decoration: none;">
@@ -570,6 +615,46 @@
                                         
                                       </ul>
                                       </li>
+
+
+                                      <!--====================== Start Customer Account Menu ==================-->
+
+                                      <li class="treeview @yield('inv_customer_acc_class')">
+                                        <a href="#" style="text-decoration: none;">
+                                          <i class="fa fa-dashboard"></i> <span>Customer Accounts</span>
+                                          <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                          </span>
+                                        </a>
+                        
+                                        <ul class="treeview-menu">
+                                          
+                                          <li class="@yield('customer_deposit_withdraw')">
+                                            <a href="{{ route('customer.accounts.deposit-withdraw') }}">
+                                              <i class="fa fa-circle-o"></i> Deposit/Withdraw
+                                            </a>
+                                          </li>
+                                          
+                                          
+                                          <li class="@yield('customer_payment')">
+                                            <a href="{{ route('customer.accounts.payment') }}">
+                                              <i class="fa fa-circle-o"></i> Payment Collection
+                                            </a>
+                                          </li>
+  
+                                          <li class="@yield('customer_payment_refund')">
+                                            <a href="{{ route('customer.accounts.payment-refund') }}">
+                                              <i class="fa fa-circle-o"></i> Payment Refund
+                                            </a>
+                                          </li>
+                                          <li class="@yield('customer_account_statement')">
+                                            <a href="{{ route('customer.accounts.account-statement') }}">
+                                              <i class="fa fa-circle-o"></i> Account Statements
+                                            </a>
+                                          </li>
+                                        </ul>
+                                        </li>
+                          <!--====================== Start Customer Account Menu ==================-->
                                 </ul>
                               </li>
 
@@ -606,7 +691,14 @@
                                           
                                         </ul>
                                         </li>
+                                         
+                                        <li class="@yield('sell_pro')">
+                                          <a href="{{ route('buy.pro_sell') }}">
+                                            <i class="fa fa-circle-o"></i> Sell Product
+                                          </a>
+                                        </li>
                                   </ul>
+
                                 </li>
 
 

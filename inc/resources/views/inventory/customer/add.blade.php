@@ -59,7 +59,7 @@
                     <div class="form-group">
                       <label for="inputEmail3" class="col-sm-2 control-label">E-mail</label>
                       <div class="col-sm-6">
-                        <input type="email" name="email" id="customer_email" autocomplete="off" value="{{ old('email') }}" class="form-control" id="inputEmail3" placeholder="Enter Customer E-Mail" >
+                        <input type="email" name="email" id="customer_email" autocomplete="off" value="{{ old('email') }}" class="form-control" placeholder="Enter Customer E-Mail" >
                       </div>
                       @if($errors->has('mobile'))
                           <p class="text-danger">{{ $errors->first('mobile') }}</p>
@@ -68,7 +68,7 @@
                     <div class="form-group">
                       <label for="inputEmail3" class="col-sm-2 control-label">Address</label>
                       <div class="col-sm-6">
-                        <input type="text" name="address" id="customer_address" autocomplete="off" value="{{ old('address') }}" class="form-control" id="inputEmail3" placeholder="Enter Customer Address">
+                        <input type="text" name="address" id="customer_address" autocomplete="off" value="{{ old('address') }}" class="form-control" placeholder="Enter Customer Address">
                       </div>
                       @if($errors->has('phone'))
                           <p class="text-danger">{{ $errors->first('phone') }}</p>
@@ -77,12 +77,23 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">Website</label>
                         <div class="col-sm-6">
-                          <input type="text" name="website" autocomplete="off" value="{{ old('website') }}" class="form-control" id="inputEmail3" placeholder="Enter Customer Website">
+                          <input type="text" name="website" autocomplete="off" value="{{ old('website') }}" class="form-control" placeholder="Enter Customer Website">
                         </div>
-                        @if($errors->has('email'))
-                          <p class="text-danger">{{ $errors->first('email') }}</p>
-                        @endif
-                    </div>                                  
+                    </div>
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Customer Balance</label>
+                      <div class="col-sm-3">
+                        <input type="number" name="balance" autocomplete="off" value="{{ old('balance') }}" class="form-control" placeholder="Enter Customer Balance">
+                      </div>
+                      <div class="col-sm-3">
+                        <label class="radio-inline">
+                            <input type="radio" name="bal_type" value="1">Debit
+                          </label>
+                          <label class="radio-inline">
+                              <input type="radio" name="bal_type" value="2">Credit
+                          </label>
+                    </div>
+                  </div>                                     
                   </div>
                   <!-- /.box-body -->
                   <div class="box-footer">

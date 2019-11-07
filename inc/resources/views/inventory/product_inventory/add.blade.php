@@ -113,7 +113,7 @@
                                     <span class="text-danger">*</span>
                             </label>
                             <div class="col-sm-10">
-                            <input type="text" name="memo" required autocomplete="off" value="{{ old('memo') }}" class="form-control" id="inputEmail3" placeholder="Enter Memo Number">
+                            <input type="text" name="memo" required autocomplete="off" value="{{ old('memo') }}" class="form-control" id="" placeholder="Enter Memo Number">
                             </div>
                             <div class="text-center">
                                 @if($errors->has('memo'))

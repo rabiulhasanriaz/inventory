@@ -31,4 +31,5 @@ class Inv_product_type extends Model
         return $this->belongsTo('App\Inv_product_groups','inv_pro_type_grp_id','inv_pro_grp_id');
     }
     
+    
 }

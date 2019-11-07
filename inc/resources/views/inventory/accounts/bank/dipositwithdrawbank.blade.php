@@ -6,18 +6,28 @@
 @section('content')
 <section class="content">
         <section class="content-header">
-            
+         @if(Session::has('errmsg'))
+              <div class="alert alert-danger alert-dismissible" role="alert">
+              {{ session('errmsg') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              @endif
+              @if(Session::has('msg'))
+              <div class="alert alert-success alert-dismissible" role="alert">
+              {{ session('msg') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              @endif   
             </section>
                    <div class="box">
                     <div class="box-header with-border">
                       <h3 class="box-title">Deposit/Withdraw Bank Balance</h3>
                     </div>
-                    @if(Session::has('errmsg'))
-                      <h4 class="box-title" style="color:red;">{{Session::get('errmsg')}}</h4>
-                      @endif
-                      @if(Session::has('msg'))
-                     <h4 class="box-title" style="color:green;">{{Session::get('msg')}}</h4>
-                     @endif
+                   
                     <!-- /.box-header -->
                     <!-- form start -->
                     
@@ -135,4 +145,14 @@ $( "#to" ).datepicker({
     });
   }
 </script>
+@endsection
+
+@section('custom_style')
+<style type="text/css">
+  .form-control::-webkit-inner-spin-button,
+  .form-control::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+</style>
 @endsection

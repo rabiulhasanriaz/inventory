@@ -104,15 +104,6 @@
                           <p class="text-danger">{{ $errors->first('type') }}</p>
                         @endif
                     </div>
-                    <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Open Due Balance</label>
-                        <div class="col-sm-6">
-                          <input type="text" name="balance" autocomplete="off" value="{{ $sup->inv_sup_open_due_bal }}" class="form-control" id="inputEmail3" placeholder="Open Due Balance">
-                        </div>
-                        @if($errors->has('balance'))
-                          <p class="text-danger">{{ $errors->first('balance') }}</p>
-                        @endif
-                    </div>
                   </div>
                   <!-- /.box-body -->
                   <div class="box-footer">

@@ -124,7 +124,21 @@
                               <b class="text-danger">*</b>
                           </label>
                           <div class="col-sm-6">
-                            <input type="text" name="pro_sell" autocomplete="off" value="{{ $product->inv_pro_det_sell_price }}" class="form-control" id="inputEmail3" placeholder="Enter Product Model Name" required>
+                            <input type="text" name="pro_sell" autocomplete="off" value="{{ $product->inv_pro_det_sell_price }}" class="form-control" id="" placeholder="Enter Product Model Name" required>
+                          </div>
+                            @if($errors->has('pro_sell'))
+                                <p class="text-danger">{{ $errors->first('pro_sell') }}</p>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                          <label for="inputEmail3" class="col-sm-2 control-label"> Product Warranty
+                              <b class="text-danger">*</b>
+                          </label>
+                          <div class="col-sm-4">
+                            <input type="text" name="pro_warranty" autocomplete="off" value="{{ $product->inv_pro_det_pro_warranty }}" class="form-control" id="" placeholder="Enter Product Model Name" required>
+                          </div>
+                          <div class="col-sm-2">
+                            (Days)
                           </div>
                             @if($errors->has('pro_sell'))
                                 <p class="text-danger">{{ $errors->first('pro_sell') }}</p>

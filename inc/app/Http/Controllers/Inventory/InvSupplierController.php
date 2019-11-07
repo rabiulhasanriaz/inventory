@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use App\Inv_supplier;
 use App\Inv_product_detail;
 use App\Inv_supplier_product;
+use App\Inv_supplier_inventory;
+use Illuminate\Support\Facades\DB;
 
 class InvSupplierController extends Controller
 {
@@ -31,23 +33,55 @@ class InvSupplierController extends Controller
             'type' => 'required',
         ]);
 
-        $table = new Inv_supplier;
-        $table->inv_sup_com_id = $company_id;
-        $table->inv_sup_com_name = Input::get('company');
-        $table->inv_sup_address = Input::get('address');
-        $table->inv_sup_person = Input::get('person');
-        $table->inv_sup_mobile = Input::get('mobile');
-        $table->inv_sup_phone = Input::get('phone');
-        $table->inv_sup_email = Input::get('email');
-        $table->inv_sup_website = Input::get('website');
-        $table->inv_sup_complain_num = Input::get('complain');
-        $table->inv_sup_type = Input::get('type');
-        $table->inv_sup_open_due_bal = Input::get('balance');
-        $table->inv_sup_open_bal_type = Input::get('bal_type');
-        $table->inv_sup_status = 1;
-        $table->inv_sup_submit_by = $submit_by;
-        $table->inv_sup_submit_at = $submit_at;
-        $table->save();
+        DB::beginTransaction();
+        try {
+            $sup = new Inv_supplier;
+            $sup->inv_sup_com_id = $company_id;
+            $sup->inv_sup_com_name = Input::get('company');
+            $sup->inv_sup_address = Input::get('address');
+            $sup->inv_sup_person = Input::get('person');
+            $sup->inv_sup_mobile = Input::get('mobile');
+            $sup->inv_sup_phone = Input::get('phone');
+            $sup->inv_sup_email = Input::get('email');
+            $sup->inv_sup_website = Input::get('website');
+            $sup->inv_sup_complain_num = Input::get('complain');
+            $sup->inv_sup_type = Input::get('type');
+            $sup->inv_sup_open_due_bal = Input::get('balance');
+            $sup->inv_sup_open_bal_type = Input::get('bal_type');
+            $sup->inv_sup_status = 1;
+            $sup->inv_sup_submit_by = $submit_by;
+            $sup->inv_sup_submit_at = $submit_at;
+            $sup->save();
+
+            if (Input::get('balance') > 0) {
+                if (Input::get('bal_type') == 1) {
+                    $credit_amount = 0;
+                    $debit_amount = Input::get('balance');
+                } else {
+                    $credit_amount = Input::get('balance');
+                    $debit_amount = 0;
+                }
+    
+                $sup_inv = new Inv_supplier_inventory;
+                $sup_inv->inv_sup_inv_com_id = $company_id;
+                $sup_inv->inv_sup_inv_sup_id = $sup->inv_sup_id;
+                $sup_inv->inv_sup_inv_proinv_memo_no = null;
+                $sup_inv->inv_sup_inv_debit = $debit_amount;
+                $sup_inv->inv_sup_inv_credit = $credit_amount;
+                $sup_inv->inv_sup_inv_tran_type = 2;//open balance
+                $sup_inv->inv_sup_inv_issue_date = Carbon::now()->format('Y-m-d');
+                $sup_inv->inv_sup_inv_status = 1;
+                $sup_inv->inv_sup_inv_submit_by = $submit_by;
+                $sup_inv->inv_sup_inv_submit_at = $submit_at;
+                $sup_inv->save();
+            }
+            
+        } catch(\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with(['sup_inv_err' => 'Something Went Wrong ! '.$e->getMessage()]);
+        }
+
+        DB::commit();
         return redirect()->back()->with(['add_sup' => 'Supplier Added Successfully']);
     }
 

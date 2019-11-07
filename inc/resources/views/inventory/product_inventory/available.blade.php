@@ -36,21 +36,18 @@
                             <thead>
                             <tr>
                               <th>SL</th>
-                              <th>Type Name</th>
-                              <th>Product Name</th>
-                              <th>Buy Price</th>
-                              <th>Sell Price</th>
+                              <th>Product Inventory ID</th>
+                              <th>Serial Number</th>
+                              <th>Submit By</th>
                               <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @php($sl=0)
-                            
                             <tr>
                                 <td>{{ ++$sl }}</td>
                                 <td></td>
                                 <td></td>
-                                <td class="text-right"></td>
                                 <td class="text-right"></td>
                                 <td align="center">
                                     <a href="" class="action_btn btn_show">

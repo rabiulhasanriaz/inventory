@@ -31,4 +31,15 @@ class Inv_customer extends Model
     public function cus_submit(){
         return $this->belongsTo('App\Admin_user','inv_cus_submit_by','au_id');
     }
+    
+    public function getCustomerInventoryInfo()
+    {
+        return $this->belongsTo('App\Inv_customer_inventrory','inv_cus_inv_cus_id','inv_cus_id');
+    }
+    public static function getCustomerCompany($customer_id)
+    {
+
+        return Inv_customer::where('inv_cus_id',$customer_id)->first();
+
+    }
 }

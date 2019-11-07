@@ -21,6 +21,7 @@ class CreateInvProductDetailsTable extends Migration
             $table->string('inv_pro_det_pro_name')->nullable();
             $table->decimal('inv_pro_det_buy_price',12,2)->comments('product buy price');
             $table->decimal('inv_pro_det_sell_price',12,2)->comments('product sell price');
+            $table->integer('inv_pro_det_pro_warranty')->default(0)->comments('0= no warranty');
             $table->string('inv_pro_det_pro_description')->nullable();
             $table->tinyInteger('inv_pro_det_short_qty')->comments('short Quantity')->nullable();
             $table->integer('inv_pro_det_available_qty')->default(0);

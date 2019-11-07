@@ -27,7 +27,7 @@
                     {{Form::open(['action' => 'Inventory\InvProductController@product_detail_submit', 'id' => 'form' , 'method' => 'post' , 'class' => 'form-horizontal', 'id' => 'customer_create_form'])}}
                       <div class="box-body">
                         <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-2 control-label"> Group</label>
+                            <label for="" class="col-sm-2 control-label"> Group</label>
                             <div class="col-sm-6">
                                 <select name="" class="form-control select2" id="product_category" required>
                                     <option value="">Select</option>
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                                <label for="inputEmail3" class="col-sm-2 control-label">Type Name
+                                <label for="" class="col-sm-2 control-label">Type Name
                                     <b class="text-danger" >*</b>
                                 </label>
                                 <div class="col-sm-6 product_category_wrapper">
@@ -52,7 +52,7 @@
                                     @endif
                         </div>
                         <div class="form-group supplier_list">
-                            <label for="inputEmail3" class="col-sm-2 control-label">Supplier
+                            <label for="" class="col-sm-2 control-label">Supplier
                                 <b class="text-danger" ></b>
                             </label>
                             <div class="col-sm-6" id="select_div">
@@ -72,7 +72,7 @@
                               <b class="text-danger">*</b>
                           </label>
                           <div class="col-sm-6">
-                            <input type="text" name="pro_name" autocomplete="off" value="{{ old('pro_name') }}" class="form-control" id="inputEmail3" placeholder="Enter Product Name" required>
+                            <input type="text" name="pro_name" autocomplete="off" value="{{ old('pro_name') }}" class="form-control" id="" placeholder="Enter Product Name" required>
                           </div>
                             @if($errors->has('pro_name'))
                                 <p class="text-danger">{{ $errors->first('pro_name') }}</p>
@@ -83,7 +83,7 @@
                                 <b class="text-danger">*</b>
                             </label>
                             <div class="col-sm-6">
-                              <input type="number" name="pro_buy" autocomplete="off" value="{{ old('pro_buy') }}" class="form-control" id="inputEmail3" placeholder="Enter Product Buy Price" required>
+                              <input type="number" name="pro_buy" autocomplete="off" value="{{ old('pro_buy') }}" class="form-control" id="" placeholder="Enter Product Buy Price" required>
                             </div>
                               @if($errors->has('pro_buy'))
                                   <p class="text-danger">{{ $errors->first('pro_buy') }}</p>
@@ -94,7 +94,21 @@
                                 <b class="text-danger">*</b>
                             </label>
                             <div class="col-sm-6">
-                              <input type="number" name="pro_sell" autocomplete="off" value="{{ old('pro_sell') }}" class="form-control" id="inputEmail3" placeholder="Enter Product Sell Price Name" required>
+                              <input type="number" name="pro_sell" autocomplete="off" value="{{ old('pro_sell') }}" class="form-control" placeholder="Enter Product Sell Price Name" required>
+                            </div>
+                              @if($errors->has('pro_sell'))
+                                  <p class="text-danger">{{ $errors->first('pro_sell') }}</p>
+                              @endif
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label"> Product Warranty
+                                <b class="text-danger">*</b>
+                            </label>
+                            <div class="col-sm-4">
+                              <input type="number" name="pro_warranty" autocomplete="off" value="{{ old('pro_warranty') }}" class="form-control" placeholder="Enter Product Warranty Detail" required>
+                            </div>
+                            <div class="col-sm-2">
+                              (Days)
                             </div>
                               @if($errors->has('pro_sell'))
                                   <p class="text-danger">{{ $errors->first('pro_sell') }}</p>
@@ -103,13 +117,13 @@
                         <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2 control-label">Product Description</label>
                                 <div class="col-sm-6">
-                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" id="inputEmail3" placeholder="Enter Product Description" required>
+                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" placeholder="Enter Product Description" required>
                                 </div> 
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Short Quantity</label>
                           <div class="col-sm-6">
-                            <input type="number" name="pro_short" autocomplete="off" value="{{ old('pro_short') }}" class="form-control" id="inputEmail3" placeholder="Enter Product Short Quantity">
+                            <input type="number" name="pro_short" autocomplete="off" value="{{ old('pro_short') }}" class="form-control" id="" placeholder="Enter Product Short Quantity">
                           </div> 
                         </div>
                       </div>

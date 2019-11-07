@@ -6,8 +6,12 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Inv_customer;
+use App\Inv_product_inventory;
+use App\Inv_customer_inventory;
+use App\Inv_supplier;
 use App\Sds_query_book;
 
 class InvCustomerController extends Controller
@@ -18,26 +22,59 @@ class InvCustomerController extends Controller
     }
 
     public function customer_add_submit(Request $request){
+        
         $com = Auth::user()->au_company_id;
         $submit_by = Auth::user()->au_id;
         $submit_at = Carbon::now()->format('Y-m-d H:i:s');
-        $table = new Inv_customer;
-        $request->validate([
-            'name' => 'required',
-            'com_name' => 'required',
-            'mobile' => 'required',
-        ]);
-        $table->inv_cus_com_id = $com;
-        $table->inv_cus_name = Input::get('name');
-        $table->inv_cus_com_name = Input::get('com_name');
-        $table->inv_cus_mobile = Input::get('mobile');
-        $table->inv_cus_email = Input::get('email');
-        $table->inv_cus_address = Input::get('address');
-        $table->inv_cus_website = Input::get('website');
-        $table->inv_cus_status = 1;
-        $table->inv_cus_submit_by = $submit_by;
-        $table->inv_cus_submit_at = $submit_at;
-        $table->save();
+        DB::beginTransaction();
+        try{
+            $inv_cus = new Inv_customer;
+            $request->validate([
+                'name' => 'required',
+                'com_name' => 'required',
+                'mobile' => 'required',
+            ]);
+            $inv_cus->inv_cus_com_id = $com;
+            $inv_cus->inv_cus_name = Input::get('name');
+            $inv_cus->inv_cus_com_name = Input::get('com_name');
+            $inv_cus->inv_cus_mobile = Input::get('mobile');
+            $inv_cus->inv_cus_email = Input::get('email');
+            $inv_cus->inv_cus_address = Input::get('address');
+            $inv_cus->inv_cus_website = Input::get('website');
+            $inv_cus->inv_cus_status = 1;
+            $inv_cus->inv_cus_submit_by = $submit_by;
+            $inv_cus->inv_cus_submit_at = $submit_at;
+            $inv_cus->save();
+
+            if (Input::get('balance') > 0) {
+                if (Input::get('bal_type') == 1) {
+                    $credit_amount = 0;
+                    $debit_amount = Input::get('balance');
+                } else {
+                    $credit_amount = Input::get('balance');
+                    $debit_amount = 0;
+                }
+    
+                $inv_cus_inv = new Inv_customer_inventory;
+                $inv_cus_inv->inv_cus_inv_com_id  = $com;
+                $inv_cus_inv->inv_cus_inv_cus_id = $inv_cus->inv_cus_id;
+                $inv_cus_inv->inv_cus_inv_proinv_memo_no = null;
+                $inv_cus_inv->inv_cus_inv_debit = $debit_amount;
+                $inv_cus_inv->inv_cus_inv_credit = $credit_amount;
+                
+                $inv_cus_inv->inv_cus_inv_tran_type = 1;
+                $inv_cus_inv->inv_cus_inv_issue_date = Carbon::now()->format('Y-m-d');
+                $inv_cus_inv->inv_cus_inv_status = 1;
+                $inv_cus_inv->inv_cus_inv_submit_by = $submit_by;
+                $inv_cus_inv->inv_cus_inv_submit_at = $submit_at;
+                $inv_cus_inv->save();
+
+            }
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->back()->with(['cus_error' => 'Something Went Wrong'.$e->getMessage()]);
+        }
+        DB::commit();
         return redirect()->back()->with(['cus_add' => 'Customer Added Successfully']);
     }
 

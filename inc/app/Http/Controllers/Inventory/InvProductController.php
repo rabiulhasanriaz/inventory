@@ -33,25 +33,26 @@ class InvProductController extends Controller
         $submit_by = Auth::user()->au_id;
         $submit_at = Carbon::now()->format('Y-m-d H:i:s');
         $com = Auth::user()->au_company_id;
-        $table = new Inv_product_detail;
+        $inv_pro_det = new Inv_product_detail;
         $request->validate([
             'type' => 'required',
             'pro_name' => 'required',
             'pro_buy' => 'required',
             'pro_sell' => 'required',
         ]);
-        $table->inv_pro_det_com_id = $com;
-        $table->inv_pro_det_type_id = Input::get('type');
-        $table->inv_pro_det_sup = implode('-',Input::get('supplier'));
-        $table->inv_pro_det_pro_name = Input::get('pro_name');
-        $table->inv_pro_det_buy_price = Input::get('pro_buy');
-        $table->inv_pro_det_sell_price = Input::get('pro_sell');
-        $table->inv_pro_det_pro_description = Input::get('pro_desc');
-        $table->inv_pro_det_short_qty = Input::get('pro_short');
-        $table->inv_pro_det_status = 1;
-        $table->inv_pro_det_submit_by = $submit_by;
-        $table->inv_pro_det_submit_at = $submit_at;
-        $table->save();
+        $inv_pro_det->inv_pro_det_com_id = $com;
+        $inv_pro_det->inv_pro_det_type_id = Input::get('type');
+        $inv_pro_det->inv_pro_det_sup = implode('-',Input::get('supplier'));
+        $inv_pro_det->inv_pro_det_pro_name = Input::get('pro_name');
+        $inv_pro_det->inv_pro_det_buy_price = Input::get('pro_buy');
+        $inv_pro_det->inv_pro_det_sell_price = Input::get('pro_sell');
+        $inv_pro_det->inv_pro_det_pro_warranty = Input::get('pro_warranty');
+        $inv_pro_det->inv_pro_det_pro_description = Input::get('pro_desc');
+        $inv_pro_det->inv_pro_det_short_qty = Input::get('pro_short');
+        $inv_pro_det->inv_pro_det_status = 1;
+        $inv_pro_det->inv_pro_det_submit_by = $submit_by;
+        $inv_pro_det->inv_pro_det_submit_at = $submit_at;
+        $inv_pro_det->save();
         
         return redirect()->back()->with(['det_add' => 'Product Detail Added Successfully']);
     }
@@ -113,6 +114,7 @@ class InvProductController extends Controller
         $pro_edit->inv_pro_det_pro_description = $request->pro_desc;
         $pro_edit->inv_pro_det_buy_price = $request->pro_buy;
         $pro_edit->inv_pro_det_sell_price = $request->pro_sell;
+        $pro_edit->inv_pro_det_pro_warranty = $request->pro_warranty;
         $pro_edit->inv_pro_det_short_qty = $request->pro_short;
         $pro_edit->inv_pro_det_update_by = $update_by;
         $pro_edit->inv_pro_det_update_at = $update_at;
