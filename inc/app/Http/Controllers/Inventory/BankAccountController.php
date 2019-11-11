@@ -13,6 +13,8 @@ use App\Inv_acc_expense_category;
 use App\Inv_acc_bank_statement;
 use Session;
 use DB;
+use App\Inv_supplier;
+use App\Inv_product_inventory;
 
 class BankAccountController extends Controller
 {
@@ -143,6 +145,9 @@ class BankAccountController extends Controller
 			if(Inv_acc_bank_info::where('inv_abi_id',$request->bank_id)
 				->where('inv_abi_company_id',Auth::user()->au_company_id)->first())
 			{
+				$request->validate([
+							'paid_amount'=>'required|min:0']);
+
 				$inv_Acc_Statement=new Inv_acc_bank_statement();
 				$inv_Acc_Statement->inv_abs_company_id=Auth::user()->au_company_id;
 				//$inv_Acc_Statement->inv_abs_inventory_id=
@@ -203,6 +208,9 @@ class BankAccountController extends Controller
 	{
 		  DB::beginTransaction();
 		try {
+			$request->validate([
+							'amount'=>'required|min:0']);
+
             $cashBank = Inv_acc_bank_info::where('inv_abi_status', 1)
                 ->where('inv_abi_company_id', Auth::user()->au_company_id)
                 ->where('inv_abi_account_type', 2) //accouunt type 2=cash
@@ -328,6 +336,69 @@ class BankAccountController extends Controller
 		$contras=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)
 				->where('inv_abs_reference_type',5)->get();
 				return view('inventory.accounts.voucher.contralist',compact('contras'));
+	}
+
+	public function showGeneralLedgerForm()
+	{
+		$inv_Suppliers=Inv_supplier::where('inv_sup_com_id',Auth::user()->au_company_id)
+				->where('inv_sup_status',1)->get();
+
+		return view('inventory.accounts.voucher.general_ledger',compact('inv_Suppliers'));
+	}
+	public function showGeneralLedgerData(Request $request)
+	{
+
+		
+		$ledgers=Inv_product_inventory::where('inv_pro_inv_com_id',Auth::user()->au_company_id)
+			->where('inv_pro_inv_status',1)
+			->where('inv_pro_inv_deal_type',1)
+			->where('inv_pro_inv_party_id',$request->supplier_id)
+			->where('inv_pro_inv_issue_date','>=',$request->start_date)
+			->where('inv_pro_inv_issue_date','<=',$request->end_date)
+			->orderBy('inv_pro_inv_issue_date')->get();
+			
+			//dd($ledgers);
+
+			$inv_Suppliers=Inv_supplier::where('inv_sup_com_id',Auth::user()->au_company_id)
+				->where('inv_sup_status',1)->get();
+
+			return view('inventory.accounts.voucher.general_ledger',compact('ledgers','inv_Suppliers'));
+	}
+
+	public function ajaxLoadBankBalance(Request $request)
+	{
+
+		$bankBalance=(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_credit'))-(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_debit'));			return view('pages.ajax.available_balance_bank',compact('bankBalance'));
+	}
+	public function ajaxLoadCustomerBalance(Request $request)
+	{
+			 $customerBalance=(Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_credit'))-(Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_debit'));
+			 
+			 return view('pages.ajax.available_balance_customer',compact('customerBalance'));
+	}
+	public function ajaxLoadSupplierBalance(Request $request)
+	{
+
+			 $supplierBalance=(Inv_product_inventory::where('inv_pro_inv_party_id',$request->supplier_id)->where('inv_pro_inv_deal_type',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_credit'))-(Inv_product_inventory::where('inv_pro_inv_party_id',$request->supplier_id)->where('inv_pro_inv_deal_type',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_debit'));
+			 
+			 return view('pages.ajax.available_balance_supplier',compact('supplierBalance'));
+	}
+
+
+	public function bankStatementDetails($id)
+	{
+		$bank_info = Inv_acc_bank_info::where('inv_abi_company_id',Auth::user()->au_company_id)
+			->where('inv_abi_id', $id)
+			->first();
+		if(empty($bank_info)) {
+			return redirect()->back()->with(['errmsg' => 'Invalid Bank']);
+		}
+
+		$statements = Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id) 
+			->where('inv_abs_bank_id', $id)
+			->get();
+
+		return view('inventory.accounts.bank.statement-details', compact('bank_info', 'statements'));
 	}
 
 }

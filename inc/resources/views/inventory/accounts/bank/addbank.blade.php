@@ -40,7 +40,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Bank Name:</label>
                           <div class="col-sm-6">
-                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control" id="inputEmail3" >
+                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control select2" id="inputEmail3" >
                               <option value="">Select A Bank</option>
                               
                               @foreach($banks as $inv_bank)

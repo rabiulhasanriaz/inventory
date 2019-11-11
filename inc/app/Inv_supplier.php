@@ -35,9 +35,15 @@ class Inv_supplier extends Model
         return $this->belongsTo('App\Admin_user','inv_sup_submit_by','au_id');
     }
 
+    
     public static function getSupplierCompany($supplier_id)
     {
         return Inv_supplier::where('inv_sup_id',$supplier_id)->first();
     }
+    public static function getSupplierNameByID($supplier_id)
+    {
+        return Inv_supplier::where('inv_sup_id',$supplier_id)->first();
+    }
+    
 
 }

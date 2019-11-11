@@ -16,20 +16,24 @@ class CreateInvProductInventoriesTable extends Migration
         Schema::create('inv_product_inventories', function (Blueprint $table) {
             $table->bigIncrements('inv_pro_inv_id');
             $table->unsignedInteger('inv_pro_inv_com_id');
-            $table->unsignedInteger('inv_pro_inv_prodet_id');
-            $table->unsignedInteger('inv_pro_inv_ref_id')->comments('supplier and customer id');
-            $table->tinyInteger('inv_pro_inv_ref_type')->comments('1=suppliers, 2=customer');
+            $table->unsignedInteger('inv_pro_inv_party_id')->comments('supplier and customer id');
+            $table->unsignedInteger('inv_pro_inv_prodet_id')->nullable();
+            $table->string('inv_pro_inv_invoice_no');
+            $table->decimal('inv_pro_inv_qty',8,2)->nullable();
+            $table->decimal('inv_pro_inv_unit_price',12,2);
+            $table->decimal('inv_pro_inv_debit',12,2);
+            $table->decimal('inv_pro_inv_credit',12,2);
             $table->date('inv_pro_inv_issue_date');
-            $table->integer('inv_pro_inv_qty');
-            $table->decimal('inv_pro_inv_pur_price',12,2)->comments('purchase price');
-            $table->string('inv_pro_inv_memo_no');
-            $table->tinyInteger('inv_pro_inv_status')->default('1')->comments('1=active 0=inactive');
             $table->string('inv_pro_inv_barcode')->nullable();
             $table->date('inv_pro_inv_exp_date')->nullable();
-            $table->unsignedInteger('inv_pro_inv_submit_by')->nullable();
+            $table->string('inv_pro_inv_tran_desc',255)->nullable();
+            $table->tinyInteger('inv_pro_inv_deal_type')->comments('1=supplier, 2=customer');
+            $table->tinyInteger('inv_pro_inv_tran_type')->comments('1=buy/sell product, 2=refund buy/sell product, 3=opening-balance/deposit-withdraw balance,4=supplier-payment/customer-payment-collection,5=supplier-payment-collection/customer-payment-refund');
+            $table->tinyInteger('inv_pro_inv_status')->default('1')->comments('1=active 0=inactive');
             $table->dateTime('inv_pro_inv_submit_at')->nullable();
-            $table->unsignedInteger('inv_pro_inv_update_by')->nullable();
+            $table->unsignedInteger('inv_pro_inv_submit_by')->nullable();
             $table->dateTime('inv_pro_inv_update_at')->nullable();
+            $table->unsignedInteger('inv_pro_inv_update_by')->nullable();
         });
     }
 

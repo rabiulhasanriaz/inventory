@@ -239,6 +239,15 @@ Route::group(['prefix' => 'customer' , 'as' => 'customer.'],function(){
 Route::group(['prefix' => 'product_inventory' , 'as' => 'buy.'],function(){
     Route::get('buy_product','Inventory\ProductInventoryController@buy_product_add')->name('buy_add');
     Route::post('buy_product_add','Inventory\ProductInventoryController@buy_product_submit')->name('buy_submit');
+    Route::get('buy-product-new','Inventory\ProductInventoryController@buy_product_new')->name('buy-product-new');
+    Route::get('buy_product/add-to-cart','Inventory\InventoryPurchaseCartController@addToCart')->name('buy-add-to-cart');
+    Route::get('buy_product/add-to-cart-warrenty-product','Inventory\InventoryPurchaseCartController@addToCartWarrentyProduct')->name('buy-add-to-cart-warrenty-product');
+    Route::get('buy_product/add-warrenty-product-sl-no','Inventory\InventoryPurchaseCartController@addWarrentyProductSlNo')->name('buy-add-warrenty-product-sl-no');
+    Route::get('buy_product/remove-warrenty-product-sl','Inventory\InventoryPurchaseCartController@removeWarrentyProductSlNo')->name('buy-remove-warrenty-product-sl');
+    Route::get('buy_product/get-cart','Inventory\InventoryPurchaseCartController@getCartContent')->name('buy-get-cart');
+    Route::get('buy_product/cart-remove','Inventory\InventoryPurchaseCartController@removecart')->name('buy-remove-cart');
+    Route::get('buy_product/cart-update','Inventory\InventoryPurchaseCartController@updatecart')->name('buy-update-cart');
+    Route::post('buy_product/car-submit','Inventory\InventoryPurchaseCartController@cartSubmit')->name('buy-car-submit');
     Route::get('available_list','Inventory\ProductInventoryController@available_list')->name('available');
 
     Route::get('sell_product','Inventory\ProductInventoryController@sell_product')->name('pro_sell');
@@ -262,6 +271,8 @@ Route::group(['prefix' => 'accounts','as' => 'accounts.'],  function(){
     Route::get('update-bank/{id}','Inventory\BankAccountController@editBank')->name('update-bank');
     Route::post('update-bank/{id}','Inventory\BankAccountController@updateBank')->name('update-bank');
     Route::get('bank-diposit-withdraw','Inventory\BankAccountController@bankDepositWithdrawShowForm')->name('bank-diposit-withdraw');
+    Route::get('bank-statement-detail/{id}','Inventory\BankAccountController@bankStatementDetails')->name('bank-statement-detail');
+    
     Route::post('bank-diposit-withdraw','Inventory\BankAccountController@bankDepositWithdrawStore')->name('bank-diposit-withdraw');
     Route::get('expense-categories','Inventory\ExpenseCategoryController@showExpenseCategories')->name('expense-categories');
     Route::get('expenses','Inventory\ExpenseCategoryController@showExpenses')->name('expenses');
@@ -271,7 +282,20 @@ Route::group(['prefix' => 'accounts','as' => 'accounts.'],  function(){
     Route::get('create-contra','Inventory\BankAccountController@showContraForm')->name('create-contra');
     Route::get('contra-list','Inventory\BankAccountController@showContraList')->name('contra-list');
     Route::post('create-contra','Inventory\BankAccountController@createContra')->name('create-contra');
- });
+        
+    Route::get('general_ledger','Inventory\BankAccountController@showGeneralLedgerForm')->name('general_ledger');
+    Route::post('general_ledger','Inventory\BankAccountController@showGeneralLedgerData')->name('general_ledger');
+    
+
+    // Routes for loading ajax for balance query
+
+    Route::get('ajax-load-bank-balance','Inventory\BankAccountController@ajaxLoadBankBalance')->name('ajax-load-bank-balance');
+
+    Route::get('ajax-load-supplier-balance','Inventory\BankAccountController@ajaxLoadSupplierBalance')->name('ajax-load-supplier-balance');
+
+     Route::get('ajax-load-customer-balance','Inventory\BankAccountController@ajaxLoadCustomerBalance')->name('ajax-load-customer-balance'); 
+
+});
  //Inventory Account End
 
 

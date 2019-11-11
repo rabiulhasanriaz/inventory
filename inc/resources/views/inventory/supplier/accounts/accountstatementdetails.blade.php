@@ -81,12 +81,12 @@
                       <table id="example1" class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                          <th>SL</th>
-                          <th>Issue Date</th>
-                          <th>Description</th>
-                          <th>Credit</th>
-                          <th>Debit</th>
-                          <th>Balance</th>
+                          <th style="text-align:center;">SL</th>
+                          <th style="text-align:center;">Issue Date</th>
+                          <th style="text-align:center;">Description</th>
+                          <th style="text-align:center;">Credit</th>
+                          <th style="text-align:center;">Debit</th>
+                          <th style="text-align:center;">Balance</th>
                           
                           
                         </tr>
@@ -102,36 +102,36 @@
                           
                         @endphp
 
-                        @foreach($inv_sups as $inv_sup)
+                        @foreach($inv_pros as $inv_sup)
                         
                         @php
 
-                            $total_credit+=$inv_sup->inv_sup_inv_credit;
+                            $total_credit+=$inv_sup->inv_pro_inv_credit;
 
-                            $total_debit+=$inv_sup->inv_sup_inv_debit;
+                            $total_debit+=$inv_sup->inv_pro_inv_debit;
 
-                            $total_balance+=$inv_sup->inv_sup_inv_credit-$inv_sup->inv_sup_inv_debit;
+                            $total_balance+=$inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit;
 
                         @endphp
 
                         <tr>
-                          <td>
+                          <td style="text-align: center;">
                             {{ ++$sl }}
                           </td>
-                          <td>
-                            {{ $inv_sup->inv_sup_inv_issue_date }}
+                          <td style="text-align: center;">
+                            {{ $inv_sup->inv_pro_inv_issue_date }}
                           </td>
-                          <td>
-                            {{$inv_sup->inv_sup_inv_description}}
+                          <td style="text-align: center;"> 
+                            {{$inv_sup->inv_pro_inv_tran_desc}}
                           </td>
-                          <td>
-                            {{ $inv_sup->inv_sup_inv_credit }}
+                          <td style="text-align:right;">
+                            {{ $inv_sup->inv_pro_inv_credit }}
                           </td>
-                          <td>
-                            {{$inv_sup->inv_sup_inv_debit }}
+                          <td style="text-align:right;">
+                            {{$inv_sup->inv_pro_inv_debit }}
                           </td>
-                          <td>
-                            {{ $inv_sup->inv_sup_inv_credit-$inv_sup->inv_sup_inv_debit }}
+                          <td style="text-align:right;">
+                            {{ $inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit }}
                           </td>
                         </tr>
                          @endforeach

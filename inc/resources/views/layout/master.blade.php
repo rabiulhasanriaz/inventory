@@ -26,12 +26,22 @@
     .menu-open>.treeview-menu {
       display: block !important;
     }
+    .buy-sell-button {
+      display: block;
+      width: 90%;
+      margin: 0 auto;
+      font-size: 25px;
+      color: #fff !important;
+      overflow: hidden;
+      padding: 0;
+      text-shadow: 3px 2px 3px green;
+    }
   </style>
 
   @yield('custom_style')
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini {{ (\Request::route()->getName() == 'buy.buy-product-new')? 'sidebar-collapse':'' }}">
 <div class="wrapper">
   @include('layout.header')
   <!-- Left side column. contains the logo and sidebar -->

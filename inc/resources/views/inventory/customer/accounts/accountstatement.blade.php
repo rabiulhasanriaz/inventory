@@ -64,11 +64,11 @@
                        
                          @php
 
-                            $total_credit+=App\Inv_customer_inventory::getCustomerCreditByID($inv_cus_invt->inv_cus_id);
+                            $total_credit+=App\Inv_product_inventory::getCreditByID($inv_cus_invt->inv_cus_id);
 
-                            $total_debit+=App\Inv_customer_inventory::getCustomerDebitByID($inv_cus_invt->inv_cus_id);
+                            $total_debit+=App\Inv_product_inventory::getDebitByID($inv_cus_invt->inv_cus_id);
 
-                            $total_balance+=App\Inv_customer_inventory::getCustomerBalanceByID($inv_cus_invt->inv_cus_id);
+                            $total_balance+=App\Inv_product_inventory::getBalanceByID($inv_cus_invt->inv_cus_id);
 
                         @endphp
 
@@ -76,9 +76,9 @@
                           <td>{{ ++$sl }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_com_name }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_name}}</td>
-                          <td>{{App\Inv_customer_inventory::getCustomerCreditByID($inv_cus_invt->inv_cus_id)}}</td>
-                          <td>{{App\Inv_customer_inventory::getCustomerDebitByID($inv_cus_invt->inv_cus_id)}}</td>
-                          <td>{{App\Inv_customer_inventory::getCustomerBalanceByID($inv_cus_invt->inv_cus_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getCreditByID($inv_cus_invt->inv_cus_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getDebitByID($inv_cus_invt->inv_cus_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getBalanceByID($inv_cus_invt->inv_cus_id)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('customer.accounts.account-statement-details',$inv_cus_invt->inv_cus_id)}}">

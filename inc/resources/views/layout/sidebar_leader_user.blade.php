@@ -29,16 +29,12 @@
         </div>
       </div>
       <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
-<ul class="sidebar-menu" data-widget="tree">
+      <br>
+      @if(check_or_permission([47]) == true)
+    <a class="btn btn-info d-block buy-sell-button" href="{{ route('buy.pro_sell') }}" style="margin-bottom:3px;">Sell</a>
+    <a class="btn btn-danger d-block buy-sell-button" href="{{ route('buy.buy-product-new') }}">Buy</a>
+      @endif
+    <ul class="sidebar-menu" data-widget="tree">
         <li class="header"></li>
         <li class="">
           <a href="{{ url('/index')}}" style="text-decoration: none;">
@@ -385,6 +381,7 @@
             @endif
             <!-- End OMS -->
             <!--start Invenory-->
+            @if(check_or_permission([47]) == true)
         <li class="treeview @yield('inventory_class')">
 	          <a href="#" style="text-decoration: none;">
 	            <i class="fa fa-dashboard"></i> <span>Inventory</span>
@@ -677,7 +674,7 @@
                                         <ul class="treeview-menu">
                                           
                                           <li class="@yield('buy_add')">
-                                            <a href="{{ route('buy.buy_add') }}">
+                                            <a href="{{ route('buy.buy-product-new') }}">
                                               <i class="fa fa-circle-o"></i> Add Product
                                             </a>
                                           </li>
@@ -795,11 +792,23 @@
                                             </ul>
                                           <!--   End Expenses -->
                                         <!--   End Contra Menu -->
+
+                                        <!--=============  General Ledger ===============-->            
+                                        <li class=" @yield('ledger_class')">
+                                            <a href="{{route('accounts.general_ledger')}}" style="text-decoration: none;">
+                                              <i class="fa fa-dashboard"></i> <span>General Ledger</span>
+                                              <span class="pull-right-container">
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                              </span>
+                                            </a>
+                                            </li>
+                                        <!--============= End General Ledger ===============-->
                                             </li>
                                       </ul> 
                                     </li>
 		          </ul>
             </li>
+            @endif
             <!-- end inventory -->
 
 

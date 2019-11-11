@@ -38,6 +38,8 @@
                               <th>SL</th>
                               <th>Type Name</th>
                               <th>Product Name</th>
+                              <th>Available Stock</th>
+                              <th>Warrenty</th>
                               <th>Buy Price</th>
                               <th>Sell Price</th>
                               <th class="text-center">Action</th>
@@ -50,6 +52,8 @@
                                 <td>{{ ++$sl }}</td>
                                 <td>{{ $detail->type_info['inv_pro_type_name'] }}</td>
                                 <td>{{ $detail->inv_pro_det_pro_name }}</td>
+                                <td>{{ $detail->inv_pro_det_available_qty }}</td>
+                                <td>{{ $detail->inv_pro_det_pro_warranty }} days</td>
                                 <td class="text-right">{{ $detail->inv_pro_det_buy_price }}</td>
                                 <td class="text-right">{{ $detail->inv_pro_det_sell_price }}</td>
                                 <td align="center">

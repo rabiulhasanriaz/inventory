@@ -265,7 +265,7 @@ class SdsController extends Controller
 
         // $sms = Sds_sms::where('sms_cf_id',$feedbacks->cf_id)
         //               ->first();
-        return view('pages.client_feedback',compact('customer','feedbacks','client_feedbacks','sms_temps','client'));
+        return view('pages.client_feedback',compact('customer','feedbacks','client_feedbacks','sms_temps'));
     }
 
     public function client_feedback_oms(Request $request,$id){

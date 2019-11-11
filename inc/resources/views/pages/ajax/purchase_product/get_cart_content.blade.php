@@ -10,6 +10,7 @@
             {{ $content->inv_pro_temp_qty }}
         </td>
         
+        <td class="text-center">{{ $content->inv_pro_temp_exp_date }}</td>
         <td class="text-right">{{ number_format($content->inv_pro_temp_unit_price, 2) }}</td>
         <td class="text-right">{{ number_format(($content->inv_pro_temp_unit_price * $content->inv_pro_temp_qty), 2) }}</td>
         <td class="text-center">

@@ -62,15 +62,15 @@
                           
                         @endphp
 
-                        @foreach($inv_sups as $inv_sup)
+                        @foreach($inv_pros as $inv_sup)
                         
                         @php
 
-                            $total_credit+=$inv_sup->inv_sup_inv_credit;
+                            $total_credit+=$inv_sup->inv_pro_inv_credit;
 
-                            $total_debit+=$inv_sup->inv_sup_inv_debit;
+                            $total_debit+=$inv_sup->inv_pro_inv_debit;
 
-                            $total_balance+=$inv_sup->inv_sup_inv_credit-$inv_sup->inv_sup_inv_debit;
+                            $total_balance+=$inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit;
 
                         @endphp
 
@@ -79,19 +79,19 @@
                             {{ ++$sl }}
                           </td>
                           <td >
-                            {{ $inv_sup->inv_sup_inv_issue_date }}
+                            {{ $inv_sup->inv_pro_inv_issue_date }}
                           </td>
                           <td >
-                            {{$inv_sup->inv_sup_inv_description}}
+                            {{$inv_sup->inv_pro_inv_tran_desc}}
                           </td>
                           <td style="text-align: right;">
-                            {{ $inv_sup->inv_sup_inv_credit }}
+                            {{ $inv_sup->inv_pro_inv_credit }}
                           </td>
                           <td style="text-align: right;">
-                            {{$inv_sup->inv_sup_inv_debit }}
+                            {{$inv_sup->inv_pro_inv_debit }}
                           </td>
                           <td style="text-align: right;">
-                            {{ $inv_sup->inv_sup_inv_credit-$inv_sup->inv_sup_inv_debit }}
+                            {{ $inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit }}
                           </td>
                         </tr>
                          @endforeach

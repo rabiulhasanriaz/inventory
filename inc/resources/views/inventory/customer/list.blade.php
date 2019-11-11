@@ -53,15 +53,26 @@
                         <td>{{ $cus->inv_cus_mobile }}</td>
                         <td>{{ $cus->inv_cus_address }}</td>
                         <td align="center">
-                            <a href="{{ route('customer.customer_detail',['id' => $cus->inv_cus_id]) }}" class="action_btn btn_show">
-                              <i class="fa fa-eye"></i>
-                            </a>
-                            <a href="{{ route('customer.customer_delete',['id' => $cus->inv_cus_id]) }}" class="action_btn btn_delete" onclick="return deletesup()">
-                              <i class="fa fa-trash"></i>
-                            </a>
-                            <a href="{{ route('customer.customer_edit_page',['id' => $cus->inv_cus_id]) }}" class="action_btn btn_edit">
-                              <i class="fa fa-edit"></i>
-                            </a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info btn-xs">Action</button>
+                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown">
+                                  <span class="caret"></span>
+                                  <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
+                                  <li>
+                                    <a href="{{ route('customer.customer_detail',['id' => $cus->inv_cus_id]) }}">Show</a>
+                                  </li>
+                                  <li class="divider"></li>
+                                  <li>
+                                    <a href="{{ route('customer.customer_delete',['id' => $cus->inv_cus_id]) }}" onclick="return deletesup()">Delete</a>
+                                  </li> 
+                                  <li class="divider"></li>
+                                  <li>
+                                    <a href="{{ route('customer.customer_edit_page',['id' => $cus->inv_cus_id]) }}">Edit</a>
+                                  </li>
+                                </ul>
+                          </div>
                         </td>
                       </tr>
                     @endforeach

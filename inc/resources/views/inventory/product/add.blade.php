@@ -104,12 +104,22 @@
                             <label for="inputEmail3" class="col-sm-2 control-label"> Product Warranty
                                 <b class="text-danger">*</b>
                             </label>
-                            <div class="col-sm-4">
-                              <input type="number" name="pro_warranty" autocomplete="off" value="{{ old('pro_warranty') }}" class="form-control" placeholder="Enter Product Warranty Detail" required>
+                            <div class="col-sm-6">
+                              <div class="col-sm-3">
+                              <input type="radio" id="warranty_yes" name="warranty_change" class="warranty_change" value="1"> <label for="warranty_yes">Yes</label>
+                              <input type="radio" id="warranty_no" name="warranty_change" class="warranty_change" value="0" checked> <label for="warranty_no">No</label>
                             </div>
-                            <div class="col-sm-2">
-                              (Days)
+                              <div class="warranty_input_wrapper" style="display:none;">
+                                <div class="col-sm-6">
+                                  <input type="number" name="pro_warranty" autocomplete="off" value="{{ (old('pro_warranty') != '')? old('pro_warranty'):'0' }}" class="form-control" placeholder="Enter Product Warranty Detail" required>
+                                </div>
+                                <div class="col-sm-2">
+                                  (Days)
+                                </div>
+                              </div>
                             </div>
+                            
+                            
                               @if($errors->has('pro_sell'))
                                   <p class="text-danger">{{ $errors->first('pro_sell') }}</p>
                               @endif
@@ -207,6 +217,17 @@ $(".add_new_supplier_btn").click(function () {
 function remove_supplier(btn) {
   $(btn).parent().remove();
 }
+
+$(".warranty_change").change(function() {
+
+  if(this.value == 1){
+    console.log("1");
+    $(".warranty_input_wrapper").show();
+  } else {
+    console.log("0");
+    $(".warranty_input_wrapper").hide();
+  }
+});
 
 
 </script>

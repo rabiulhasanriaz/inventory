@@ -61,15 +61,15 @@
                           
                         @endphp
 
-                        @foreach($inv_sups as $inv_sup)
+                        @foreach($inv_pros as $inv_sup)
                         
                         @php
 
-                            $total_credit+=App\Inv_supplier_inventory::getSupplierCreditByID($inv_sup->inv_sup_id);
+                            $total_credit+=App\Inv_product_inventory::getCreditByID($inv_sup->inv_sup_id);
 
-                            $total_debit+=App\Inv_supplier_inventory::getSupplierDebitByID($inv_sup->inv_sup_id);
+                            $total_debit+=App\Inv_product_inventory::getDebitByID($inv_sup->inv_sup_id);
 
-                            $total_balance+=App\Inv_supplier_inventory::getSupplierBalanceByID($inv_sup->inv_sup_id);
+                            $total_balance+=App\Inv_product_inventory::getBalanceByID($inv_sup->inv_sup_id);
 
                         @endphp
 
@@ -79,15 +79,15 @@
 
                           <td>{{ $inv_sup->inv_sup_person}}</td>
 
-                          <td>{{App\Inv_supplier_inventory::getSupplierCreditByID($inv_sup->inv_sup_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getCreditByID($inv_sup->inv_sup_id)}}</td>
 
                           
 
-                          <td>{{App\Inv_supplier_inventory::getSupplierDebitByID($inv_sup->inv_sup_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getDebitByID($inv_sup->inv_sup_id)}}</td>
 
                           
 
-                          <td>{{App\Inv_supplier_inventory::getSupplierBalanceByID($inv_sup->inv_sup_id)}}</td>
+                          <td>{{App\Inv_product_inventory::getBalanceByID($inv_sup->inv_sup_id)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('inventory.supplier.accounts.account-statement-details',$inv_sup->inv_sup_id)}}">

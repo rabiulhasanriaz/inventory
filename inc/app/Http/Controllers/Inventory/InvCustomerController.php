@@ -54,25 +54,54 @@ class InvCustomerController extends Controller
                     $credit_amount = Input::get('balance');
                     $debit_amount = 0;
                 }
+                $last_pro_inv = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 3)
+                ->orderBy('inv_pro_inv_id', 'DESC')
+                ->first();
+                if(!empty($last_pro_inv)) {
+                    $last_pro_inv_memo_no = $last_pro_inv->inv_pro_inv_invoice_no;                
+                    $last_data = substr($last_pro_inv_memo_no, 13);
+                    if(is_numeric($last_data)) {
+                        $last_number = $last_data + 1;
+                        $last_number_length = strlen($last_number);
+                        if ($last_number_length < 6) {
+                            $less_number = 6-$last_number_length;
+                            $sl_prefix = "";
+                            for ($x=0; $x <$less_number ; $x++) { 
+                                $sl_prefix = $sl_prefix . "0";
+                            }
+                            $last_number = $sl_prefix . $last_number;
+                        }
+                        
+                        $new_memo_no = "INVP".$com.date('Y').($last_number);
+                    } else {
+                        $new_memo_no = "INVP".$com.date('Y')."000001";
+                    }
+                } else {
+                    $new_memo_no = "INVP".$com.date('Y')."000001";
+                }
     
-                $inv_cus_inv = new Inv_customer_inventory;
-                $inv_cus_inv->inv_cus_inv_com_id  = $com;
-                $inv_cus_inv->inv_cus_inv_cus_id = $inv_cus->inv_cus_id;
-                $inv_cus_inv->inv_cus_inv_proinv_memo_no = null;
-                $inv_cus_inv->inv_cus_inv_debit = $debit_amount;
-                $inv_cus_inv->inv_cus_inv_credit = $credit_amount;
-                
-                $inv_cus_inv->inv_cus_inv_tran_type = 1;
-                $inv_cus_inv->inv_cus_inv_issue_date = Carbon::now()->format('Y-m-d');
-                $inv_cus_inv->inv_cus_inv_status = 1;
-                $inv_cus_inv->inv_cus_inv_submit_by = $submit_by;
-                $inv_cus_inv->inv_cus_inv_submit_at = $submit_at;
+                $inv_cus_inv = new Inv_product_inventory;
+                $inv_cus_inv->inv_pro_inv_com_id  = $com;
+                $inv_cus_inv->inv_pro_inv_party_id = $inv_cus->inv_cus_id;
+                $inv_cus_inv->inv_pro_inv_invoice_no = $new_memo_no;
+                $inv_cus_inv->inv_pro_inv_unit_price = 0;
+                $inv_cus_inv->inv_pro_inv_debit = $debit_amount;
+                $inv_cus_inv->inv_pro_inv_credit = $credit_amount;
+                $inv_cus_inv->inv_pro_inv_issue_date = Carbon::now();
+                $inv_cus_inv->inv_pro_inv_tran_desc = "Opening Balance";
+                $inv_cus_inv->inv_pro_inv_deal_type = 2;//2=customer
+                $inv_cus_inv->inv_pro_inv_tran_type = 3;//opening balance/ deposit withdraw
+                $inv_cus_inv->inv_pro_inv_status = 1;
+                $inv_cus_inv->inv_pro_inv_submit_at = $submit_at;
+                $inv_cus_inv->inv_pro_inv_submit_by = $submit_by;
                 $inv_cus_inv->save();
 
             }
         }catch(\Exception $e){
             DB::rollback();
-            return redirect()->back()->with(['cus_error' => 'Something Went Wrong'.$e->getMessage()]);
+            return redirect()->back()->withInput()->with(['cus_error' => 'Something Went Wrong'.$e->getMessage()]);
         }
         DB::commit();
         return redirect()->back()->with(['cus_add' => 'Customer Added Successfully']);

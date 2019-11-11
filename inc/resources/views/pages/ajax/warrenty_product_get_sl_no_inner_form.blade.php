@@ -9,13 +9,13 @@
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label"> SL No</label>
                         <div class="col-sm-6">
-                            <input type="number" name="pro_warranty" id="w_product_sl_scan_inp" onchange="check_sl_no(this.value, '{{ $product->inv_pro_det_id }}')" class="form-control">
+                            <input type="text" name="pro_warranty" id="w_product_sl_scan_inp" onchange="check_sl_no(this.value, '{{ $product->inv_pro_det_id }}')" class="form-control">
                         </div>
                 </div>
                 <div class="col-sm-offset-2 col-sm-6">
                     <div id="all-added-warrenty-product-id">
                         <div class="col-sm-12" style="margin-top: 5px;">
-                            <ul class="list-group">
+                            <ul class="list-group list-inline">
                                 @if(!empty($product_sl_no)) 
                                     @foreach ($product_sl_no as $sl_no)
                                         <li class="list-group-item">{{ $loop->iteration }} | {{ $sl_no }} | 

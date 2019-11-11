@@ -24,7 +24,7 @@
               @endif
               
               <h1>
-                Bank
+                {{ $bank_info->bank_info->bank_name }} ({{ $bank_info->inv_abi_account_no }})
               </h1>
         
             </section>
@@ -41,35 +41,44 @@
                         <thead>
                         <tr>
                           <th>SL</th>
-                          <th>Bank Name</th>
-                          <th>Branch Name</th>
-                          <th>Account Name</th>
-                          <th>Account No</th>
-                          <th>Open Date</th>
-                          <th>Account Type</th>
-                          <th class="text-center">Action</th>
+                          <th>Transaction Date</th>
+                          <th>Reference</th>
+                          <th>Description</th>
+                          <th>Credit</th>
+                          <th>Debit</th>
+                          <th>Balance</th>
                         </tr>
                         </thead>
                         <tbody>
                         @php($sl=0)
-                        @foreach ($bank_infos as $bank)
-                        <tr>
-                            <td>{{ ++$sl }}</td>
-                            <td>{{ $bank->bank_info->bank_name }}</td>
-                            <td>{{ $bank->inv_abi_branch_name }}</td>
-                            <td>{{ $bank->inv_abi_account_name }}</td>
-                            <td>{{ $bank->inv_abi_account_no }}</td>
-                            <td>{{ $bank->inv_abi_open_date }}</td>
-                            <td>{{ ($bank->inv_abi_account_type == 1)?'Bank':'Cash' }}</td>
-
-                            <td align="center">
-                                <a href="{{ route('accounts.bank-statement-detail', $bank->inv_abi_id) }}" class="action_btn btn-success"><i class="fa fa-eye"></i></a>
-                                <a href="{{ route('accounts.update-bank', $bank->inv_abi_id) }}" class="action_btn btn_edit"><i class="fa fa-edit"></i></a>
-                                {{-- <a href="{{ route('accounts.delete-bank', $bank->inv_abi_id) }}" onclick="return confirm('Are you sure?')" class="action_btn btn_delete"><i class="fa fa-trash"></i></a> --}}
-                            </td>
-                          </tr>
+                        @php($total_balance = 0)
+                        @php($total_credit = 0)
+                        @php($total_debit = 0)
+                        @foreach ($statements as $statement)
+                            @php($debit = $statement->inv_abs_debit)
+                            @php($credit = $statement->inv_abs_credit)
+                            @php($total_debit = $total_debit + $debit)
+                            @php($total_credit = $total_credit + $credit)
+                            @php($total_balance = $total_balance + $credit - $debit)
+                            <tr>
+                                <td>{{ ++$sl }}</td>
+                                <td>{{ $statement->inv_abs_transaction_date }}</td>
+                                <td>{{ $statement->inv_abs_reference_type }}</td>
+                                <td>{{ $statement->inv_abs_description }}</td>
+                                <td>{{ $credit }}</td>
+                                <td>{{ $debit }}</td>
+                                <td>{{ $total_balance }}</td>
+                            </tr>
                         @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">Total:</td>
+                                <td>{{ $total_credit }}</td>
+                                <td>{{ $total_debit }}</td>
+                                <td>{{ $total_balance }}</td>
+                            </tr>
+                        </tfoot>
                       </table>
                     </div>
                     <!-- /.box-body -->

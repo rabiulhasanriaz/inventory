@@ -32,6 +32,21 @@ class ProductInventoryController extends Controller
         return view('inventory.product_inventory.add',compact('suppliers','products'));
     }
 
+    public function buy_product_new(){
+        $com = Auth::user()->au_company_id;
+        $suppliers = Inv_supplier::where('inv_sup_com_id',$com)
+                                 ->where('inv_sup_status',1)
+                                 ->orderBy('inv_sup_com_name','ASC')
+                                 ->get();
+        $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                                      ->where('inv_pro_det_status',1)
+                                      ->get();
+        $customers = Inv_customer::where('inv_cus_com_id',$com)
+                                  ->where('inv_cus_status',1)
+                                  ->get();
+        return view('inventory.product_inventory.add_new',compact('sell_pro','customers','suppliers'));
+    }
+
     public function buy_product_submit(Request $request){
         $com = Auth::user()->au_company_id;
         $submit_by = Auth::user()->au_id;

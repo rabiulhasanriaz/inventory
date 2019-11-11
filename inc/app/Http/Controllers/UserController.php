@@ -16,10 +16,13 @@ use App\Sds_query_book;
 class UserController extends Controller
 {
     public function home(){
-      $com = Auth::user()->au_company_id;
-      $teamId = Auth::user()->au_team_id;
-      $user = Auth::user()->au_id;
-      $today = Carbon::now()->format('Y-m-d');
+        $com = Auth::user()->au_company_id;
+        $teamId = Auth::user()->au_team_id;
+        $user = Auth::user()->au_id;
+        $today = Carbon::now()->format('Y-m-d');
+
+        $total = '';
+        $feedback = '';
 
       $team_m[] = Auth::user()->au_id;
 

@@ -46,12 +46,12 @@
               @endif
                    
                     <form action="{{route('customer.accounts.deposit-withdraw')}}" method="post" class="form-horizontal">
-                      @csrf
+                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="_token">
                       <div class="box-body">
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Customer:</label>
                           <div class="col-sm-6">
-                            <select name="customer_id" required  value="{{old('customer_id')}}"  class="form-control select2" id="inputEmail3" >
+                            <select name="customer_id" required  value="{{old('customer_id')}}"  class="form-control select2" id="customer_id" onchange="loadAvailableBalanceOfCustomer()">
                               <option value="">Select A Customer</option>
                               
                               @foreach($inv_customers as $inv_customer)
@@ -63,6 +63,7 @@
                             </select>
                          
                           </div>
+                          <div class="col-sm-3 customer_balance_div"></div>
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Transaction Type:</label>
@@ -91,7 +92,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Amount:</label>
                           <div class="col-sm-6">
-                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required>
+                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required min="0">
                           </div>
                         </div>
 
@@ -127,6 +128,22 @@ $( "#to" ).datepicker({
      });
 });
 
+</script>
+<script type="text/javascript">
+  
+function loadAvailableBalanceOfCustomer() {
+    let customer_id = $("#customer_id").val();
+    var requestUrl="{{route('accounts.ajax-load-customer-balance')}}";
+    var _token = $("#_token").val();
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { customer_id: customer_id,_token:_token},
+      success: function (result) {
+       $(".customer_balance_div").html(result);
+      }
+    });
+  }
 </script>
 @endsection
 

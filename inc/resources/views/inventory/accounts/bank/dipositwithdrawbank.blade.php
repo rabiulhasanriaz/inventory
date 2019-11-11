@@ -37,7 +37,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Bank :</label>
                           <div class="col-sm-6">
-                            <select name="bank_id" required  class="form-control select2" id="inputEmail3" >
+                            <select name="bank_id" required  class="form-control select2" id="bank_id" onchange="loadAvailableBalanceOfBank()">
                               <option value="">Select A Bank</option>
                               
                               @foreach($banks as $inv_bank)
@@ -45,6 +45,9 @@
                               @endforeach
                             </select>
                          
+                          </div>
+                          <div class="col-sm-3 bank_balance_div">
+                           
                           </div>
                         </div>
                         <div class="form-group">
@@ -93,7 +96,7 @@
                          <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Amount:</label>
                           <div class="col-sm-6">
-                            <input type="number" name="paid_amount" autocomplete="off" value="{{ old('paid_amount') }}" class="form-control" id="inputEmail3" placeholder="Enter Amount" >
+                            <input type="number" name="paid_amount" autocomplete="off" value="{{ old('paid_amount') }}" class="form-control" id="inputEmail3" placeholder="Enter Amount" min="0">
                           </div>
                         </div>
                        
@@ -144,6 +147,22 @@ $( "#to" ).datepicker({
       }
     });
   }
+
+  function loadAvailableBalanceOfBank() {
+    let bank_id = $("#bank_id").val();
+    var requestUrl="{{route('accounts.ajax-load-bank-balance')}}";
+    var _token = $("#_token").val();
+    //$("#_token").val();
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { bank_id: bank_id,_token:_token},
+      success: function (result) {
+       $(".bank_balance_div").html(result);
+      }
+    });
+  }
+  
 </script>
 @endsection
 

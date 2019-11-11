@@ -14,6 +14,14 @@
           </button>
         </div>
         @endif
+        @if(session()->has('sup_inv_err'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            {{ session('sup_inv_err') }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @endif
           <h1>
             Supplier
           </h1>
@@ -124,7 +132,7 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">Open Due Balance</label>
                         <div class="col-sm-3">
-                          <input type="text" name="balance" autocomplete="off" value="{{ old('balance') }}" class="form-control" id="inputEmail3" placeholder="Open Due Balance">
+                          <input type="number" name="balance" autocomplete="off" value="{{ old('balance') }}" class="form-control" id="inputEmail3" placeholder="Open Due Balance">
                         </div>
                         <div class="col-sm-3">
                             <label class="radio-inline">

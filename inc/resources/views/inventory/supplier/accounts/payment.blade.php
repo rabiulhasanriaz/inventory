@@ -45,14 +45,14 @@
               @endif
                    
                     <form action="{{route('inventory.supplier.accounts.payment')}}" method="post" class="form-horizontal">
-                      @csrf
+                      <input type="hidden" name="_token" value="{{csrf_token()}}" id="_tokens">
                       <div class="box-body">
 
 
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Supplier:</label>
                           <div class="col-sm-6">
-                            <select name="supplier_id" required  value="{{old('supplier_id')}}"  class="form-control select2" id="inputEmail4" >
+                            <select name="supplier_id" required  value="{{old('supplier_id')}}"  class="form-control select2" id="supplier_id" onchange="loadAvailableBalanceOfSupplier()">
 
                              <option value="">Select A Supplier</option>
                               @foreach($inv_suppliers as $inv_supplier)
@@ -64,6 +64,7 @@
                             </select>
                          
                           </div>
+                          <div class="col-sm-3 supplier_balance_div"></div>
                         </div>
 
                         
@@ -71,7 +72,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Payment Method:</label>
                           <div class="col-sm-6">
-                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control select2" id="inputEmail3" >
+                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control select2" id="bank_id" onchange="loadAvailableBalanceOfBank()">
                               <option value="">Select A Method</option>
                               
                               @foreach($banks as $bank)
@@ -83,6 +84,7 @@
                             </select>
                          
                           </div>
+                          <div class="bank_balance_div"></div>
                         </div>
 
                          
@@ -103,7 +105,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Amount:</label>
                           <div class="col-sm-6">
-                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required>
+                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required min="0">
                           </div>
                         </div>
 
@@ -139,6 +141,40 @@ $( "#to" ).datepicker({
      });
 });
 
+</script>
+<script type="text/javascript">
+  
+  function loadAvailableBalanceOfBank() {
+    let bank_id = $("#bank_id").val();
+    var requestUrl="{{route('accounts.ajax-load-bank-balance')}}";
+    var _token = $("#_token").val();
+    //$("#_token").val();
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { bank_id: bank_id,_token:_token},
+      success: function (result) {
+       $(".bank_balance_div").html(result);
+      }
+    });
+  }
+  function loadAvailableBalanceOfSupplier() {
+    let supplier_id = $("#supplier_id").val();
+  
+    
+    var requestUrl="{{route('accounts.ajax-load-supplier-balance')}}";
+  
+   var _token=$("#_token").val();
+
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { supplier_id: supplier_id,_token:_token},
+      success: function (result) {
+       $(".supplier_balance_div").html(result);
+      }
+    });
+  }
 </script>
 @endsection
 

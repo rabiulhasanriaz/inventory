@@ -46,12 +46,12 @@
               @endif
                    
                     <form action="{{route('inventory.supplier.accounts.deposit-withdraw')}}" method="post" class="form-horizontal">
-                      @csrf
+                      <input type="hidden" name="_token" value="{{csrf_token()}}" id="_token">
                       <div class="box-body">
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Supplier:</label>
                           <div class="col-sm-6">
-                            <select name="supplier_id" required  value="{{old('supplier_id')}}"  class="form-control select2" id="inputEmail3" >
+                            <select name="supplier_id" required  value="{{old('supplier_id')}}"  class="form-control select2" id="supplier_id" onchange="loadAvailableBalanceOfSupplier()">
                               <option value="">Select A Supplier</option>
                               
                               @foreach($inv_suppliers as $inv_supplier)
@@ -63,6 +63,7 @@
                             </select>
                          
                           </div>
+                          <div class="col-sm-3 supplier_balance_div"></div>
                         </div>
                          
                      <div class="form-group">
@@ -92,7 +93,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Amount:</label>
                           <div class="col-sm-6">
-                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required>
+                            <input type="number" name="amount" autocomplete="off" value="{{ old('amount') }}" class="form-control" id="inputEmail3" placeholder="Write Amount Here" required min="0">
                           </div>
                         </div>
 
@@ -127,6 +128,27 @@ $( "#to" ).datepicker({
         todayHighlight: true,
      });
 });
+
+</script>
+
+<script type="text/javascript">
+  function loadAvailableBalanceOfSupplier() {
+    let supplier_id = $("#supplier_id").val();
+  
+    
+    var requestUrl="{{route('accounts.ajax-load-supplier-balance')}}";
+  
+   var _token=$("#_token").val();
+
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { supplier_id: supplier_id,_token:_token},
+      success: function (result) {
+       $(".supplier_balance_div").html(result);
+      }
+    });
+  }
 
 </script>
 @endsection

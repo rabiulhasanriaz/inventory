@@ -11,6 +11,7 @@ use App\Inv_supplier;
 use App\Inv_product_detail;
 use App\Inv_supplier_product;
 use App\Inv_supplier_inventory;
+use App\Inv_product_inventory;
 use Illuminate\Support\Facades\DB;
 
 class InvSupplierController extends Controller
@@ -61,19 +62,49 @@ class InvSupplierController extends Controller
                     $credit_amount = Input::get('balance');
                     $debit_amount = 0;
                 }
+                $last_pro_inv = Inv_product_inventory::where('inv_pro_inv_com_id', $company_id)
+                ->where('inv_pro_inv_deal_type', 1)
+                ->where('inv_pro_inv_tran_type', 3)
+                ->orderBy('inv_pro_inv_id', 'DESC')
+                ->first();
+                if(!empty($last_pro_inv)) {
+                    $last_pro_inv_memo_no = $last_pro_inv->inv_pro_inv_invoice_no;                
+                    $last_data = substr($last_pro_inv_memo_no, 13);
+                    if(is_numeric($last_data)) {
+                        $last_number = $last_data + 1;
+                        $last_number_length = strlen($last_number);
+                        if ($last_number_length < 6) {
+                            $less_number = 6-$last_number_length;
+                            $sl_prefix = "";
+                            for ($x=0; $x <$less_number ; $x++) { 
+                                $sl_prefix = $sl_prefix . "0";
+                            }
+                            $last_number = $sl_prefix . $last_number;
+                        }
+                        
+                        $new_memo_no = "INVP".$company_id.date('Y').($last_number);
+                    } else {
+                        $new_memo_no = "INVP".$company_id.date('Y')."000001";
+                    }
+                } else {
+                    $new_memo_no = "INVP".$company_id.date('Y')."000001";
+                }
     
-                $sup_inv = new Inv_supplier_inventory;
-                $sup_inv->inv_sup_inv_com_id = $company_id;
-                $sup_inv->inv_sup_inv_sup_id = $sup->inv_sup_id;
-                $sup_inv->inv_sup_inv_proinv_memo_no = null;
-                $sup_inv->inv_sup_inv_debit = $debit_amount;
-                $sup_inv->inv_sup_inv_credit = $credit_amount;
-                $sup_inv->inv_sup_inv_tran_type = 2;//open balance
-                $sup_inv->inv_sup_inv_issue_date = Carbon::now()->format('Y-m-d');
-                $sup_inv->inv_sup_inv_status = 1;
-                $sup_inv->inv_sup_inv_submit_by = $submit_by;
-                $sup_inv->inv_sup_inv_submit_at = $submit_at;
-                $sup_inv->save();
+                $inv_sup_inv = new Inv_product_inventory;
+                $inv_sup_inv->inv_pro_inv_com_id  = $company_id;
+                $inv_sup_inv->inv_pro_inv_party_id = $sup->inv_sup_id;
+                $inv_sup_inv->inv_pro_inv_invoice_no = $new_memo_no;
+                $inv_sup_inv->inv_pro_inv_unit_price = 0;
+                $inv_sup_inv->inv_pro_inv_debit = $debit_amount;
+                $inv_sup_inv->inv_pro_inv_credit = $credit_amount;
+                $inv_sup_inv->inv_pro_inv_issue_date = Carbon::now();
+                $inv_sup_inv->inv_pro_inv_tran_desc = "Opening Balance";
+                $inv_sup_inv->inv_pro_inv_deal_type = 1;//2=supplier
+                $inv_sup_inv->inv_pro_inv_tran_type = 3;//opening balance/ deposit withdraw
+                $inv_sup_inv->inv_pro_inv_status = 1;
+                $inv_sup_inv->inv_pro_inv_submit_at = $submit_at;
+                $inv_sup_inv->inv_pro_inv_submit_by = $submit_by;
+                $inv_sup_inv->save();
             }
             
         } catch(\Exception $e) {
