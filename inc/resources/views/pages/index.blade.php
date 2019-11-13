@@ -1,3 +1,4 @@
+
   @extends('layout.master')
   @section('content')
   <section class="content-header">
@@ -23,7 +24,7 @@
             </div>
           @endif
           @if( Auth::user()->au_user_type == 4 || Auth::user()->au_user_type == 6 || Auth::user()->au_user_type == 5)
-        <div class="col-lg-3 col-xs-6">
+          <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">

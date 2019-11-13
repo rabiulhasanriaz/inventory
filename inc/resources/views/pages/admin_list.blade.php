@@ -58,6 +58,8 @@
                         @elseif( $admin->au_status == 0)
                         <li><a href="{{ route('pages.admin_list_activate',['id' => $admin->au_id]) }}">Activate Company</a></li>
                         @endif
+                        <li class="divider"></li>
+                        <li><a href="{{ route('com-permission',['id' => $admin->au_company_id]) }}">Permission</a></li>
                       </ul>
                 </div>
                   </td>

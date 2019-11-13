@@ -80,7 +80,7 @@
           random = Math.floor((Math.random() * 100) + 1);
           w[i] = window.open(url);
         } else {
-          console.log('window ' + url + ' is already opened');
+          console.lo g('window ' + url + ' is already opened');
         }
         e.preventDefault();
         w[i].focus();
@@ -88,5 +88,6 @@
     })(i);
   }
   };
+
 </script>
 @endsection

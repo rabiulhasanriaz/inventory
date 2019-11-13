@@ -44,7 +44,7 @@
                   </div>
               @endif
                    
-                    <form action="{{route('inventory.supplier.accounts.payment')}}" method="post" class="form-horizontal">
+                    <form action="{{route('inventory.supplier.accounts.payment')}}" method="post" class="form-horizontal" id="form-id">
                       <input type="hidden" name="_token" value="{{csrf_token()}}" id="_tokens">
                       <div class="box-body">
 
@@ -76,7 +76,7 @@
                               <option value="">Select A Method</option>
                               
                               @foreach($banks as $bank)
-                              <option value="{{$bank->inv_abi_bank_id}}">
+                              <option value="{{$bank->inv_abi_id}}">
                                 {{$bank->bank_info['bank_name'] }} ({{$bank->inv_abi_account_no}})
 
                               </option>
@@ -109,13 +109,20 @@
                           </div>
                         </div>
 
+                        <div class="form-group">
+                          <label for="inputEmail3" class="col-sm-2 control-label">Discount:</label>
+                          <div class="col-sm-6">
+                            <input type="number" name="discount" autocomplete="off" value="{{ old('discount') }}" class="form-control" id="inputEmail3" placeholder="Write Discount Amount Here" min="0">
+                          </div>
+                        </div>
+
                         
 
                       </div>
                       <!-- /.box-body -->
                       <div class="box-footer">
                         <div class="col-sm-3">
-                            <button type="submit" id="" class="btn btn-info pull-right"> Submit</button>
+                            <button type="submit" id="submit-button-id" class="btn btn-info pull-right"> Submit</button>
                          </div>
                       </div>
                       <!-- /.box-footer -->
@@ -134,6 +141,7 @@ $( "#opendate" ).datepicker({
        daysOfWeekHighlighted: "7",
         todayHighlight: true,
         autoclose: true,
+        endDate: "today",
      });
 $( "#to" ).datepicker({
        daysOfWeekHighlighted: "7",
@@ -175,6 +183,14 @@ $( "#to" ).datepicker({
       }
     });
   }
+  $("#form-id").submit(function (event) {
+let btn = $("#submit-button-id");
+btn.prop('disabled', true);
+setTimeout(function(){
+btn.prop('disabled', false);
+}, 5000);
+return true;
+});
 </script>
 @endsection
 

@@ -13,7 +13,8 @@ class SmsController extends Controller
 {
     public function sms_setup(Request $request){
       $user_id = Auth::user()->au_id;
-      $sms_setup = Admin_user::where('au_id',$user_id)
+      $com = Auth::user()->au_company_id;
+      $sms_setup = Admin_user::where('au_company_id',$com)
                              ->where('au_user_type',4)
                              ->first();
       $api_balance = $sms_setup->au_api_key;
@@ -28,7 +29,8 @@ class SmsController extends Controller
     }
     public function sms_setup_submit(Request $request){
       $user_id = Auth::user()->au_id;
-      $sms_setup = Admin_user::where('au_id',$user_id)
+      $com = Auth::user()->au_company_id;
+      $sms_setup = Admin_user::where('au_company_id',$com)
                              ->where('au_user_type',4)
                              ->first();
       $message =

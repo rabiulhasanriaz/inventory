@@ -34,7 +34,7 @@
                 <div class="box-body">
 
             <div class="col-sm-6">
-            {{ Form::open(['action' => 'Inventory\InventoryCartController@cartSubmit' , 'method' => 'post' , 'class' => ' form-horizontal']) }}
+            {{ Form::open(['action' => 'Inventory\InventoryCartController@invTemporaryProduct' , 'method' => 'get' , 'class' => ' form-horizontal']) }}
             <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 text-right control-label">Customer :</label>
                     <div class="col-sm-6">
@@ -42,7 +42,7 @@
                             <option value="">Select One</option>
                             @foreach ($customers as $customer)
                             <option value="{{ $customer->inv_cus_id }}">
-                                {{ $customer->inv_cus_com_name }}
+                                {{ $customer->inv_cus_name }} ({{ $customer->inv_cus_com_name }})
                             </option>  
                             @endforeach
                         </select>
@@ -81,7 +81,7 @@
                                 <th>Type</th>
                                 <th>A. Stock</th>
                                 <th>Price</th>
-                                <th style="width: 110px;">Add to Cart</th>
+                                <th style="width: 110px; text-align: center;">Sell</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -97,13 +97,13 @@
                                         @if($sell->inv_pro_det_pro_warranty == 0)
                                         <input type="text" autocomplete="off" class="form-control" style="width: 50px;" id="pro_qty_{{ $sell->inv_pro_det_id }}" placeholder="Qty">
                                         <button type="button" class="btn btn-success btn-sm" onclick="addtocart('{{ $sell->inv_pro_det_id }}')">
-                                            <i class="fa fa-check"></i>
+                                            <i class="fa fa-plus"></i>
                                         </button>
                                         @else
                                         <input type="text" autocomplete="off" class="form-control" style="width: 50px;" placeholder="N/A" disabled>
                                         <button type="button" class="btn btn-success btn-sm" onclick="addWarrentyProduct('{{ $sell->inv_pro_det_id }}')">
-                                                <i class="fa fa-check"></i>
-                                            </button>
+                                                <i class="fa fa-plus"></i>
+                                        </button>
                                         @endif
                                     </td>
                                 </tr>

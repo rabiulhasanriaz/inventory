@@ -67,4 +67,11 @@ class Admin_user extends Authenticatable
                          ->first();
     }
 
+    public static function company_info($com_id){
+        $admin_query = Admin_user::where('au_user_type',4)
+                                ->where('au_company_id',$com_id)
+                                ->first();
+        return $admin_query;
+    }
+
 }

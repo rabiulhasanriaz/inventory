@@ -13,6 +13,8 @@ class Inv_product_temporary extends Model
         'inv_pro_temp_pro_id',
         'inv_pro_temp_pro_name',
         'inv_pro_temp_type_name',
+        'int_pro_temp_total_qty',
+        'int_pro_temp_short_qty',
         'inv_pro_temp_qty',
         'inv_pro_temp_unit_price',
         'inv_pro_temp_exp_date',
@@ -26,4 +28,12 @@ class Inv_product_temporary extends Model
     protected $primaryKey = 'inv_pro_temp_id';
     public $incrementing = true;
     public $timestamps = false;
+
+    public function pro_warranty(){
+        return $this->belongsTo('App\Inv_product_detail','inv_pro_temp_pro_id','inv_pro_det_id');
+    }
+
+    public function sold_by(){
+        return $this->belongsTo('App\Admin_user','inv_pro_temp_user_id','au_id');
+    }
 }

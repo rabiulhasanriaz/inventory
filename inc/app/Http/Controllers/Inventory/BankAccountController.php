@@ -146,7 +146,7 @@ class BankAccountController extends Controller
 				->where('inv_abi_company_id',Auth::user()->au_company_id)->first())
 			{
 				$request->validate([
-							'paid_amount'=>'required|min:0']);
+							'paid_amount'=>'required|numeric|min:0']);
 
 				$inv_Acc_Statement=new Inv_acc_bank_statement();
 				$inv_Acc_Statement->inv_abs_company_id=Auth::user()->au_company_id;
@@ -209,7 +209,7 @@ class BankAccountController extends Controller
 		  DB::beginTransaction();
 		try {
 			$request->validate([
-							'amount'=>'required|min:0']);
+							'amount'=>'required|numeric|min:0']);
 
             $cashBank = Inv_acc_bank_info::where('inv_abi_status', 1)
                 ->where('inv_abi_company_id', Auth::user()->au_company_id)
@@ -400,5 +400,4 @@ class BankAccountController extends Controller
 
 		return view('inventory.accounts.bank.statement-details', compact('bank_info', 'statements'));
 	}
-
 }

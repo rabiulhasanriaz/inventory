@@ -47,6 +47,7 @@
                           <th>Account No</th>
                           <th>Open Date</th>
                           <th>Account Type</th>
+                          <th>Balance</th>
                           <th class="text-center">Action</th>
                         </tr>
                         </thead>
@@ -61,7 +62,7 @@
                             <td>{{ $bank->inv_abi_account_no }}</td>
                             <td>{{ $bank->inv_abi_open_date }}</td>
                             <td>{{ ($bank->inv_abi_account_type == 1)?'Bank':'Cash' }}</td>
-
+                            <td>{{App\Inv_acc_bank_statement::getAvailableBalanceByBankId($bank->inv_abi_id)}}</td>
                             <td align="center">
                                 <a href="{{ route('accounts.bank-statement-detail', $bank->inv_abi_id) }}" class="action_btn btn-success"><i class="fa fa-eye"></i></a>
                                 <a href="{{ route('accounts.update-bank', $bank->inv_abi_id) }}" class="action_btn btn_edit"><i class="fa fa-edit"></i></a>

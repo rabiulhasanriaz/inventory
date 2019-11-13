@@ -333,7 +333,10 @@ class UserController extends Controller
         }
         $user->au_email = $request->input('au_email');
         $user->au_mobile = $request->input('au_mobile');
-        $user->au_password = md5($request->input('au_password'));
+        if ($request->input('au_password') != '') {
+            $user->au_password = md5($request->input('au_password'));
+          }
+        $user->au_status = $request->status;
         $user->au_address = $request->input('au_address');
         /*dump(app()->make('path.public')."/../..");
         dd(public_path('/'));*/

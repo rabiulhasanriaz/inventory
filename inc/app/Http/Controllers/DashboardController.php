@@ -7,6 +7,7 @@ use App\Client_feedback;
 use App\Sds_query_book;
 use App\Admin_user;
 use App\Au_access;
+use App\Au_access_company;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -244,6 +245,51 @@ class DashboardController extends Controller
       } else {
         session()->flash('type', 'danger');
         session()->flash('message', 'Invalid User');
+        return redirect()->back();
+      }
+    }
+
+    public function page_permission_com($au_com_id){
+      $admin_user = Admin_user::where('au_company_id', $au_com_id)
+        ->where('au_user_type', 4)
+        ->first();
+
+      if(!empty($admin_user)) {
+        $exist_permissions = explode('-', $admin_user->au_permission_status);
+        $permissions = Au_access_company::where('status', 1)->get();
+        
+        return view('pages.page_permission_com', compact('permissions', 'exist_permissions', 'admin_user'));
+
+      } else {
+        session()->flash('type', 'danger');
+        session()->flash('message', 'Invalid Company');
+        return redirect()->back();
+      }
+      return view('pages.page_permission_com',compact('admin_user','permissions'));
+    }
+
+    public function page_permission_com_submit(Request $request, $au_id)
+    {
+      
+      $admin_user = Admin_user::where('au_company_id', $au_id)
+        ->where('au_user_type',4)
+        ->first();
+      if(!empty($admin_user)) {
+        if (!empty($request->au_permission)) {
+          $new_permission = implode('-', $request->au_permission);
+        } else {
+          $new_permission = null;
+        }
+        $admin_user->au_permission_status = $new_permission;
+        $admin_user->save();
+
+        session()->flash('type', 'success');
+        session()->flash('message', 'Permission Updated Successfully');
+        return redirect()->back();
+
+      } else {
+        session()->flash('type', 'danger');
+        session()->flash('message', 'Invalid Company');
         return redirect()->back();
       }
     }

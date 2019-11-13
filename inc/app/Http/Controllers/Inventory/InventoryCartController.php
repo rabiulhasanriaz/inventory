@@ -13,6 +13,7 @@ use App\Inv_product_inventory;
 use App\Inv_product_inventory_detail;
 use App\Inv_customer_inventory;
 use App\Inv_product_temporary;
+use App\Inv_customer;
 
 
 
@@ -476,6 +477,19 @@ class InventoryCartController extends Controller
 
         DB::commit();
         $msg = "Sell Products Successfully completed";
-        return redirect()->back()->with(['sub_success' => $msg]);
+        return redirect()->route('buy.pro_sell')->with(['sub_success' => $msg]);
     }
+
+    public function invTemporaryProduct(Request $request){
+        $user = Auth::user()->au_id;
+        $com = Auth::user()->au_company_id;
+        $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
+                                            ->where('inv_pro_temp_deal_type',2)
+                                            ->get();
+        $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
+            ->where('inv_cus_id', $request->customer)
+            ->first();
+        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus'));
+    }
+
 }

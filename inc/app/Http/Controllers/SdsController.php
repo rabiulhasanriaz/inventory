@@ -19,6 +19,9 @@ use App\Sds_reason_com;
 use App\Sds_temp;
 use App\Sds_sms;
 use Carbon\Carbon;
+use App\Inv_acc_bank_info;
+use App\Inv_customer;
+use App\Inv_bank;
 
 class SdsController extends Controller
 {
@@ -29,10 +32,14 @@ class SdsController extends Controller
         return view('pages.company_register',compact('companys'));
     }
     public function company_register_insert(Request $request){
+        $pre_max_com_id = Admin_user::where('au_company_id', '!=', '')->max('au_company_id');
+        $new_com_id = $pre_max_com_id + 1;
+        
         $table = Input::all();
         $todayD = Carbon::now()->format('Y-m-d');
         $table = new Admin_user;
-        $table ->au_company_name = Input::get('au_company_name');
+        $table->au_company_name = Input::get('au_company_name');
+        $table->au_company_id = $new_com_id;
         $table ->au_name = Input::get('au_name');
         $table->au_email=Input::get('au_email');
         $table->au_mobile=Input::get('au_mobile');
@@ -52,6 +59,33 @@ class SdsController extends Controller
                 $table->au_company_img = "";
             }
         $table->save();
+
+        $addCustomer = new Inv_customer;
+        $addCustomer->inv_cus_com_id = $new_com_id;
+        $addCustomer->inv_cus_name = 'Cash Customer';
+        $addCustomer->inv_cus_com_name = 'Cash Customer';
+        $addCustomer->inv_cus_mobile = Input::get('au_mobile');
+        $addCustomer->inv_cus_email = Input::get('au_email');
+        $addCustomer->inv_cus_address = Input::get('au_address');
+        $addCustomer->inv_cus_type = 2; //2=cash customer
+        $addCustomer->inv_cus_status = 1;
+        $addCustomer->inv_cus_submit_by = Auth::user()->au_id;
+        $addCustomer->inv_cus_submit_at = Carbon::now();
+        $addCustomer->save();
+
+        $cash_bank = Inv_bank::where('status', 0)->orderBy('id', 'desc')->first();
+        $addCashBank = new Inv_acc_bank_info;
+        $addCashBank->inv_abi_company_id = $new_com_id;
+        $addCashBank->inv_abi_bank_id = $cash_bank->id;
+        $addCashBank->inv_abi_branch_name = Input::get('au_company_name');
+        $addCashBank->inv_abi_account_name = 'Cash Bank';
+        $addCashBank->inv_abi_account_no = '123456789';
+        $addCashBank->inv_abi_open_date = Carbon::now();
+        $addCashBank->inv_abi_account_type = 2; //2=cash
+        $addCashBank->inv_abi_status = 1;
+        $addCashBank->inv_abi_submit_by = Auth::user()->au_id;
+        $addCashBank->inv_abi_submit_at = Carbon::now();
+        $addCashBank->save();
         return redirect('/company_register')->with(['msg' => 'Added Successfully']);
     }
     public function admin_list(){

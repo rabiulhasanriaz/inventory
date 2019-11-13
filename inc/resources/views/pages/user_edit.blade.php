@@ -84,7 +84,7 @@
                 <div class="form-group">
                   <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
                   <div class="col-sm-6">
-                    <input type="password" name="au_password" class="form-control" id="inputPassword3" placeholder="Create Password..." required>
+                    <input type="password" name="au_password" class="form-control" id="inputPassword3" placeholder="Create Password...">
                   </div>
                 </div>
                 <div class="form-group">
@@ -97,8 +97,8 @@
                 <div class="form-group">
                   <label for="inputEmail3" class="col-sm-2 control-label">Status</label>
                   <div class="col-sm-6">
-                    <input type="radio" name="au_status" value="1" {{ ($user_edits->au_status == 1)? 'checked':'' }}  required><b style="color: green;">Activate</b>
-                    <input type="radio" name="au_status" value="0" {{ ($user_edits->au_status == 0)? 'checked':'' }} required><b style="color: red;">Deactivate</b>
+                    <input type="radio" name="status" value="1" {{ ($user_edits->au_status == 1)? 'checked':'' }}  required><b style="color: green;">Activate</b>
+                    <input type="radio" name="status" value="0" {{ ($user_edits->au_status == 0)? 'checked':'' }} required><b style="color: red;">Deactivate</b>
                   </div>
                 </div>
                 <div class="form-group">

@@ -34,7 +34,7 @@
                     <!-- /.box-header -->
                     <!-- form start -->
                    
-                    <form action="{{route('accounts.create-contra')}}" method="post" class="form-horizontal">
+                    <form action="{{route('accounts.create-contra')}}" method="post" class="form-horizontal" id="form-id">
                       <input type="hidden" name="_token" value="{{csrf_token()}}" id="_token">
                       <div class="box-body">
                         <div class="form-group">
@@ -93,7 +93,7 @@
                       <!-- /.box-body -->
                       <div class="box-footer">
                         <div class="col-sm-3">
-                            <button type="submit" id="" class="btn btn-info pull-right">Add</button>
+                            <button type="submit" id="submit-button-id" class="btn btn-info pull-right">Add</button>
                          </div>
                       </div>
                       <!-- /.box-footer -->
@@ -137,6 +137,15 @@ $( "#to" ).datepicker({
       }
     });
   }
+
+  $("#form-id").submit(function (event) {
+let btn = $("#submit-button-id");
+btn.prop('disabled', true);
+setTimeout(function(){
+btn.prop('disabled', false);
+}, 5000);
+return true;
+});
   
 </script>
 @endsection

@@ -1,6 +1,6 @@
 <footer class="main-footer">
     <strong>Copyright &copy; {{date('Y')}} <a href="https://iglweb.com/web/" target="_blank">IGL Web Ltd.</a><br>
-    Version 2.0.1
+    Version 2.0.2
 </footer>
 
 

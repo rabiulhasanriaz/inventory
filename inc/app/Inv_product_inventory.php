@@ -15,6 +15,8 @@ class Inv_product_inventory extends Model
         'inv_pro_inv_party_id',
         'inv_pro_inv_prodet_id',
         'inv_pro_inv_invoice_no',
+        'inv_pro_inv_total_qty',
+        'inv_pro_inv_short_qty',
         'inv_pro_inv_qty',
         'inv_pro_inv_unit_price',
         'inv_pro_inv_debit',
@@ -37,6 +39,14 @@ class Inv_product_inventory extends Model
     public $timestamps = false;
 
     // ============= For  Accounts Query =============
+    public static function getSupCreditByID($party_id)
+    {
+        return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
+            ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_inv_deal_type', 1)
+            ->where('inv_pro_inv_status', 1)
+            ->sum('inv_pro_inv_credit');
+    }
     public static function getCreditByID($party_id)
     {
         return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
@@ -44,12 +54,40 @@ class Inv_product_inventory extends Model
             ->where('inv_pro_inv_status', 1)
             ->sum('inv_pro_inv_credit');
     }
+
+
+
+
+    public static function getSupDebitByID($party_id)
+    {
+        return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
+            ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_inv_deal_type', 1)
+            ->where('inv_pro_inv_status', 1)->sum('inv_pro_inv_debit');
+    }
     public static function getDebitByID($party_id)
     {
         return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
             ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_inv_status', 1)->sum('inv_pro_inv_debit');
+    }
+
+
+
+
+
+    public static function getSupBalanceByID($party_id)
+    {
+        return (Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
+            ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
             ->where('inv_pro_inv_status', 1)
-            ->sum('inv_pro_inv_debit');
+            ->where('inv_pro_inv_deal_type', 1)
+            ->sum('inv_pro_inv_credit'))-
+        (Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
+            ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_inv_status', 1)
+            ->where('inv_pro_inv_deal_type', 1)
+            ->sum('inv_pro_inv_debit'));
     }
     public static function getBalanceByID($party_id)
     {
@@ -62,6 +100,12 @@ class Inv_product_inventory extends Model
             ->where('inv_pro_inv_status', 1)
             ->sum('inv_pro_inv_debit'));
     }
+
+
+
+
+
+
     public static function getCreditForLedgerByInvoice($invoiceNo)
     {
         return Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoiceNo)->where('inv_pro_inv_deal_type',1)->where('inv_pro_inv_status',1)->sum('inv_pro_inv_credit');
@@ -78,4 +122,27 @@ class Inv_product_inventory extends Model
     {
         return (Inv_product_inventory::where('inv_pro_inv_party_id',$supplier_id)->where('inv_pro_inv_deal_type',1)->where('inv_pro_inv_status',1)->where('inv_pro_inv_issue_date','<',$startDate)->sum('inv_pro_inv_credit'))-(Inv_product_inventory::where('inv_pro_inv_party_id',$supplier_id)->where('inv_pro_inv_deal_type',1)->where('inv_pro_inv_status',1)->where('inv_pro_inv_issue_date','<',$startDate)->sum('inv_pro_inv_debit'));
     }
+
+    public static function getCreditByInvoiceNo($invoiceNo)
+    {
+       return Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoiceNo)->sum('inv_pro_inv_credit');
+    }
+    public static function getDebitByInvoiceNo($invoiceNo)
+    {
+       return Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoiceNo)->sum('inv_pro_inv_debit');
+    }
+    public static function getTotalDiscountBySupplierID($supplier_id)
+    {
+        return Inv_product_inventory::where('inv_pro_inv_party_id',$supplier_id)->where('inv_pro_inv_status',1)->where('inv_pro_inv_tran_type',6)->where('inv_pro_inv_deal_type',1)->sum('inv_pro_inv_debit');
+
+    }
+    public static function getTotalDiscountByCustomerID($customer_id)
+    {
+        return Inv_product_inventory::where('inv_pro_inv_party_id',$customer_id)->where('inv_pro_inv_status',1)->where('inv_pro_inv_tran_type',6)->where('inv_pro_inv_deal_type',2)->sum('inv_pro_inv_credit');
+    }
+    public static function getIssueDateByInvoice($invoiceNo)
+    {
+        return Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoiceNo)->first();
+    }
+
 }

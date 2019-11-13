@@ -76,7 +76,12 @@
                    
                     <!-- /.box-header -->
                     <div class="box-body">
-
+                      <div class="col-xs-12">
+                        <h4><b>
+                           {{ App\Inv_supplier::getSupplierCompany(request()->supplier_id)->inv_sup_person }}'s
+                        </b> Total Discount is {{App\Inv_product_inventory::getTotalDiscountBySupplierID(request()->supplier_id)}} Tk.
+                      </h4>
+                      </div>
 
                       <table id="example1" class="table table-bordered table-striped">
                         <thead>
@@ -87,7 +92,7 @@
                           <th style="text-align:center;">Credit</th>
                           <th style="text-align:center;">Debit</th>
                           <th style="text-align:center;">Balance</th>
-                          
+                          <th style="text-align: center;">Action</th>
                           
                         </tr>
                         </thead>
@@ -105,12 +110,10 @@
                         @foreach($inv_pros as $inv_sup)
                         
                         @php
+                          
+                            $total_credit+=App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
 
-                            $total_credit+=$inv_sup->inv_pro_inv_credit;
-
-                            $total_debit+=$inv_sup->inv_pro_inv_debit;
-
-                            $total_balance+=$inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit;
+                            $total_debit+=App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
 
                         @endphp
 
@@ -124,15 +127,21 @@
                           <td style="text-align: center;"> 
                             {{$inv_sup->inv_pro_inv_tran_desc}}
                           </td>
-                          <td style="text-align:right;">
-                            {{ $inv_sup->inv_pro_inv_credit }}
+                          <td style="text-align: right;">
+                            {{ App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)}}
                           </td>
-                          <td style="text-align:right;">
-                            {{$inv_sup->inv_pro_inv_debit }}
+                          <td style="text-align: right;">
+                            {{ App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)}}
                           </td>
-                          <td style="text-align:right;">
-                            {{ $inv_sup->inv_pro_inv_credit-$inv_sup->inv_pro_inv_debit }}
+                          <td style="text-align: right;">
+                            {{ (App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) }}
                           </td>
+                          <td style="text-align: center;">
+                              <a href="#" onclick="show_invoice_details('{{ $inv_sup->inv_pro_inv_invoice_no }}')" data-toggle="modal" data-target="#invoice_details">
+
+                              <i class="fa fa-eye"></i>
+                            </a>
+                            </td>
                         </tr>
                          @endforeach
 
@@ -147,9 +156,9 @@
                               {{$total_debit}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_balance}}
+                              {{$total_credit-$total_debit}}
                             </td >
-                            
+                           <td style="text-align: center;font-weight: bolder;">---</td>
                           </tr>
                         </tfoot>
                       </table>
@@ -157,6 +166,28 @@
                     <!-- /.box-body -->
                   </div>
                  </section>
+                 
+                
+<!-- Modal -->
+<div class="modal fade" id="showInvoiceDetailsModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Invoice Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="load-details"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+            
 @endsection
 @section('custom_style')
     <style>
@@ -181,6 +212,21 @@
 
 @section('custom_script')
 <script type="text/javascript">
+
+InitializeDate();
+
+function InitializeDate() {
+    var date = new Date();
+    var dd = date.getDate();             
+    var mm = date.getMonth() + 1;
+    var yyyy = date.getFullYear();
+
+    var ToDate = yyyy+'-'+mm+'-'+dd;
+    var FromDate = yyyy+'-'+(mm-1)+'-'+dd;
+    $('#start_date').datepicker('setDate', FromDate);
+    $('#end_date').datepicker('setDate', ToDate);
+}
+
 
 $(document).ready(function(){
 
@@ -215,5 +261,22 @@ $( "#to" ).datepicker({
             window.open(route, '_blank');
         });
 
+</script>
+<script type="text/javascript">
+
+  function show_invoice_details(invoice_id) {
+
+    var requestUrl="{{route('inventory.supplier.accounts.supplier-voucher-details')}}";
+    var _token=$("#_token").val();
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { invoice_id: invoice_id,_token:_token},
+      success: function (result) {
+       $(".load-details").html(result);
+       $("#showInvoiceDetailsModal").modal("show");
+      }
+    });
+  }
 </script>
 @endsection

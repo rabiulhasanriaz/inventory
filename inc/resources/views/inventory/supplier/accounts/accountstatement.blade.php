@@ -65,11 +65,11 @@
                         
                         @php
 
-                            $total_credit+=App\Inv_product_inventory::getCreditByID($inv_sup->inv_sup_id);
+                            $total_credit += App\Inv_product_inventory::getSupCreditByID($inv_sup->inv_sup_id);
 
-                            $total_debit+=App\Inv_product_inventory::getDebitByID($inv_sup->inv_sup_id);
+                            $total_debit+=App\Inv_product_inventory::getSupDebitByID($inv_sup->inv_sup_id);
 
-                            $total_balance+=App\Inv_product_inventory::getBalanceByID($inv_sup->inv_sup_id);
+                            $total_balance+=App\Inv_product_inventory::getSupBalanceByID($inv_sup->inv_sup_id);
 
                         @endphp
 
@@ -79,15 +79,15 @@
 
                           <td>{{ $inv_sup->inv_sup_person}}</td>
 
-                          <td>{{App\Inv_product_inventory::getCreditByID($inv_sup->inv_sup_id)}}</td>
+                          <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupCreditByID($inv_sup->inv_sup_id) , 2) }}</td>
 
                           
 
-                          <td>{{App\Inv_product_inventory::getDebitByID($inv_sup->inv_sup_id)}}</td>
+                          <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupDebitByID($inv_sup->inv_sup_id) , 2) }}</td>
 
                           
 
-                          <td>{{App\Inv_product_inventory::getBalanceByID($inv_sup->inv_sup_id)}}</td>
+                          <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupBalanceByID($inv_sup->inv_sup_id) , 2) }}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('inventory.supplier.accounts.account-statement-details',$inv_sup->inv_sup_id)}}">
@@ -101,13 +101,13 @@
                           <tr>
                             <td colspan="3" style="text-align:right; font-weight: bolder;">Total:</td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_credit}}
+                              {{ number_format($total_credit ,2) }}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_debit}}
+                              {{ number_format($total_debit ,2) }}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_balance}}
+                              {{ number_format($total_balance ,2) }}
                             </td >
                             <td style="font-weight: bolder; text-align: center;">---</td>
 

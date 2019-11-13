@@ -145,4 +145,5 @@ class ProductInventoryController extends Controller
         
         return view('inventory.product_inventory.sell_product',compact('sell_pro','customers'));
     }
+
 }

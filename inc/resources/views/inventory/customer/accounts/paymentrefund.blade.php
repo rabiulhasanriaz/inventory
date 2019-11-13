@@ -45,7 +45,7 @@
                   </div>
               @endif
                    
-                    <form action="{{route('customer.accounts.payment-refund')}}" method="post" class="form-horizontal">
+                    <form action="{{route('customer.accounts.payment-refund')}}" method="post" class="form-horizontal" id="form-id">
                      <input type="hidden" name="_token" value="{{csrf_token()}}" id="_token">
                       <div class="box-body">
 
@@ -77,7 +77,7 @@
                               <option value="">Select A Method</option>
                               
                               @foreach($banks as $bank)
-                              <option value="{{$bank->inv_abi_bank_id}}">
+                              <option value="{{$bank->inv_abi_id}}">
                                 {{$bank->bank_info['bank_name'] }} ({{$bank->inv_abi_account_no}})
 
                               </option>
@@ -116,7 +116,7 @@
                       <!-- /.box-body -->
                       <div class="box-footer">
                         <div class="col-sm-3">
-                            <button type="submit" id="" class="btn btn-info pull-right"> Submit</button>
+                            <button type="submit" id="submit-button-id" class="btn btn-info pull-right"> Submit</button>
                          </div>
                       </div>
                       <!-- /.box-footer -->
@@ -135,6 +135,7 @@ $( "#opendate" ).datepicker({
        daysOfWeekHighlighted: "7",
         todayHighlight: true,
         autoclose: true,
+        endDate: "today",
      });
 $( "#to" ).datepicker({
        daysOfWeekHighlighted: "7",
@@ -170,6 +171,14 @@ $( "#to" ).datepicker({
       }
     });
   }
+  $("#form-id").submit(function (event) {
+let btn = $("#submit-button-id");
+btn.prop('disabled', true);
+setTimeout(function(){
+btn.prop('disabled', false);
+}, 5000);
+return true;
+});
 </script>
 @endsection
 

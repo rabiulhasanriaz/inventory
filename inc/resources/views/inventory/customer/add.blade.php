@@ -34,18 +34,18 @@
                 <!-- form start -->
                 {{Form::open(['action' => 'Inventory\InvCustomerController@customer_add_submit', 'method' => 'post' , 'class' => 'form-horizontal', 'id' => 'customer_create_form', 'name' => 'customer_create_form'])}}
                   <div class="box-body">
-                  <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
-                      <div class="col-sm-6">
-                        <input type="number" name="mobile" autocomplete="off" value="{{ old('mobile') }}" class="form-control" id="cus_mobile" placeholder="Enter Customer Mobile Number" onkeyup="check_mobile_existence()" required>
-                        <p class="text-danger" id="cus_exist_message"></p>
-                      </div>
-                      <p class="text-success" id="cus_exist_message_available"></p>
-                      <p class="text-danger" id="cus_exist_message_not_available"></p>
-                      @if($errors->has('mobile'))
-                          <p class="text-danger">{{ $errors->first('mobile') }}</p>
-                      @endif
-                  </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
+                        <div class="col-sm-6">
+                          <input type="number" name="mobile" autocomplete="off" value="{{ old('mobile') }}" class="form-control" id="cus_mobile" placeholder="Enter Customer Mobile Number" onkeyup="check_mobile_existence()" required>
+                          <p class="text-danger" id="cus_exist_message"></p>
+                        </div>
+                        <p class="text-success" id="cus_exist_message_available"></p>
+                        <p class="text-danger" id="cus_exist_message_not_available"></p>
+                        @if($errors->has('mobile'))
+                            <p class="text-danger">{{ $errors->first('mobile') }}</p>
+                        @endif
+                    </div>
                     <div class="form-group">
                       <label for="inputEmail3" class="col-sm-2 control-label">Customer Name</label>
                       <div class="col-sm-6">
@@ -95,13 +95,13 @@
                       </div>
                       <div class="col-sm-3">
                         <label class="radio-inline">
-                            <input type="radio" name="bal_type" value="1">Debit
+                            <input type="radio" {{ (old('bal_type')==1)?'checked':'' }} name="bal_type" value="1">Debit
                           </label>
                           <label class="radio-inline">
-                              <input type="radio" name="bal_type" value="2">Credit
+                              <input type="radio" {{ (old('bal_type')==2)?'checked':'' }} name="bal_type" value="2">Credit
                           </label>
-                    </div>
-                  </div>                                     
+                      </div>
+                    </div>                                     
                   </div>
                   <!-- /.box-body -->
                   <div class="box-footer">

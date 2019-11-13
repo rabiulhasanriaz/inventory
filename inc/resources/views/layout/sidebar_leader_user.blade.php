@@ -64,7 +64,7 @@
               <li class="@yield('user_register_user_reg')"><a href="{{ url('/user_register')}}"><i class="fa fa-circle-o"></i> User Register</a></li>
             @endif
             @if(in_array('42', $user_accesses))
-              <li class="@yield('user_register_team_leader')"><a href="{{ url('/team_leaders')}}"><i class="fa fa-circle-o"></i> Team Leader</a></li>
+              <li class="@yield('user_register_team_leader')"><a href="{{ url('/team_leaders')}}"><i class="fa fa-circle-o"></i> Team Leader/Manager</a></li>
             @endif
             @if(in_array('43', $user_accesses))
               <li class="@yield('user_register_user_list')"><a href="{{ url('/user_list')}}"><i class="fa fa-circle-o"></i> User</a></li>
@@ -599,7 +599,7 @@
                                         
                                         <li class="@yield('customer_add')">
                                           <a href="{{ route('customer.customer_add') }}">
-                                            <i class="fa fa-circle-o"></i> Add Customer
+                                            <i class="fa fa-circle-o"></i> Create
                                           </a>
                                         </li>
                                         
@@ -681,7 +681,7 @@
                                           
                                           
                                           <li class="@yield('available_list')">
-                                            <a href="{{ route('buy.available') }}">
+                                            <a href="{{ route('reports.buy_pdf') }}">
                                               <i class="fa fa-circle-o"></i> Available Product
                                             </a>
                                           </li>

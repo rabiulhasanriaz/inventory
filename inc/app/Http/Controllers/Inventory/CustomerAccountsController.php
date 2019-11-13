@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Session;
 use App\Inv_acc_bank_info;
 use App\Inv_acc_bank_statement;
-
+use PDF;
 
 class CustomerAccountsController extends Controller
 {
@@ -25,12 +25,13 @@ class CustomerAccountsController extends Controller
 	public function depositWithdrawStore(Request $request)
 	{
 		try{
-			  $request->validate([
-			            'trans_date' => 'required|date',
-			            'trans_type' => 'required',
-			            'customer_id'=>'required',
-			            'amount'=>'required|min:0',
-			        ]);
+		  $request->validate([
+		            'trans_date' => 'required|date',
+		            'trans_type' => 'required',
+		            'customer_id'=>'required',
+		            'amount'=>'required|numeric|min:0',
+		        ]);
+
 			$inv_Pro_Invt=new Inv_product_inventory();
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
 			$inv_Pro_Invt->inv_pro_inv_party_id=$request->customer_id;
@@ -90,12 +91,13 @@ class CustomerAccountsController extends Controller
 		try{
 			$request->validate([
 			            'trans_date' => 'required|date',
-			            
 			            'customer_id'=>'required',
-			            	'amount'=>'required|min:0'
+			            'amount'=>'required|numeric|min:0',
+			            'discount'=>'nullable|numeric|min:0',
 			        ]);
 
 			$inv_Pro_Invt=new Inv_product_inventory();
+			$invoiceNo=Carbon::now()->format('YmdHis');
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
 			$inv_Pro_Invt->inv_pro_inv_party_id=$request->customer_id;
 			$inv_Pro_Invt->inv_pro_inv_debit=0;
@@ -104,7 +106,7 @@ class CustomerAccountsController extends Controller
 			$inv_Pro_Invt->inv_pro_inv_tran_type=4; // 4 for customer payment collection
 			$inv_Pro_Invt->inv_pro_inv_tran_desc=$request->reference;
 			$inv_Pro_Invt->inv_pro_inv_issue_date=$request->trans_date;
-			$inv_Pro_Invt->inv_pro_inv_invoice_no=Carbon::now()->format('YmdHis');
+			$inv_Pro_Invt->inv_pro_inv_invoice_no=$invoiceNo;
 			$inv_Pro_Invt->inv_pro_inv_submit_by=Auth::user()->au_id;
 			$inv_Pro_Invt->inv_pro_inv_submit_at=Carbon::now();
 			$inv_Pro_Invt->save();
@@ -120,12 +122,31 @@ class CustomerAccountsController extends Controller
             $inv_Acc_Bank_Statement->inv_abs_credit =$request->amount ;
             $inv_Acc_Bank_Statement->inv_abs_transaction_date = $request->trans_date;
             $inv_Acc_Bank_Statement->inv_abs_description = $request->reference;
-            $inv_Acc_Bank_Statement->inv_abs_voucher_no=Carbon::now()->format('YmdHis');
+            $inv_Acc_Bank_Statement->inv_abs_voucher_no=$invoiceNo;
             $inv_Acc_Bank_Statement->inv_abs_status = 1;
             $inv_Acc_Bank_Statement->inv_abs_reference_type = 1; //1= Customer Payment Collection
             $inv_Acc_Bank_Statement->inv_abs_submit_at = Carbon::now();
             $inv_Acc_Bank_Statement->inv_abs_submit_by = Auth::user()->au_id;
             $inv_Acc_Bank_Statement->save();
+
+
+            if($request->discount>0)
+            {
+            	$inv_Pro_Invt1=new Inv_product_inventory();
+				
+				$inv_Pro_Invt1->inv_pro_inv_com_id=Auth::user()->au_company_id;
+				$inv_Pro_Invt1->inv_pro_inv_party_id=$request->customer_id;
+				$inv_Pro_Invt1->inv_pro_inv_debit=0;
+				$inv_Pro_Invt1->inv_pro_inv_credit=$request->discount;
+				$inv_Pro_Invt1->inv_pro_inv_deal_type=2; // 2 for customer
+				$inv_Pro_Invt1->inv_pro_inv_tran_type=6; // 6 Customer or Supplier Discount
+				$inv_Pro_Invt1->inv_pro_inv_tran_desc=$request->reference.' Customer Discount - '.$request->discount;
+				$inv_Pro_Invt1->inv_pro_inv_issue_date=$request->trans_date;
+				$inv_Pro_Invt1->inv_pro_inv_invoice_no=$invoiceNo;
+				$inv_Pro_Invt1->inv_pro_inv_submit_by=Auth::user()->au_id;
+				$inv_Pro_Invt1->inv_pro_inv_submit_at=Carbon::now();
+				$inv_Pro_Invt1->save();
+            }
 
             Session::flash('msg','Payment Successfull.');
             return redirect()->back();
@@ -151,7 +172,7 @@ class CustomerAccountsController extends Controller
 
 			$request->validate([
 			            'trans_date' => 'required|date',
-			            'amount'=>'required|min:0',
+			            'amount'=>'required|numeric|min:0',
 			            'customer_id'=>'required',
 			        ]);
 
@@ -215,13 +236,13 @@ class CustomerAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 			}
 			else
 			{
 				$inv_custs=Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 				}
 
 		return view('inventory.customer.accounts.accountstatementdetails',compact('inv_custs'));
@@ -235,7 +256,7 @@ class CustomerAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 							
 		}
 		else
@@ -243,10 +264,21 @@ class CustomerAccountsController extends Controller
 			
 			$inv_custs=Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 		
 		}
 		
-		return view('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
+		//return view('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
+		$pdf = PDF::loadView('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
+		return $pdf->download('account_statements.pdf');
+	}
+	public function loadAjaxInvoiceDetails(Request $request)
+	{
+		$isProductTrans=Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_tran_type',1)->orWhere('inv_pro_inv_tran_type',2)->count();
+		
+		if($isProductTrans>0)
+			$isProductTrans=1;
+		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_status',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->get();
+		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
 	}
 }

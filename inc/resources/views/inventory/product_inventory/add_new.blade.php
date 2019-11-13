@@ -6,6 +6,14 @@
 @section('content')
 <section class="content">
     <section class="content-header">
+        @if(session()->has('msg'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            {{ session('msg') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
         @if(session()->has('sub_success'))
         <div class="alert alert-success alert-dismissible" role="alert">
             {{ session('sub_success') }}
@@ -26,7 +34,7 @@
             Purchase Product
           </h1>
         </section>
-        {{ Form::open(['action' => 'Inventory\InventoryPurchaseCartController@cartSubmit' , 'method' => 'post' , 'class' => ' form-horizontal']) }}
+        {{ Form::open(['action' => 'Inventory\InventoryPurchaseCartController@invTemporaryBuy' , 'method' => 'get' , 'class' => ' form-horizontal']) }}
                <div class="box">
                 <div class="box-header with-border">
                   <h3 class="box-title">Add Product</h3>
@@ -43,7 +51,9 @@
                             <select name="supplier" id="" class="form-control select2" required>
                                 <option value="">Select One</option>
                                 @foreach ($suppliers as $sup)
-                                <option value="{{ $sup->inv_sup_id }}">{{ $sup->inv_sup_com_name }}</option>
+                                <option value="{{ $sup->inv_sup_id }}" {{ ($sup->inv_sup_id==$sup->inv_sup_id)?'selected':'' }}>
+                                    {{ $sup->inv_sup_com_name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -97,6 +107,7 @@
                                         <th>Expire date</th>
                                         <th>Unit Price</th>
                                         <th>Amount</th>
+                                        <th>Short</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -115,10 +126,11 @@
                                 <th>SL</th>
                                 <th>Name</th>
                                 <th>Type</th>
-                                <th>A. Stock</th>
+                                <th>A. S.</th>
                                 <th>Exp Date</th>
-                                <th>Price</th>
-                                <th>Add to Cart</th>
+                                <th>Buy Price</th>
+                                <th>Short</th>
+                                <th>Purchase</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -129,18 +141,29 @@
                                     <td>{{ $sell->inv_pro_det_pro_name }}</td>
                                     <td>{{ $sell->type_info['inv_pro_type_name'] }}</td>
                                     <td align="center">{{ $sell->inv_pro_det_available_qty }}</td>
-                                    <td class="text-center"><input type="text" autocomplete="off" data-date-format="yyyy-mm-dd" class="form-control from" id="exp_date_{{ $sell->inv_pro_det_id }}" style="width: 100px;" placeholder="Expire Date"></td>
-                                    <td class="text-center"><input type="text" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
+                                    <td class="text-center">
+                                        <input type="text" autocomplete="off" data-date-format="yyyy-mm-dd" class="form-control from" id="exp_date_{{ $sell->inv_pro_det_id }}" style="width: 100px;" placeholder="Expire Date">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="text" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}">
+                                    </td>
+                                    <td>
+                                        @if($sell->inv_pro_det_pro_warranty == 0)
+                                        <input type="text" autocomplete="off" class="form-control" name="short_qty" id="short_qty_{{ $sell->inv_pro_det_id }}" style="width: 70px;" placeholder="Qty">
+                                        @else
+                                        <input type="text" autocomplete="off" class="form-control" name="short_qty" style="width: 70px;" placeholder="N/A" readonly disabled>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         @if($sell->inv_pro_det_pro_warranty == 0)
                                         <input type="text" autocomplete="off" class="form-control" style="width: 50px;" id="pro_qty_{{ $sell->inv_pro_det_id }}" placeholder="Qty">
                                         <button type="button" class="btn btn-success btn-sm" onclick="addtocart('{{ $sell->inv_pro_det_id }}')">
-                                            <i class="fa fa-check"></i>
+                                            <i class="fa fa-plus"></i>
                                         </button>
                                         @else
                                         <input type="text" class="form-control warranty" style="width: 50px;" placeholder="N/A" readonly disabled>
                                             <button type="button" class="btn btn-success btn-sm" onclick="addWarrentyProduct('{{ $sell->inv_pro_det_id }}')">
-                                                <i class="fa fa-check"></i>
+                                                <i class="fa fa-plus"></i>
                                             </button>
                                         @endif
                                     </td>
@@ -199,6 +222,7 @@
     $( "#issue" ).datepicker({
         daysOfWeekHighlighted: "7",
             todayHighlight: true,
+            endDate: date,
             autoclose: true,
         });
     $( ".from" ).datepicker({
@@ -225,6 +249,7 @@
 
     function addtocart(pro_det_id) {
         let pro_qty = parseFloat($("#pro_qty_"+pro_det_id).val());
+        let short_qty = parseFloat($("#short_qty_"+pro_det_id).val());
         let pro_price = parseFloat($("#pro_price_"+pro_det_id).val());
         let exp_date = $("#exp_date_"+pro_det_id).val();
         if(isNaN(pro_qty) || isNaN(pro_price)) {
@@ -237,7 +262,7 @@
             $.ajax({
                 type: "GET",
                 url: route_url,
-                data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price, exp_date: exp_date},
+                data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price, exp_date: exp_date, short_qty:short_qty},
                 success: function (result) {
                     if(result.status == 400) {
                         alert("Stock has been cross it's limit");

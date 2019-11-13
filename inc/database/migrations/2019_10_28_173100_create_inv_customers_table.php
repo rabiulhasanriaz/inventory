@@ -22,6 +22,7 @@ class CreateInvCustomersTable extends Migration
             $table->string('inv_cus_email')->nullable();
             $table->string('inv_cus_address')->nullable();
             $table->string('inv_cus_website')->nullable();
+            $table->tinyInteger('inv_cus_type')->default('1')->comments('1=generl 2 =customer');
             $table->tinyInteger('inv_cus_status')->comments('1=active,0=inactive');
             $table->unsignedInteger('inv_cus_submit_by')->nullable();
             $table->dateTime('inv_cus_submit_at')->nullable();

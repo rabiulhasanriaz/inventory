@@ -136,10 +136,10 @@
                         </div>
                         <div class="col-sm-3">
                             <label class="radio-inline">
-                                <input type="radio" name="bal_type" value="1">Debit
+                                <input type="radio" {{ (old('bal_type')==1)?'checked':'' }} name="bal_type" value="1">Debit
                               </label>
                               <label class="radio-inline">
-                                  <input type="radio" name="bal_type" value="2">Credit
+                                  <input type="radio" {{ (old('bal_type')==2)?'checked':'' }} name="bal_type" value="2">Credit
                               </label>
                         </div>
                         @if($errors->has('balance'))

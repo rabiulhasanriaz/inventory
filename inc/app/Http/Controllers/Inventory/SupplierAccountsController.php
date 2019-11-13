@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Session;
 use App\Inv_acc_bank_info;
 use App\Inv_acc_bank_statement;
+use PDF;
 
 class SupplierAccountsController extends Controller
 {
@@ -27,7 +28,7 @@ class SupplierAccountsController extends Controller
 			
 			$request->validate([
 			            'trans_date' => 'required|date',
-			            'amount'=>'required|min:0',
+			            'amount'=>'required|numeric|min:0',
 			            'supplier_id'=>'required',
 			        ]);
 			
@@ -90,19 +91,21 @@ class SupplierAccountsController extends Controller
 
 			$request->validate([
 			            'trans_date' => 'required|date',
-			            'amount'=>'required|min:0',
+			            'amount'=>'required|numeric|min:0',
 			            'supplier_id'=>'required',
+			            'discount'=>'nullable|numeric|min:0',
 			        ]);
 			$inv_Pro_Invt=new Inv_product_inventory();
+			$invoiceNo=Carbon::now()->format('YmdHis');
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
 			$inv_Pro_Invt->inv_pro_inv_party_id=$request->supplier_id;
-			$inv_Pro_Invt->inv_pro_inv_debit=$request->amount;
-			$inv_Pro_Invt->inv_pro_inv_credit=0;
+			$inv_Pro_Invt->inv_pro_inv_debit=0;
+			$inv_Pro_Invt->inv_pro_inv_credit=$request->amount;
 			$inv_Pro_Invt->inv_pro_inv_tran_type=4; //for suppliers payments
 			$inv_Pro_Invt->inv_pro_inv_deal_type=1; // for supplier
 			$inv_Pro_Invt->inv_pro_inv_tran_desc=$request->reference;
 			$inv_Pro_Invt->inv_pro_inv_issue_date=$request->trans_date;
-			$inv_Pro_Invt->inv_pro_inv_invoice_no=Carbon::now()->format('YmdHis');
+			$inv_Pro_Invt->inv_pro_inv_invoice_no=$invoiceNo;
 			$inv_Pro_Invt->inv_pro_inv_status=1;
 			$inv_Pro_Invt->inv_pro_inv_submit_by=Auth::user()->au_id;
 			$inv_Pro_Invt->inv_pro_inv_submit_at=Carbon::now();
@@ -125,6 +128,26 @@ class SupplierAccountsController extends Controller
             $inv_Acc_Bank_Statement->inv_abs_submit_at = Carbon::now();
             $inv_Acc_Bank_Statement->inv_abs_submit_by = Auth::user()->au_id;
             $inv_Acc_Bank_Statement->save();
+
+
+            if($request->discount>0)
+            {
+            	$inv_Pro_Invt1=new Inv_product_inventory();
+				
+				$inv_Pro_Invt1->inv_pro_inv_com_id=Auth::user()->au_company_id;
+				$inv_Pro_Invt1->inv_pro_inv_party_id=$request->supplier_id;
+				$inv_Pro_Invt1->inv_pro_inv_debit=0;
+				$inv_Pro_Invt1->inv_pro_inv_credit=$request->discount;
+				$inv_Pro_Invt1->inv_pro_inv_deal_type=1; //  1 for supplier
+				$inv_Pro_Invt1->inv_pro_inv_tran_type=6; // 6 Customer or Supplier Discount
+				$inv_Pro_Invt1->inv_pro_inv_tran_desc=$request->reference.' Supplier Discount - '.$request->discount;
+				$inv_Pro_Invt1->inv_pro_inv_issue_date=$request->trans_date;
+				$inv_Pro_Invt1->inv_pro_inv_invoice_no=$invoiceNo;
+				$inv_Pro_Invt1->inv_pro_inv_submit_by=Auth::user()->au_id;
+				$inv_Pro_Invt1->inv_pro_inv_submit_at=Carbon::now();
+				$inv_Pro_Invt1->save();
+            }
+
 
             Session::flash('msg','Payment Successfull.');
             return redirect()->back();
@@ -151,15 +174,15 @@ class SupplierAccountsController extends Controller
 
 			$request->validate([
 			            'trans_date' => 'required|date',
-			            'amount'=>'required|min:0',
+			            'amount'=>'required|numeric|min:0',
 			            'supplier_id'=>'required',
 			        ]);
 			
 			$inv_Pro_Invt=new Inv_product_inventory();
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
 			$inv_Pro_Invt->inv_pro_inv_party_id=$request->supplier_id;
-			$inv_Pro_Invt->inv_pro_inv_debit=0;
-			$inv_Pro_Invt->inv_pro_inv_credit=$request->amount;
+			$inv_Pro_Invt->inv_pro_inv_debit=$request->amount;
+			$inv_Pro_Invt->inv_pro_inv_credit=0;
 			$inv_Pro_Invt->inv_pro_inv_tran_type=5; // 5=payment collection 
 			$inv_Pro_Invt->inv_pro_inv_deal_type=1; // for supplier
 			$inv_Pro_Invt->inv_pro_inv_invoice_no=Carbon::now()->format('YmdHis');
@@ -201,7 +224,8 @@ class SupplierAccountsController extends Controller
 	public function showAccountStatement()
 	{
 		$inv_pros=Inv_supplier::where('inv_sup_com_id',Auth::user()->au_company_id)
-					->where('inv_sup_status',1)->get();
+					->where('inv_sup_status',1)
+					->get();
 		
 		return view('inventory.supplier.accounts.accountstatement',compact('inv_pros'));
 	}
@@ -217,13 +241,17 @@ class SupplierAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_status',1)
+							->where('inv_pro_inv_deal_type',1)
+							->groupBy('inv_pro_inv_invoice_no')->get();
 			}
 			else
 			{
 				$inv_pros=Inv_product_inventory::where('inv_pro_inv_party_id',$request->supplier_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_deal_type',1)
+							->where('inv_pro_inv_status',1)
+							->groupBy('inv_pro_inv_invoice_no')->get();
 				}
 
 		return view('inventory.supplier.accounts.accountstatementdetails',compact('inv_pros'));
@@ -238,7 +266,8 @@ class SupplierAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_deal_type',1)
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 							//dd($inv_pros);
 		}
 		else
@@ -246,10 +275,25 @@ class SupplierAccountsController extends Controller
 			
 			$inv_pros=Inv_product_inventory::where('inv_pro_inv_party_id',$request->supplier_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->get();
+							->where('inv_pro_inv_deal_type',1)
+							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 		
 		}
 		
-		return view('inventory.supplier.accounts.accountstatementdetailsdownload',compact('inv_pros'));
+		//return view('inventory.supplier.accounts.accountstatementdetailsdownload',compact('inv_pros'));
+		$pdf = PDF::loadView('inventory.supplier.accounts.accountstatementdetailsdownload',compact('inv_pros'));
+		return $pdf->download('account_statements.pdf');
+	}
+	public function loadAjaxInvoiceDetails(Request $request)
+	{
+		$isProductTrans=Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_tran_type',1)->orWhere('inv_pro_inv_tran_type',2)->count();
+		
+		if($isProductTrans>0)
+			$isProductTrans=1;
+		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_deal_type',1)
+				->where('inv_pro_inv_status',1)
+				->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
+				->get();
+		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
 	}
 }

@@ -36,7 +36,12 @@
                    
                     <!-- /.box-header -->
                     <div class="box-body">
-
+                      <div class="col-xs-12">
+                        <h4><b>
+                           {{ App\Inv_customer::getCustomerCompany(request()->customer_id)->inv_cus_name }}'s
+                        </b> Total Discount is {{App\Inv_product_inventory::getTotalDiscountByCustomerID(request()->customer_id)}} Tk.
+                      </h4>
+                      </div>
 
                       <table class="table">
                         <thead>
@@ -65,12 +70,10 @@
                         @foreach($inv_custs as $inv_cust)
                         
                         @php
+                          
+                          $total_credit+=App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no);
 
-                            $total_credit+=$inv_cust->inv_pro_inv_credit;
-
-                            $total_debit+=$inv_cust->inv_pro_inv_debit;
-
-                            $total_balance+=$inv_cust->inv_pro_inv_credit-$inv_cust->inv_pro_inv_debit;
+                            $total_debit+=App\Inv_product_inventory::getDebitByInvoiceNo($inv_cust->inv_pro_inv_invoice_no);
 
                         @endphp
 
@@ -85,13 +88,13 @@
                             {{$inv_cust->inv_pro_inv_tran_desc}}
                           </td>
                           <td style="text-align: right;">
-                            {{ $inv_cust->inv_pro_inv_credit }}
+                            {{ App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)}}
                           </td>
                           <td style="text-align: right;">
-                            {{$inv_cust->inv_pro_inv_debit }}
+                            {{ App\Inv_product_inventory::getDebitByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)}}
                           </td>
                           <td style="text-align: right;">
-                            {{ $inv_cust->inv_pro_inv_credit-$inv_cust->inv_pro_inv_debit }}
+                            {{ (App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)) }}
                           </td>
                         </tr>
                          @endforeach
@@ -108,7 +111,7 @@
                               {{$total_debit}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_balance}}
+                              {{$total_credit-$total_debit}}
                             </td >
                             
                           </tr>
@@ -120,6 +123,3 @@
                  </section>
 </center>
 
-<script type="text/javascript">
-  window.print();
-</script>

@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Inventory;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 use Cart;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use App\Inv_product_detail;
+use App\Admin_user;
+use App\Inv_supplier;
 use App\Inv_product_inventory;
 use App\Inv_product_inventory_detail;
 use App\Inv_customer_inventory;
@@ -34,6 +38,7 @@ class InventoryPurchaseCartController extends Controller
             if(!empty($row)) {
                 $row->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
                 $row->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
+                $row->inv_pro_temp_short_qty = $request->short_qty;
                 $row->inv_pro_temp_qty = $request->pro_qty;
                 $row->inv_pro_temp_unit_price = $request->pro_price;
                 $row->inv_pro_temp_exp_date = $request->exp_date;
@@ -47,6 +52,7 @@ class InventoryPurchaseCartController extends Controller
                 $pro_temp_add->inv_pro_temp_pro_id = $product->inv_pro_det_id;
                 $pro_temp_add->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
                 $pro_temp_add->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
+                $pro_temp_add->inv_pro_temp_short_qty = $request->short_qty;
                 $pro_temp_add->inv_pro_temp_qty = $request->pro_qty;
                 $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
                 $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
@@ -215,7 +221,6 @@ class InventoryPurchaseCartController extends Controller
 
     // Submit cart form for sale
     public function cartSubmit(Request $request){
-
         $request->validate([
             'supplier' => 'required',
             'memo' => 'required',
@@ -275,6 +280,7 @@ class InventoryPurchaseCartController extends Controller
                 $sub_total = $req_qty * $product_price;
                 $total_purchase_amount += $sub_total;
                 $exp_date = $content->inv_pro_temp_exp_date;
+                $available_quantity = $req_qty - $content->inv_pro_temp_short_qty;
 
                 
 
@@ -283,7 +289,9 @@ class InventoryPurchaseCartController extends Controller
                 $product_inventory->inv_pro_inv_prodet_id = $product_id;
                 $product_inventory->inv_pro_inv_party_id = $request->supplier;
                 $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
-                $product_inventory->inv_pro_inv_qty = $req_qty;
+                $product_inventory->inv_pro_inv_total_qty = $req_qty;
+                $product_inventory->inv_pro_inv_short_qty = $content->inv_pro_temp_short_qty;
+                $product_inventory->inv_pro_inv_qty = $available_quantity;
                 $product_inventory->inv_pro_inv_unit_price = $product_price;
                 $product_inventory->inv_pro_inv_debit = $sub_total;
                 $product_inventory->inv_pro_inv_credit = 0;
@@ -320,13 +328,55 @@ class InventoryPurchaseCartController extends Controller
                     }
                 }
 
+                $api_sender = Admin_user::where('au_company_id',$com)
+                                        ->where('au_user_type',4)
+                                        ->first();
+
+                $pro_sup = Inv_supplier::where('inv_sup_com_id', $com)
+                ->where('inv_sup_id', $request->supplier)
+                ->first();
+
+                $message = "Your Invoive has been Confirm!";
+                $message = urlencode($message);
+                $api_key = $api_sender->au_api_key;
+                $sender_id = $api_sender->au_sender_id;
+                $client = new \GuzzleHttp\Client();
+                $api_url = "http://sms.iglweb.com/api/v1/send?api_key=". $api_key ."&contacts=". $pro_sup->inv_sup_mobile ."&senderid=". $sender_id ."&msg=".$message;
+                $response = $client->request('GET', "$api_url");
+                $json_response = $response->getBody()->getContents();
+                $api_response = json_decode($json_response);
+
+                if ($api_response->code == "445000") {
+                    $type = 'success';
+                    $msg = "SMS Sending Successfully!";
+                } else if ($api_response->code == "445040") {
+                    $type = 'danger';
+                    $msg = "SMS Sending failed because of invalid API key";
+                } else if ($api_response->code == "445080") {
+                    $type = 'danger';
+                    $msg = "SMS Sending failed because of invalid Sender ID";
+                } else if ($api_response->code == "445120") {
+                    $type = 'danger';
+                    $msg = "SMS Sending failed because of your sms balance is low";
+                } else if ($api_response->code == "445110") {
+                    $type = 'danger';
+                    $msg = "SMS Sending failed because of Client number are invalid";
+                } else {
+                    $type = "danger";
+                    $msg = "SMS Sending failed because of ". $api_response->message;
+                }
+                session()->flash('type', $type);
+                session()->flash('message', $msg);
+
                 
                 // available quantity update in product detail table
-                $after_submit_pro_available_quantity = $check_product->inv_pro_det_available_qty + $req_qty;
+                $after_submit_pro_available_quantity = $check_product->inv_pro_det_available_qty + $available_quantity;
                 $check_product->inv_pro_det_available_qty = $after_submit_pro_available_quantity;
 
                 $check_product->save();
             }
+
+                
 
             Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_deal_type',1)
@@ -340,6 +390,18 @@ class InventoryPurchaseCartController extends Controller
 
         DB::commit();
         $msg = "Sell Products Successfully completed";
-        return redirect()->back()->with(['sub_success' => $msg]);
+        return redirect()->route('buy.buy-product-new')->with(['sub_success' => $msg]);
+    }
+
+    public function invTemporaryBuy(Request $request){
+        $user = Auth::user()->au_id;
+        $com = Auth::user()->au_company_id;
+        $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
+                                            ->where('inv_pro_temp_deal_type',1)
+                                            ->get();
+        $pro_sup = Inv_supplier::where('inv_sup_com_id', $com)
+            ->where('inv_sup_id', $request->supplier)
+            ->first();
+        return view('inventory.product_inventory.product_buy_invoice',compact('pro_temps','pro_sup'));
     }
 }
