@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Auth;
 
 class Inv_acc_bank_statement extends Model
 {
@@ -45,6 +46,22 @@ class Inv_acc_bank_statement extends Model
         $acc_bank_id=DB::table('inv_acc_bank_infos')->where('inv_abi_id',$id)->pluck('inv_abi_bank_id');
       return DB::table('inv_banks')->select('bank_name')->where('id',$acc_bank_id)->first();
        
+    }
+    public  static function getCashBankIdByCompanyID()
+    {
+        return Inv_acc_bank_info::where('inv_abi_company_id',Auth::user()->au_company_id)->where('inv_abi_account_type',2)->first()->inv_abi_id;
+    }
+    public  static function getAvailableCashBalanceByCompanyID()
+    {
+        $cashBankid=Inv_acc_bank_statement::getCashBankIdByCompanyID();
+
+        $creditBalance= Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_bank_id',$cashBankid)->sum('inv_abs_credit');
+        $debitBalance=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_bank_id',$cashBankid)->sum('inv_abs_debit');
+        return ($creditBalance-$debitBalance);
+    }
+
+    public static function getAvailableBalanceByBankId() {
+        
     }
 
 }

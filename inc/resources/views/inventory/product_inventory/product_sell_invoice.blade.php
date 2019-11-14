@@ -144,7 +144,6 @@
                           {{ Form::close() }}
 
                           <a href="{{ route('buy.pro_sell') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
-                          <a href="{{ route('reports.sell-pdf-generate') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">PDF</a>
 
                         </div>
                         <!-- /.box-body -->

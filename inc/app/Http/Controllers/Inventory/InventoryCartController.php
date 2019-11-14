@@ -58,6 +58,10 @@ class InventoryCartController extends Controller
             ->first();
         
         if(!empty($product)) {
+
+            if($product->inv_pro_det_available_qty < $request->pro_qty) {
+                return response()->json(['status' => 400]);
+            }
             
             $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->pro_id)
@@ -477,7 +481,7 @@ class InventoryCartController extends Controller
 
         DB::commit();
         $msg = "Sell Products Successfully completed";
-        return redirect()->route('buy.pro_sell')->with(['sub_success' => $msg]);
+        return redirect()->route('buy.pro_sell')->with(['sub_success' => $msg,'print_invoice' => $new_memo_no]);
     }
 
     public function invTemporaryProduct(Request $request){

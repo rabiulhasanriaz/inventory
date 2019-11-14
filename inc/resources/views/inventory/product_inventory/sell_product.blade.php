@@ -153,6 +153,11 @@
 <script>
     $(document).ready(function(){
 
+    @if(session()->has('print_invoice'))
+        let route = "{!! route('reports.sell-pdf', session()->get('print_invoice')) !!}";
+        window.open(route, '_blank');
+    @endif
+
     $( "#from" ).datepicker({
         daysOfWeekHighlighted: "7",
             todayHighlight: true,

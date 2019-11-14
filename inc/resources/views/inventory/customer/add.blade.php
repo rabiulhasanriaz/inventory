@@ -58,7 +58,7 @@
                     <div class="form-group">
                       <label for="inputEmail3" class="col-sm-2 control-label">Company Name</label>
                       <div class="col-sm-6">
-                        <input type="text" name="com_name" autocomplete="off" value="{{ old('com_name') }}" class="form-control" id="com_name" placeholder="Enter Customer Company Name" required>
+                        <input type="text" name="com_name" autocomplete="off" value="{{ old('com_name') }}" class="form-control" id="com_name" placeholder="Enter Customer Company Name">
                       </div>
                       @if($errors->has('com_name'))
                           <p class="text-danger">{{ $errors->first('com_name') }}</p>
@@ -88,6 +88,17 @@
                           <input type="text" name="website" autocomplete="off" value="{{ old('website') }}" class="form-control" placeholder="Enter Customer Website">
                         </div>
                     </div>
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Customer Type</label>
+                      <div class="col-sm-6">
+                          <label class="radio-inline">
+                              <input type="radio" {{ (old('bal_type')==1)?'checked':'' }} name="type" value="1">Local
+                          </label>
+                          <label class="radio-inline">
+                              <input type="radio" {{ (old('bal_type')==2)?'checked':'' }} name="type" value="2">Global
+                          </label>
+                      </div>
+                  </div>
                     <div class="form-group">
                       <label for="inputEmail3" class="col-sm-2 control-label">Customer Balance</label>
                       <div class="col-sm-3">

@@ -19,7 +19,8 @@ class CreateInvProductTemporariesTable extends Migration
             $table->unsignedInteger('inv_pro_temp_pro_id');
             $table->string('inv_pro_temp_pro_name');
             $table->string('inv_pro_temp_type_name');
-            $table->decimal('int_pro_temp_short_qty',8,2)->default('0');
+            $table->decimal('inv_pro_temp_short_qty',8,2)->default('0');
+            $table->string('inv_pro_temp_short_remarks')->nullable();
             $table->integer('inv_pro_temp_qty');
             $table->decimal('inv_pro_temp_unit_price',12,2);
             $table->date('inv_pro_temp_exp_date')->nullable();

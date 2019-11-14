@@ -88,13 +88,13 @@
                             {{$inv_sup->inv_pro_inv_tran_desc}}
                           </td>
                           <td style="text-align: right;">
-                            {{ App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)}}
+                            {{ number_format(App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no),2)}}
                           </td>
                           <td style="text-align: right;">
-                            {{ App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)}}
+                            {{ number_format(App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no),2)}}
                           </td>
                           <td style="text-align: right;">
-                            {{ (App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) }}
+                            {{ number_format((App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)),2) }}
                           </td>
                         </tr>
                          @endforeach
@@ -105,13 +105,13 @@
                             <td style="text-align: center;">#</td>
                             <td colspan="2" style="text-align:right; font-weight: bolder;">Total:</td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_credit}}
+                              {{number_format($total_credit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_debit}}
+                              {{number_format($total_debit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_credit-$total_debit}}
+                              {{number_format(($total_credit-$total_debit),2)}}
                             </td >
                             
                           </tr>

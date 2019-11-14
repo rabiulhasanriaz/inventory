@@ -65,18 +65,18 @@
                                 <td>{{ $statement->inv_abs_transaction_date }}</td>
                                 <td>{{ $statement->inv_abs_reference_type }}</td>
                                 <td>{{ $statement->inv_abs_description }}</td>
-                                <td>{{ $credit }}</td>
-                                <td>{{ $debit }}</td>
-                                <td>{{ $total_balance }}</td>
+                                <td>{{ number_format($credit,2) }}</td>
+                                <td>{{ number_format($debit,2) }}</td>
+                                <td>{{ number_format($total_balance,2) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="4">Total:</td>
-                                <td>{{ $total_credit }}</td>
-                                <td>{{ $total_debit }}</td>
-                                <td>{{ $total_balance }}</td>
+                                <td>{{ number_format($total_credit,2) }}</td>
+                                <td>{{ number_format($total_debit,2) }}</td>
+                                <td>{{ number_format($total_balance,2) }}</td>
                             </tr>
                         </tfoot>
                       </table>

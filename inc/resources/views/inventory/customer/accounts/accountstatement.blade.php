@@ -64,11 +64,11 @@
                        
                          @php
 
-                            $total_credit+=App\Inv_product_inventory::getCreditByID($inv_cus_invt->inv_cus_id);
+                            $total_credit+=App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id);
 
-                            $total_debit+=App\Inv_product_inventory::getDebitByID($inv_cus_invt->inv_cus_id);
+                            $total_debit+=App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id);
 
-                            $total_balance+=App\Inv_product_inventory::getBalanceByID($inv_cus_invt->inv_cus_id);
+                            $total_balance+=App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id);
 
                         @endphp
 
@@ -76,9 +76,9 @@
                           <td>{{ ++$sl }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_com_name }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_name}}</td>
-                          <td style="text-align: right;">{{App\Inv_product_inventory::getCreditByID($inv_cus_invt->inv_cus_id)}}</td>
-                          <td style="text-align: right;">{{App\Inv_product_inventory::getDebitByID($inv_cus_invt->inv_cus_id)}}</td>
-                          <td style="text-align: right;">{{App\Inv_product_inventory::getBalanceByID($inv_cus_invt->inv_cus_id)}}</td>
+                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id),2)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('customer.accounts.account-statement-details',$inv_cus_invt->inv_cus_id)}}">
@@ -93,13 +93,13 @@
                           <tr>
                             <td colspan="3" style="text-align:right; font-weight: bolder;">Total:</td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_credit}}
+                              {{number_format($total_credit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_debit}}
+                              {{number_format($total_debit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
-                              {{$total_balance}}
+                              {{number_format($total_balance,2)}}
                             </td >
                             <td style="font-weight: bolder; text-align: center;">---</td>
 

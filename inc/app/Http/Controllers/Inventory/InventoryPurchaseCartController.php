@@ -40,6 +40,7 @@ class InventoryPurchaseCartController extends Controller
                 $row->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
                 $row->inv_pro_temp_short_qty = $request->short_qty;
                 $row->inv_pro_temp_qty = $request->pro_qty;
+                $row->inv_pro_temp_short_remarks = $request->remarks;
                 $row->inv_pro_temp_unit_price = $request->pro_price;
                 $row->inv_pro_temp_exp_date = $request->exp_date;
                 $row->inv_pro_temp_updated_at = Carbon::now();
@@ -54,6 +55,7 @@ class InventoryPurchaseCartController extends Controller
                 $pro_temp_add->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
                 $pro_temp_add->inv_pro_temp_short_qty = $request->short_qty;
                 $pro_temp_add->inv_pro_temp_qty = $request->pro_qty;
+                $pro_temp_add->inv_pro_temp_short_remarks = $request->remarks;
                 $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
                 $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
                 $pro_temp_add->inv_pro_temp_slno = '';
@@ -291,6 +293,7 @@ class InventoryPurchaseCartController extends Controller
                 $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
                 $product_inventory->inv_pro_inv_total_qty = $req_qty;
                 $product_inventory->inv_pro_inv_short_qty = $content->inv_pro_temp_short_qty;
+                $product_inventory->inv_pro_inv_short_remarks = $content->inv_pro_temp_short_remarks;
                 $product_inventory->inv_pro_inv_qty = $available_quantity;
                 $product_inventory->inv_pro_inv_unit_price = $product_price;
                 $product_inventory->inv_pro_inv_debit = $sub_total;
@@ -336,37 +339,37 @@ class InventoryPurchaseCartController extends Controller
                 ->where('inv_sup_id', $request->supplier)
                 ->first();
 
-                $message = "Your Invoive has been Confirm!";
-                $message = urlencode($message);
-                $api_key = $api_sender->au_api_key;
-                $sender_id = $api_sender->au_sender_id;
-                $client = new \GuzzleHttp\Client();
-                $api_url = "http://sms.iglweb.com/api/v1/send?api_key=". $api_key ."&contacts=". $pro_sup->inv_sup_mobile ."&senderid=". $sender_id ."&msg=".$message;
-                $response = $client->request('GET', "$api_url");
-                $json_response = $response->getBody()->getContents();
-                $api_response = json_decode($json_response);
+                // $message = "Your Invoive has been Confirm!";
+                // $message = urlencode($message);
+                // $api_key = $api_sender->au_api_key;
+                // $sender_id = $api_sender->au_sender_id;
+                // $client = new \GuzzleHttp\Client();
+                // $api_url = "http://sms.iglweb.com/api/v1/send?api_key=". $api_key ."&contacts=". $pro_sup->inv_sup_mobile ."&senderid=". $sender_id ."&msg=".$message;
+                // $response = $client->request('GET', "$api_url");
+                // $json_response = $response->getBody()->getContents();
+                // $api_response = json_decode($json_response);
 
-                if ($api_response->code == "445000") {
-                    $type = 'success';
-                    $msg = "SMS Sending Successfully!";
-                } else if ($api_response->code == "445040") {
-                    $type = 'danger';
-                    $msg = "SMS Sending failed because of invalid API key";
-                } else if ($api_response->code == "445080") {
-                    $type = 'danger';
-                    $msg = "SMS Sending failed because of invalid Sender ID";
-                } else if ($api_response->code == "445120") {
-                    $type = 'danger';
-                    $msg = "SMS Sending failed because of your sms balance is low";
-                } else if ($api_response->code == "445110") {
-                    $type = 'danger';
-                    $msg = "SMS Sending failed because of Client number are invalid";
-                } else {
-                    $type = "danger";
-                    $msg = "SMS Sending failed because of ". $api_response->message;
-                }
-                session()->flash('type', $type);
-                session()->flash('message', $msg);
+                // if ($api_response->code == "445000") {
+                //     $type = 'success';
+                //     $msg = "SMS Sending Successfully!";
+                // } else if ($api_response->code == "445040") {
+                //     $type = 'danger';
+                //     $msg = "SMS Sending failed because of invalid API key";
+                // } else if ($api_response->code == "445080") {
+                //     $type = 'danger';
+                //     $msg = "SMS Sending failed because of invalid Sender ID";
+                // } else if ($api_response->code == "445120") {
+                //     $type = 'danger';
+                //     $msg = "SMS Sending failed because of your sms balance is low";
+                // } else if ($api_response->code == "445110") {
+                //     $type = 'danger';
+                //     $msg = "SMS Sending failed because of Client number are invalid";
+                // } else {
+                //     $type = "danger";
+                //     $msg = "SMS Sending failed because of ". $api_response->message;
+                // }
+                // session()->flash('type', $type);
+                // session()->flash('message', $msg);
 
                 
                 // available quantity update in product detail table
@@ -390,7 +393,7 @@ class InventoryPurchaseCartController extends Controller
 
         DB::commit();
         $msg = "Sell Products Successfully completed";
-        return redirect()->route('buy.buy-product-new')->with(['sub_success' => $msg]);
+        return redirect()->route('buy.buy-product-new')->with(['sub_success' => $msg , 'print_buy_invoice' => $new_memo_no]);
     }
 
     public function invTemporaryBuy(Request $request){

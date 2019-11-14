@@ -54,6 +54,13 @@
             </section>
             
             @if(request()->has('searchbtn'))
+
+            @php
+              $totalDebit=0;
+              $totalCredit=0;
+              $totalBalance=App\Inv_product_inventory::getOpenningBalance(request()->start_date,request()->supplier_id);
+
+            @endphp
               
               <div class="box">
                     <div class="box-header">
@@ -126,8 +133,17 @@
                               {{App\Inv_product_inventory::getOpenningBalance(request()->start_date,request()->supplier_id)}}
                             </td>
                           </tr>
-  <!--=========== Openning Balance================-->
-                          @foreach($ledgers as $ledger)
+
+  <!--=========== End Opening Openning Balance================-->
+
+
+                    @foreach($ledgers as $ledger)
+
+                      @php
+                          $totalCredit+=App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
+                          $totalDebit+=App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
+                          $totalBalance+=App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id);
+                      @endphp
                           <tr>
                             <td>
                               {{$ledger->inv_pro_inv_issue_date}}
@@ -150,6 +166,24 @@
                            
                           </tr>
                           @endforeach
+
+                          <tr>
+                            <td style="text-align: center; font-weight: bolder;">
+                              #
+                            </td>
+                             <td style="text-align: right; font-weight: bolder;" colspan="2">
+                              Total:
+                            </td>
+                             <td style="text-align: right; font-weight: bolder;">
+                              {{number_format($totalCredit)}}
+                            </td>
+                             <td style="text-align:right; font-weight: bolder;">
+                              {{number_format($totalDebit)}}
+                            </td>
+                            <td style="text-align: right;font-weight: bolder;">
+                              {{number_format($totalBalance)}}
+                            </td>
+                          </tr>
                         </table>
                         @else
                            <h2> No Data Found In Between {{request()->start_date}} and {{request()->end_date}}</h2>

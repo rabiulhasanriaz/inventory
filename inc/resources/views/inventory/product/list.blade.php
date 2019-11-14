@@ -53,7 +53,13 @@
                                 <td>{{ $detail->type_info['inv_pro_type_name'] }}</td>
                                 <td>{{ $detail->inv_pro_det_pro_name }}</td>
                                 <td>{{ $detail->inv_pro_det_available_qty }}</td>
-                                <td>{{ $detail->inv_pro_det_pro_warranty }} days</td>
+                                <td>
+                                  @if ($detail->inv_pro_det_pro_warranty == 0)
+                                     No Warranty 
+                                  @else
+                                  {{ $detail->inv_pro_det_pro_warranty }} days
+                                  @endif
+                                </td>
                                 <td class="text-right">{{ $detail->inv_pro_det_buy_price }}</td>
                                 <td class="text-right">{{ $detail->inv_pro_det_sell_price }}</td>
                                 <td align="center">

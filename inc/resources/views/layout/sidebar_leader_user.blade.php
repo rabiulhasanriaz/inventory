@@ -694,6 +694,16 @@
                                             <i class="fa fa-circle-o"></i> Sell Product
                                           </a>
                                         </li>
+                                        <li class="@yield('sell_reports')">
+                                            <a href="{{ route('reports.sell-reports') }}">
+                                              <i class="fa fa-circle-o"></i> Sell Reports
+                                            </a>
+                                          </li>
+                                        <li class="@yield('buy_reports')">
+                                            <a href="{{ route('reports.buy-reports') }}">
+                                              <i class="fa fa-circle-o"></i> Buy Reports
+                                            </a>
+                                        </li>
                                   </ul>
 
                                 </li>
@@ -787,6 +797,12 @@
                                               <li class="@yield('contra_list')">
                                                 <a href="{{ route('accounts.contra-list') }}">
                                                   <i class="fa fa-circle-o"></i> Contra List
+                                                </a>
+                                              </li>
+
+                                              <li class="@yield('expenses-voucher')">
+                                                <a href="{{ route('accounts.expenses-voucher') }}">
+                                                  <i class="fa fa-circle-o"></i> Expenses Entry
                                                 </a>
                                               </li>
                                             </ul>

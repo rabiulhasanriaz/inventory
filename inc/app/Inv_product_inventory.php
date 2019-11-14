@@ -17,6 +17,7 @@ class Inv_product_inventory extends Model
         'inv_pro_inv_invoice_no',
         'inv_pro_inv_total_qty',
         'inv_pro_inv_short_qty',
+        'inv_pro_inv_short_remarks',
         'inv_pro_inv_qty',
         'inv_pro_inv_unit_price',
         'inv_pro_inv_debit',
@@ -47,11 +48,12 @@ class Inv_product_inventory extends Model
             ->where('inv_pro_inv_status', 1)
             ->sum('inv_pro_inv_credit');
     }
-    public static function getCreditByID($party_id)
+    public static function getCusCreditByID($party_id)
     {
         return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
             ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
             ->where('inv_pro_inv_status', 1)
+            ->where('inv_pro_inv_deal_type',2)
             ->sum('inv_pro_inv_credit');
     }
 
@@ -65,10 +67,11 @@ class Inv_product_inventory extends Model
             ->where('inv_pro_inv_deal_type', 1)
             ->where('inv_pro_inv_status', 1)->sum('inv_pro_inv_debit');
     }
-    public static function getDebitByID($party_id)
+    public static function getCusDebitByID($party_id)
     {
         return Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
             ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_inv_deal_type',2)
             ->where('inv_pro_inv_status', 1)->sum('inv_pro_inv_debit');
     }
 
@@ -89,15 +92,17 @@ class Inv_product_inventory extends Model
             ->where('inv_pro_inv_deal_type', 1)
             ->sum('inv_pro_inv_debit'));
     }
-    public static function getBalanceByID($party_id)
+    public static function getCusBalanceByID($party_id)
     {
         return (Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
             ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
             ->where('inv_pro_inv_status', 1)
+            ->where('inv_pro_inv_deal_type',2)
             ->sum('inv_pro_inv_credit'))-
         (Inv_product_inventory::where('inv_pro_inv_party_id', $party_id)
             ->where('inv_pro_inv_com_id', Auth::user()->au_company_id)
             ->where('inv_pro_inv_status', 1)
+            ->where('inv_pro_inv_deal_type',2)
             ->sum('inv_pro_inv_debit'));
     }
 
@@ -143,6 +148,30 @@ class Inv_product_inventory extends Model
     public static function getIssueDateByInvoice($invoiceNo)
     {
         return Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoiceNo)->first();
+    }
+    public function getProductInfo()
+    {
+        return $this->belongsTo('App\Inv_product_detail','inv_pro_inv_prodet_id','inv_pro_det_id');
+    }
+
+    public function getCustomerInfo(){
+        return $this->belongsTo('App\Inv_customer','inv_pro_inv_party_id','inv_cus_id');
+    }
+
+    public function getSupplierInfo(){
+        return $this->belongsTo('App\Inv_supplier','inv_pro_inv_party_id','inv_sup_id');
+    }
+
+    public function getProductWarranty(){
+        return $this->belongsTo('App\Inv_product_detail','inv_pro_inv_prodet_id','inv_pro_det_id');
+    }
+
+    public static function getTotalDebit($invoiceId){
+        $com = Auth::user()->au_company_id;
+        $total = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                            ->where('inv_pro_inv_invoice_no',$invoiceId)
+                                            ->sum('inv_pro_inv_debit');
+        return $total;
     }
 
 }

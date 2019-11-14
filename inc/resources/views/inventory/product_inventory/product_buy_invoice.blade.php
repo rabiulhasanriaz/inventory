@@ -65,6 +65,7 @@
                               <th class="text-center">Warranty</th>
                               <th class="text-center">Bought Qty</th>
                               <th class="text-center">Short Qty</th>
+                              <th class="text-center">Remarks</th>
                               <th class="text-center">Unit Price</th>
                               <th class="text-center">Amount</th>
                             </tr>
@@ -91,6 +92,7 @@
                                 </td>
                                 <td class="text-center">{{ $temp->inv_pro_temp_qty }}</td>
                                 <td class="text-center">{{ $temp->inv_pro_temp_short_qty }}</td>
+                                <td class="text-center">{{ $temp->inv_pro_temp_short_remarks }}</td>
                                 <td class="text-right">{{ number_format($temp->inv_pro_temp_unit_price,2) }}</td>
                                 <td class="text-right">{{ number_format(($temp->inv_pro_temp_unit_price * $temp->inv_pro_temp_qty),2) }}</td>
                             </tr>
@@ -100,7 +102,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="5" class="text-right">Total Amount</td>
+                                    <td colspan="6" class="text-right">Total Amount</td>
                                     <td></td>
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
@@ -120,7 +122,7 @@
                                     <td class="text-right"></td>
                                 </tr> --}}
                                 <tr>
-                                    <td colspan="5" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
+                                    <td colspan="6" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
                                     <td></td>
                                     <td class="text-right"><span class="underline">{{ number_format($balance,2) }}</span></td>
                                 </tr>
@@ -150,7 +152,6 @@
                           {{ Form::close() }}
 
                           <a href="{{ route('buy.buy-product-new') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
-                          <a href="{{ route('reports.pdf-generate') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">PDF</a>
 
                         </div>
                         <!-- /.box-body -->

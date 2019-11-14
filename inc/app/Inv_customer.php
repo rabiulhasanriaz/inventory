@@ -21,6 +21,7 @@ class Inv_customer extends Model
         'inv_cus_address',
         'inv_cus_website',
         'inv_cus_type',
+        'inv_cus_customer_type',
         'inv_cus_status',
         'inv_cus_submit_by',
         'inv_cus_submit_at',

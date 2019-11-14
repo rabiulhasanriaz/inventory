@@ -31,7 +31,6 @@ class InvCustomerController extends Controller
             $inv_cus = new Inv_customer;
             $request->validate([
                 'name' => 'required',
-                'com_name' => 'required',
                 'mobile' => 'required',
             ]);
             $inv_cus->inv_cus_com_id = $com;
@@ -40,6 +39,7 @@ class InvCustomerController extends Controller
             $inv_cus->inv_cus_mobile = Input::get('mobile');
             $inv_cus->inv_cus_email = Input::get('email');
             $inv_cus->inv_cus_address = Input::get('address');
+            $inv_cus->inv_cus_customer_type = Input::get('type');
             $inv_cus->inv_cus_website = Input::get('website');
             $inv_cus->inv_cus_status = 1;
             $inv_cus->inv_cus_submit_by = $submit_by;

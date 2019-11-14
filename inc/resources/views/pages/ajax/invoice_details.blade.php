@@ -57,10 +57,10 @@
 							{{$invoiceInfo->inv_pro_inv_qty}}
 						</td>
 						<td style="text-align: right;">
-							{{ $invoiceInfo->inv_pro_inv_unit_price }}
+							{{ number_format($invoiceInfo->inv_pro_inv_unit_price,2) }}
 						</td>
 						<td style="text-align: right;">
-							{{$invoiceInfo->inv_pro_inv_qty*$invoiceInfo->inv_pro_inv_unit_price }}
+							{{ number_format($invoiceInfo->inv_pro_inv_qty*$invoiceInfo->inv_pro_inv_unit_price,2) }}
 						</td>
 
 					</tr>
@@ -109,13 +109,13 @@
 							{{$invoiceInfo->inv_pro_inv_tran_desc}}
 						</td>
 						<td style="text-align: right;">
-							{{ $invoiceInfo->inv_pro_inv_credit }}
+							{{ number_format($invoiceInfo->inv_pro_inv_credit,2) }}
 						</td>
 						<td style="text-align: right;">
-							{{ $invoiceInfo->inv_pro_inv_debit }}
+							{{ number_format($invoiceInfo->inv_pro_inv_debit,2) }}
 						</td>
 						<td style="text-align: right;">
-							{{($invoiceInfo->inv_pro_inv_credit) - ($invoiceInfo->inv_pro_inv_debit) }}
+							{{ number_format(($invoiceInfo->inv_pro_inv_credit) - ($invoiceInfo->inv_pro_inv_debit),2) }}
 						</td>
 
 					</tr>
@@ -125,9 +125,9 @@
 				<tfoot>
 					<tr>
 						<td style="text-align: right;font-weight: bolder;" colspan="2">Total: </td>
-						<td style="text-align: right;font-weight: bolder;">{{$totalCredit}} </td>
-						<td style="text-align: right;font-weight: bolder;">{{$totalDebit}} </td>
-						<td style="text-align: right;font-weight: bolder;">{{ $totalCredit-$totalDebit }} </td>
+						<td style="text-align: right;font-weight: bolder;">{{ number_format($totalCredit,2)}} </td>
+						<td style="text-align: right;font-weight: bolder;">{{number_format($totalDebit,2)}} </td>
+						<td style="text-align: right;font-weight: bolder;">{{ number_format($totalCredit-$totalDebit,2) }} </td>
 					</tr>
 				</tfoot>
 

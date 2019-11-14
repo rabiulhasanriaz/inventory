@@ -71,7 +71,7 @@ header {
 
 #project div,
 #company div {
-  white-space: nowrap;       
+  white-space: nowrap;        
 }
 
 table {
@@ -107,7 +107,7 @@ table .desc {
 }
 
 table td {
-  padding: 20px;
+  padding: 5px;
   text-align: right;
 }
 
@@ -175,26 +175,25 @@ footer {
       <div class="text-center">
           <h3 class="invoice">Invoice</h3>
       </div>
-      <div id="company" class="clearfix" style="margin-left: 30px;">
+      <div id="company" class="clearfix">
           <table class="table">
               <tr>
-                  <td id="text">Customer Name</td>
-                  <td id="desc">Rabiul Hasan</td>
+                  <td id="text">Supplier Name</td>
+                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_person'] }}</td>
                   <td id="text">Invoice No:</td>
-                  <td id="desc">123456789</td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
               <tr>
                   <td id="text">Address</td>
-                  <td id="desc">Dhanmondi</td>
+                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_address'] }}</td>
                   <td id="text">Mobile</td>
-                  <td id="desc">01309644501</td>
+                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_mobile'] }}1</td>
               </tr>
               <tr>
                   <td id="text">Bought By</td>
-                  <td id="desc">Riaz</td>
+                  <td id="desc">{{ Auth::user()->au_company_name }}</td>
               </tr>
           </table>
-      </div>
         {{-- <div>Invoice</div>
         <div>455 Foggy Heights,<br /> AZ 85004, US</div>
         <div>(602) 519-0450</div>
@@ -207,40 +206,55 @@ footer {
         <div><span>EMAIL</span> <a href="mailto:john@example.com">john@example.com</a></div>
         <div><span>DATE</span> August 17, 2015</div>
         <div><span>DUE DATE</span> September 17, 2015</div> --}}
-      {{-- </div> --}}
+      </div>
     </header>
     <main>
       <table>
         <thead>
           <tr>
             <th class="service">SL</th>
-            <th class="desc">DESCRIPTION</th>
+            <th class="desc">PRODUCT NAME</th>
+            <th>DESCRIPTION</th>
             <th>WARRANTY</th>
-            <th>SOLD QTY</th>
+            <th>SHORT QUATITY</th>
+            <th>QUANTITY</th>
             <th>UNIT PRICE</th>
             <th>AMOUNT</th>
           </tr>
         </thead>
         <tbody>
+          @php($sl=0)
+          @php($balance=0)
+          @foreach ($invoice as $buy)
           <tr>
-            <td class="service">Design</td>
-            <td class="desc">Creating a recognizable design solution based on the company's existing visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">26</td>
-            <td class="total">$1,040.00</td>
-            <td class="total">$1000</td>
+              <td class="service">{{ ++$sl }}</td>
+              <td class="desc">{{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}</td>
+              <td class="qty">{{ $buy->inv_pro_inv_tran_desc }}</td>
+              <td class="unit">
+                  @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
+                  No Warranty
+                  @else
+                  {{ $buy->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
+                  @endif
+              </td>
+              <td>{{ $buy->inv_pro_inv_short_qty }}</td>
+              <td>{{ $buy->inv_pro_inv_total_qty }}</td>
+              <td>{{ $buy->inv_pro_inv_unit_price }}</td>
+              <td class="total">{{ $buy->inv_pro_inv_debit }}</td>
+          </tr>
+          @php($balance = $balance + $buy->inv_pro_inv_debit)
+          @endforeach
+          <tr>
+            <td colspan="7">SUBTOTAL :</td>
+          <td class="total">{{ number_format($balance,2) }}</td>
           </tr>
           <tr>
-            <td colspan="5">SUBTOTAL :</td>
-            <td class="total">$5,200.00</td>
+            <td colspan="7">DISCOUNT :</td>
+            <td class="total">0000.00</td>
           </tr>
           <tr>
-            <td colspan="5">DISCOUNT :</td>
-            <td class="total">$1,300.00</td>
-          </tr>
-          <tr>
-            <td colspan="5" class="grand total">NET PAYABLE AMOUNT :</td>
-            <td class="grand total">$6,500.00</td>
+            <td colspan="7" class="grand total">NET PAYABLE AMOUNT :</td>
+            <td class="grand total">{{ number_format($balance,2) }}</td>
           </tr>
         </tbody>
       </table>

@@ -400,4 +400,61 @@ class BankAccountController extends Controller
 
 		return view('inventory.accounts.bank.statement-details', compact('bank_info', 'statements'));
 	}
+
+	public function expensesVoucherForm()
+	{
+		$expenseCategories=Inv_acc_expense_category::where('inv_acc_exp_cat_company_id',Auth::user()->au_company_id)->where('inv_acc_exp_cat_status',1)->orderBy('inv_acc_exp_cat_category_name')->get();
+		return view('inventory.accounts.voucher.expense_voucher',compact('expenseCategories'));
+	}
+	public function expensesVoucherStore(Request $request)
+	{
+		try{
+			 $cashBankid=Inv_acc_bank_statement::getCashBankIdByCompanyID();
+			$cashBalance=Inv_acc_bank_statement::getAvailableCashBalanceByCompanyID();
+			if($cashBalance>=$request->paid_amount)
+			{
+				$request->validate([
+							'paid_amount'=>'required|numeric|min:0']);
+
+				$inv_Acc_Statement=new Inv_acc_bank_statement();
+				$inv_Acc_Statement->inv_abs_company_id=Auth::user()->au_company_id;
+			
+				$inv_Acc_Statement->inv_abs_reference_type= 3; // for expenses will credit
+				$inv_Acc_Statement->inv_abs_bank_id=$cashBankid;
+				
+				$inv_Acc_Statement->inv_abs_transaction_date=$request->trans_date;
+				$inv_Acc_Statement->inv_abs_voucher_no=Carbon::now()->format('YmdHis');
+				$inv_Acc_Statement->inv_abs_description=$request->reference;
+				$inv_Acc_Statement->inv_abs_submit_by=Auth::user()->au_id;
+				$inv_Acc_Statement->inv_abs_submit_at=Carbon::now();
+				
+				
+				$inv_Acc_Statement->inv_abs_credit=0;
+				$inv_Acc_Statement->inv_abs_debit=$request->paid_amount;
+				
+				if($inv_Acc_Statement->save())
+				{
+					Session::flash('msg','Successfully Added.');
+					return redirect()->back();
+				}
+				else
+				{
+					Session::flash('errmsg','Failed To Add.Please Try Again.');
+					return redirect()->back()->withInput();
+				}
+			}
+			else
+			{
+				Session::flash('errmsg','Insufficent Balance Found.Your Current Cash Balance is '.$cashBalance);
+					return redirect()->back()->withInput();
+			}
+
+			
+		}
+		catch(Exception $err)
+		{
+			Session::flash('errmsg','Something Goes Wrong.Please Try Again Later');
+			return redirect()->back();
+		}
+	}
 }

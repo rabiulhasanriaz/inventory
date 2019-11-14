@@ -71,7 +71,7 @@ header {
 
 #project div,
 #company div {
-  white-space: nowrap;       
+  white-space: nowrap;        
 }
 
 table {
@@ -107,7 +107,7 @@ table .desc {
 }
 
 table td {
-  padding: 20px;
+  padding: 5px;
   text-align: right;
 }
 
@@ -175,7 +175,7 @@ footer {
       <div class="text-center">
           <h3 class="invoice">Invoice</h3>
       </div>
-      <div id="company" class="clearfix" style="margin-left: 30px;">
+      <div id="company" class="clearfix">
           <table class="table">
               <tr>
                   <td id="text">Customer Name</td>
@@ -194,7 +194,6 @@ footer {
                   <td id="desc">Riaz</td>
               </tr>
           </table>
-      </div>
         {{-- <div>Invoice</div>
         <div>455 Foggy Heights,<br /> AZ 85004, US</div>
         <div>(602) 519-0450</div>
@@ -207,40 +206,43 @@ footer {
         <div><span>EMAIL</span> <a href="mailto:john@example.com">john@example.com</a></div>
         <div><span>DATE</span> August 17, 2015</div>
         <div><span>DUE DATE</span> September 17, 2015</div> --}}
-      {{-- </div> --}}
+      </div>
     </header>
     <main>
       <table>
         <thead>
           <tr>
             <th class="service">SL</th>
-            <th class="desc">DESCRIPTION</th>
-            <th>WARRANTY</th>
-            <th>SOLD QTY</th>
-            <th>UNIT PRICE</th>
+            <th class="desc">INVOICE NO</th>
+            <th>SUPPLIER NAME</th>
+            <th>DESCRIPTION</th>
             <th>AMOUNT</th>
           </tr>
         </thead>
         <tbody>
+            @php($sl=0)
+            @php($balance=0)
+            @foreach ($buyStatments as $statement)
+            <tr>
+                <td class="service">{{ ++$sl }}</td>
+                <td class="desc">{{ $statement->inv_pro_inv_invoice_no }}</td>
+                <td class="unit">{{ $statement->getSupplierInfo['inv_sup_person'] }}</td>
+                <td class="qty">{{ $statement->inv_pro_inv_tran_desc }}</td>
+                <td class="total">{{ $statement->inv_pro_inv_debit }}</td>
+            </tr>
+            @php($balance = $balance + $statement->inv_pro_inv_debit)
+            @endforeach
           <tr>
-            <td class="service">Design</td>
-            <td class="desc">Creating a recognizable design solution based on the company's existing visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">26</td>
-            <td class="total">$1,040.00</td>
-            <td class="total">$1000</td>
+            <td colspan="4">SUBTOTAL :</td>
+            <td class="total">{{ number_format($balance,2) }}</td>
           </tr>
           <tr>
-            <td colspan="5">SUBTOTAL :</td>
-            <td class="total">$5,200.00</td>
+            <td colspan="4">DISCOUNT :</td>
+            <td class="total">0,000.00</td>
           </tr>
           <tr>
-            <td colspan="5">DISCOUNT :</td>
-            <td class="total">$1,300.00</td>
-          </tr>
-          <tr>
-            <td colspan="5" class="grand total">NET PAYABLE AMOUNT :</td>
-            <td class="grand total">$6,500.00</td>
+            <td colspan="4" class="grand total">NET PAYABLE AMOUNT :</td>
+            <td class="grand total">{{ number_format($balance,2) }}</td>
           </tr>
         </tbody>
       </table>

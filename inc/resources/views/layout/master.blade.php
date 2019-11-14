@@ -41,7 +41,7 @@
   @yield('custom_style')
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini {{ (\Request::route()->getName() == 'buy.buy-product-new')? 'sidebar-collapse':'' }}">
+<body class="hold-transition skin-blue sidebar-mini {{ (\Request::route()->getName() == 'buy.buy-product-new')? 'sidebar-collapseavcd':'' }}">
 <div class="wrapper">
   @include('layout.header')
   <!-- Left side column. contains the logo and sidebar -->

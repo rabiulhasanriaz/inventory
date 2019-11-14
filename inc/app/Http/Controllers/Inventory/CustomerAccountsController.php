@@ -236,13 +236,16 @@ class CustomerAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
+							->where('inv_pro_inv_deal_type',2)
 							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
 			}
 			else
 			{
 				$inv_custs=Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
+							->where('inv_pro_inv_status',1)
+							->where('inv_pro_inv_deal_type',2)
+							->groupBy('inv_pro_inv_invoice_no')->get();
 				}
 
 		return view('inventory.customer.accounts.accountstatementdetails',compact('inv_custs'));
@@ -256,7 +259,9 @@ class CustomerAccountsController extends Controller
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 							->where('inv_pro_inv_issue_date','>=',$request->start_date)
 							->where('inv_pro_inv_issue_date','<=',$request->end_date)
-							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
+							->where('inv_pro_inv_status',1)
+							->where('inv_pro_inv_deal_type',2)
+							->groupBy('inv_pro_inv_invoice_no')->get();
 							
 		}
 		else
@@ -264,7 +269,9 @@ class CustomerAccountsController extends Controller
 			
 			$inv_custs=Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)
 							->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-							->where('inv_pro_inv_status',1)->groupBy('inv_pro_inv_invoice_no')->get();
+							->where('inv_pro_inv_status',1)
+							->where('inv_pro_inv_deal_type',2)
+							->groupBy('inv_pro_inv_invoice_no')->get();
 		
 		}
 		
@@ -279,6 +286,7 @@ class CustomerAccountsController extends Controller
 		if($isProductTrans>0)
 			$isProductTrans=1;
 		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_status',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->get();
+			//dd($invoiceInfos);
 		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
 	}
 }

@@ -284,6 +284,15 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('buy_invoice','Inventory\ReportsController@buy_invoice_pdf')->name('buy_pdf');
         Route::get('buy_invoice_pdf','Inventory\ReportsController@buy_invoice_pdf_generate')->name('pdf-generate');
         Route::get('sell_invoice_pdf','Inventory\ReportsController@sell_invoice_pdf_generate')->name('sell-pdf-generate');
+        Route::get('sell_reports','Inventory\ReportsController@sell_reports')->name('sell-reports');
+        Route::get('sell_report_ajax','Inventory\ReportsController@sell_report_ajax')->name('sell-reports-ajax');
+        Route::get('buy_reports','Inventory\ReportsController@buy_reports')->name('buy-reports');
+        Route::get('buy_reports_ajax','Inventory\ReportsController@buy_reports_ajax')->name('buy-reports-ajax');
+        Route::get('buy_pdf/{invoice}','Inventory\ReportsController@buy_reports_pdf')->name('buy-pdf');
+        Route::get('sell_pdf/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-pdf');
+        Route::get('sell_statement_download','Inventory\ReportsController@sellReportsDownload')->name('sell-reports-download');
+        Route::get('buy_statement_download','Inventory\ReportsController@BuyReportsDownload')->name('buy-reports-download');
+
     });
 
 
@@ -320,6 +329,10 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
 
         Route::get('ajax-load-customer-balance','Inventory\BankAccountController@ajaxLoadCustomerBalance')->name('ajax-load-customer-balance'); 
 
+
+        //============== Expense Voucher =============
+        Route::get('expenses-voucher','Inventory\BankAccountController@expensesVoucherForm')->name('expenses-voucher');
+        Route::post('expenses-voucher','Inventory\BankAccountController@expensesVoucherStore')->name('expenses-voucher');
     });
     //Inventory Account End
 
