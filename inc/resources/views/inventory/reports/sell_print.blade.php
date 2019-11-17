@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>{{env('APP_NAME')}}</title>
     <style>
-        .clearfix:after {
+      .clearfix:after {
   content: "";
   display: table;
   clear: both;
@@ -79,6 +79,7 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   margin-bottom: 20px;
+  margin-right: 500px;
 }
 
 table tr:nth-child(2n-1) td {
@@ -98,7 +99,7 @@ table th {
   font-weight: normal;
 }
 @page { 
-  size: 25cm 30cm ; 
+  size: 20cm 30cm ; 
   }
 
 table .service,
@@ -145,7 +146,7 @@ footer {
     border-radius: 10px;
     background-color: lightblue;
     display: inline-block;
-    margin-left: 365px;
+    margin-right: 70px;
     padding: 10px;
 }
 .text-center{
@@ -199,65 +200,65 @@ footer {
         {{-- <div>Invoice</div>
         <div>455 Foggy Heights,<br /> AZ 85004, US</div>
         <div>(602) 519-0450</div>
-        <div><a href="mailto:company@example.com">company@example.com</a></div>
+        <div><a href="mailto:company@example.com">company@example.com</a></div> --}}
       </div>
-      <div id="project">
+      {{-- <div id="project">
         <div><span>PROJECT</span> Website development</div>
         <div><span>CLIENT</span> John Doe</div>
         <div><span>ADDRESS</span> 796 Silver Harbour, TX 79273, US</div>
         <div><span>EMAIL</span> <a href="mailto:john@example.com">john@example.com</a></div>
         <div><span>DATE</span> August 17, 2015</div>
-        <div><span>DUE DATE</span> September 17, 2015</div> --}}
-      </div>
+        <div><span>DUE DATE</span> September 17, 2015</div>
+      </div> --}}
     </header>
     <main>
-      <table>
-        <thead>
-          <tr>
-            <th class="service">SL</th>
-            <th class="desc">PRODUCT NAME</th>
-            <th>DESCRIPTION</th>
-            <th>WARRANTY</th>
-            <th>QUANTITY</th>
-            <th>UNIT PRICE</th>
-            <th>AMOUNT</th>
-          </tr>
-        </thead>
-        <tbody>
-          @php($sl=0)
-          @php($balance=0)
-          @foreach ($invoice as $sell)
-          <tr>
-              <td class="service">{{ ++$sl }}</td>
-              <td class="desc">{{ $sell->getProductWarranty['inv_pro_det_pro_name'] }}</td>
-              <td class="qty">{{ $sell->inv_pro_inv_tran_desc }}</td>
-              <td class="unit">
-                  @if ($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
-                  No Warranty
-                @else
-                  {{ $sell->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
-                @endif
-              </td>
-              <td>{{ $sell->inv_pro_inv_qty }}</td>
-              <td>{{ $sell->inv_pro_inv_unit_price }}</td>
-              <td class="total">{{ $sell->inv_pro_inv_debit }}</td>
-          </tr>
-          @php($balance = $balance + $sell->inv_pro_inv_debit)
-          @endforeach
-          <tr>
-            <td colspan="6">SUBTOTAL :</td>
-          <td class="total">{{ number_format($balance,2) }}</td>
-          </tr>
-          <tr>
-            <td colspan="6">DISCOUNT :</td>
-            <td class="total">0000.00</td>
-          </tr>
-          <tr>
-            <td colspan="6" class="grand total">NET PAYABLE AMOUNT :</td>
-            <td class="grand total">{{ number_format($balance,2) }}</td>
-          </tr>
-        </tbody>
-      </table>
+        <table>
+            <thead>
+              <tr>
+                <th class="service">SL</th>
+                <th class="desc">PRODUCT NAME</th>
+                <th>DESCRIPTION</th>
+                <th>WARRANTY</th>
+                <th>QUANTITY</th>
+                <th>UNIT PRICE</th>
+                <th>AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              @php($sl=0)
+              @php($balance=0)
+              @foreach ($invoice as $sell)
+              <tr>
+                  <td class="service">{{ ++$sl }}</td>
+                  <td class="desc">{{ $sell->getProductWarranty['inv_pro_det_pro_name'] }}</td>
+                  <td class="qty">{{ $sell->inv_pro_inv_tran_desc }}</td>
+                  <td class="unit">
+                      @if ($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
+                      No Warranty
+                    @else
+                      {{ $sell->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
+                    @endif
+                  </td>
+                  <td>{{ $sell->inv_pro_inv_qty }}</td>
+                  <td>{{ $sell->inv_pro_inv_unit_price }}</td>
+                  <td class="total">{{ $sell->inv_pro_inv_debit }}</td>
+              </tr>
+              @php($balance = $balance + $sell->inv_pro_inv_debit)
+              @endforeach
+              <tr>
+                <td colspan="6">SUBTOTAL :</td>
+              <td class="total">{{ number_format($balance,2) }}</td>
+              </tr>
+              <tr>
+                <td colspan="6">DISCOUNT :</td>
+                <td class="total">0000.00</td>
+              </tr>
+              <tr>
+                <td colspan="6" class="grand total">NET PAYABLE AMOUNT :</td>
+                <td class="grand total">{{ number_format($balance,2) }}</td>
+              </tr>
+            </tbody>
+          </table>
       {{-- <div id="notices">
         <div>NOTICE:</div>
         <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>

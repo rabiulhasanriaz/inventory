@@ -134,8 +134,9 @@ class ProductInventoryController extends Controller
         return view('inventory.product_inventory.available');
     }
 
-    public function sell_product(){
+    public function sell_product(Request $request){
         $com = Auth::user()->au_company_id;
+        
         $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
                                       ->where('inv_pro_det_status',1)
                                       ->get();

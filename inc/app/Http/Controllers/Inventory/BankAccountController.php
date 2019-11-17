@@ -418,7 +418,7 @@ class BankAccountController extends Controller
 
 				$inv_Acc_Statement=new Inv_acc_bank_statement();
 				$inv_Acc_Statement->inv_abs_company_id=Auth::user()->au_company_id;
-			
+				$inv_Acc_Statement->inv_abs_reference_id=$request->expense;
 				$inv_Acc_Statement->inv_abs_reference_type= 3; // for expenses will credit
 				$inv_Acc_Statement->inv_abs_bank_id=$cashBankid;
 				

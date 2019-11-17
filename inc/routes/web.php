@@ -177,6 +177,9 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('product_type_edit_page/{id}','Inventory\InvProductController@pro_type_edit_page')->name('type_edit_page');
         Route::post('product_type_edit/{id}','Inventory\InvProductController@pro_type_edit')->name('type_edit');
         Route::get('product_type_list','Inventory\InvProductController@product_type_list')->name('type_list');
+
+
+        Route::get('short_quantity','Inventory\InvProductController@product_short_notify')->name('short');
     });
 
     Route::group(['prefix' => 'supplier' , 'as' => 'inventory.'],function(){
@@ -293,6 +296,9 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_statement_download','Inventory\ReportsController@sellReportsDownload')->name('sell-reports-download');
         Route::get('buy_statement_download','Inventory\ReportsController@BuyReportsDownload')->name('buy-reports-download');
 
+        Route::get('sell_print/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-print');
+        Route::get('buy_print/{invoice}','Inventory\ReportsController@buy_reports_pdf')->name('buy-print');
+
     });
 
 
@@ -333,6 +339,12 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         //============== Expense Voucher =============
         Route::get('expenses-voucher','Inventory\BankAccountController@expensesVoucherForm')->name('expenses-voucher');
         Route::post('expenses-voucher','Inventory\BankAccountController@expensesVoucherStore')->name('expenses-voucher');
+
+                //==================== 16-11-19 =================
+
+        Route::get('expense-categories-load-ajax','Inventory\ExpenseCategoryController@showAjaxLoadedExpensesCategory')->name('expense-categories-load-ajax');
+
+        Route::get('expense-load-ajax','Inventory\ExpenseCategoryController@showAjaxLoadedExpenses')->name('expense-load-ajax');
     });
     //Inventory Account End
 

@@ -134,11 +134,19 @@
                           <label for="inputEmail3" class="col-sm-2 control-label"> Product Warranty
                               <b class="text-danger">*</b>
                           </label>
-                          <div class="col-sm-4">
-                            <input type="text" name="pro_warranty" autocomplete="off" value="{{ $product->inv_pro_det_pro_warranty }}" class="form-control" id="" placeholder="Enter Product Model Name" required>
-                          </div>
-                          <div class="col-sm-2">
-                            (Days)
+                          <div class="col-sm-6">
+                            <div class="col-sm-3">
+                              <input type="radio" id="warranty_yes" name="warranty_change" class="warranty_change" value="{{$product->inv_pro_det_pro_warranty}}" {{ ( $product->inv_pro_det_pro_warranty != 0)?'checked':'' }}> <label for="warranty_yes">Yes</label>
+                              <input type="radio" id="warranty_no" name="warranty_change" class="warranty_change" value="0" {{ ( $product->inv_pro_det_pro_warranty == 0)?'checked':'' }}> <label for="warranty_no">No</label>
+                            </div>
+                            <div class="warranty_input_wrapper">
+                              <div class="col-sm-6">
+                                <input type="number" name="warranty_change" autocomplete="off" value="{{ $product->inv_pro_det_pro_warranty }}" class="form-control" placeholder="Enter Product Warranty Detail" required>
+                              </div>
+                              <div class="col-sm-2">
+                                (Days)
+                              </div>
+                            </div>
                           </div>
                             @if($errors->has('pro_sell'))
                                 <p class="text-danger">{{ $errors->first('pro_sell') }}</p>
@@ -147,13 +155,13 @@
                         <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2 control-label">Product Description</label>
                                 <div class="col-sm-6">
-                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ $product->inv_pro_det_pro_description }}" class="form-control" id="inputEmail3" placeholder="Enter Product Model Name" required>
+                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ $product->inv_pro_det_pro_description }}" class="form-control" id="inputEmail3" placeholder="Enter Product Model Name">
                                 </div> 
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Short Quantity</label>
                           <div class="col-sm-6">
-                            <input type="text" name="pro_short" autocomplete="off" value="{{ $product->inv_pro_det_short_qty }}" class="form-control" id="inputEmail3" placeholder="Enter Product Short Quantity" required>
+                            <input type="text" name="pro_short" autocomplete="off" value="{{ $product->inv_pro_det_short_qty }}" class="form-control" id="inputEmail3" placeholder="Enter Product Short Quantity">
                           </div> 
                   </div>
                       </div>
@@ -188,6 +196,15 @@
             </div>
                  </section>
 @endsection
+@section('custom_style')
+    <style>
+      .form-control::-webkit-inner-spin-button,
+.form-control::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+    </style>
+@endsection
 @section('custom_script')
 <script>
     $(document).ready(function(){
@@ -214,5 +231,16 @@
   function remove_supplier(btn) {
     $(btn).parent().remove();
   }
+
+  $(".warranty_change").change(function() {
+
+if(this.value == 1){
+  console.log("1");
+  $(".warranty_input_wrapper").show();
+} else {
+  console.log("0");
+  $(".warranty_input_wrapper").hide();
+}
+});
 </script>
 @endsection

@@ -72,22 +72,22 @@
                       <table id="example1" class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th>SL</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Balance</th>
-                            <th>Action</th>
+                            <th style="text-align: center;">SL</th>
+                            <th style="text-align: center;">Name</th>
+                            <th style="text-align: center;">Category</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="text-align: center;">Amount</th>
+                            <th style="text-align: center;">Action</th>
                         </tr>
                         </thead>
 
                         <tbody>
 
                     
-                        @php($total_balance=0)
+                        @php($total_expenses=0)
                         @if(!empty($expenses))
                             @foreach($expenses as $row)
-
+                              @php($total_expenses=App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id))
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $row->inv_acc_exp_expense_name }}</td>
@@ -96,28 +96,24 @@
                                     </td>
                                     <td>{{ ($row->inv_acc_exp_cat_status==1)? 'Active':'In-Active' }}</td>
                                     <td class="text-right">
-                                      {{0}}
+                                      {{ number_format(App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id),2)}}
                                     </td>
-                                    <td>
-                                        <a href=""
-                                           class="btn btn-xs btn-custom-xs btn-success">
-                                            <i class="ace-icon fa fa-eye bigger-120"></i>
-                                        </a>
-                                      <!--   <a href=""
-                                           class="btn btn-xs btn-custom-xs btn-info">
-                                            <i class="ace-icon fa fa-pencil bigger-120"></i>
-                                        </a> -->
-                                    </td>
+                                    <td style="text-align: center;">
+                                  <a href="#" onclick="showExpensesDetails('{{ $row->inv_acc_exp_id }}')" data-toggle="modal" data-target="#details">
+
+                                  <i class="fa fa-eye"></i>
+                                </a>
+                                </td>
                                 </tr>
                             @endforeach
                         @endif
                         </tbody>
                         <tfoot>
                         <tr>
-                            <th>#</th>
-                            <th colspan="3" class="text-right">Total Available Balance:</th>
-                            <th class="text-right" >{{ number_format($total_balance, 2) }}</th>
-                            <th></th>
+                            <th style="text-align: center;">#</th>
+                            <th colspan="3" class="text-right">Total:</th>
+                            <th class="text-right" >{{ number_format($total_expenses, 2) }}</th>
+                            <th style="text-align: center;">---</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -125,7 +121,28 @@
                   </div>
                   </div>
 
-                 </section>
+      <!-- Modal -->
+<div class="modal fade" id="details" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Expense Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="load-details"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+ </section>
 @endsection
 @section('custom_script')
 <script type="text/javascript">
@@ -142,6 +159,23 @@ $( "#to" ).datepicker({
         todayHighlight: true,
      });
 });
+
+
+
+ function showExpensesDetails(exp_id) {
+
+    var requestUrl="{{route('accounts.expense-load-ajax')}}";
+    var _token=$("#_token").val();
+    $.ajax({  
+      type: "GET",
+      url: requestUrl,
+      data: { exp_id:exp_id, _token:_token},
+      success: function (result) {
+       $(".load-details").html(result);
+       $("#showDetailsModal").modal("show");
+      }
+    });
+  }
 
 </script>
 @endsection

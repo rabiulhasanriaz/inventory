@@ -467,6 +467,11 @@
                                   <i class="fa fa-circle-o"></i> Product List
                                 </a>
                               </li>
+                              <li class="@yield('short_quantity')">
+                                <a href="{{ route('inventory.short') }}">
+                                  <i class="fa fa-circle-o"></i> Short Quatity
+                                </a>
+                              </li>
                              
                             </ul>
                             </li>
@@ -680,11 +685,11 @@
                                           </li>
                                           
                                           
-                                          <li class="@yield('available_list')">
+                                          {{-- <li class="@yield('available_list')">
                                             <a href="{{ route('reports.buy_pdf') }}">
                                               <i class="fa fa-circle-o"></i> Available Product
                                             </a>
-                                          </li>
+                                          </li> --}}
                                           
                                         </ul>
                                         </li>
@@ -693,16 +698,6 @@
                                           <a href="{{ route('buy.pro_sell') }}">
                                             <i class="fa fa-circle-o"></i> Sell Product
                                           </a>
-                                        </li>
-                                        <li class="@yield('sell_reports')">
-                                            <a href="{{ route('reports.sell-reports') }}">
-                                              <i class="fa fa-circle-o"></i> Sell Reports
-                                            </a>
-                                          </li>
-                                        <li class="@yield('buy_reports')">
-                                            <a href="{{ route('reports.buy-reports') }}">
-                                              <i class="fa fa-circle-o"></i> Buy Reports
-                                            </a>
                                         </li>
                                   </ul>
 
@@ -822,6 +817,27 @@
                                             </li>
                                       </ul> 
                                     </li>
+                                    <li class="treeview @yield('report_class')">
+                                      <a href="#" style="text-decoration: none;">
+                                        <i class="fa fa-dashboard"></i> <span>Reports</span>
+                                        <span class="pull-right-container">
+                                          <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                      </a>
+                                        <ul class="treeview-menu">
+                                              <li class="@yield('sell_reports')">
+                                                <a href="{{ route('reports.sell-reports') }}">
+                                                  <i class="fa fa-circle-o"></i> Sell Reports
+                                                </a>
+                                              </li>
+                                              <li class="@yield('buy_reports')">
+                                                  <a href="{{ route('reports.buy-reports') }}">
+                                                    <i class="fa fa-circle-o"></i> Buy Reports
+                                                  </a>
+                                              </li>
+                                        </ul>
+      
+                                      </li>
 		          </ul>
             </li>
             @endif

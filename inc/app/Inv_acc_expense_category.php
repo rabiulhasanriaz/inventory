@@ -10,4 +10,12 @@ class Inv_acc_expense_category extends Model
    // protected $primaryKey = 'inv_abi_id';
     public $incrementing = true;
     public $timestamps = false;
+
+
+    //============== 16-11-19 ===========
+
+    public static function getCategoryNameById($cat_id)
+    {
+    	return Inv_acc_expense_category::where('inv_acc_exp_cat_category_id',$cat_id)->first()->inv_acc_exp_cat_category_name;
+    }
 }

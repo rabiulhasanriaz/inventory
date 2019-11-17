@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Inv_acc_expense_category;
 use Session;
 use App\Inv_acc_expense;
+use App\Inv_acc_bank_statement;
 
 
 class ExpenseCategoryController extends Controller
@@ -64,5 +65,17 @@ class ExpenseCategoryController extends Controller
 		$expenses=Inv_acc_expense::where('inv_acc_exp_category_id',$request->cat_id)->get();
 		return view('pages.ajax.expense_list',compact('expenses'));
 	}
-	
+
+	// ================= 16-11-19 ============
+
+	public function showAjaxLoadedExpensesCategory(Request $request)
+	{
+		 $expenses=Inv_acc_expense::where('inv_acc_exp_category_id',$request->cat_id)->where('inv_acc_exp_company_id',Auth::user()->au_company_id)->where('inv_acc_exp_status',1)->get();
+        return view('pages.ajax.expenses_by_categories',compact('expenses'));
+	}
+	public function showAjaxLoadedExpenses(Request $request)
+	{
+		$expenses=Inv_acc_bank_statement::where('inv_abs_reference_id',$request->exp_id)->where('inv_abs_status',1)->where('inv_abs_reference_type',3)->orWhere('inv_abs_reference_type',4)->where('inv_abs_reference_id',Auth::user()->au_company_id)->get();
+        return view('pages.ajax.load_expenses_by_ajax',compact('expenses'));
+	}
 }

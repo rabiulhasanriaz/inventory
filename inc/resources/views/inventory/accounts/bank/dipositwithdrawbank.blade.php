@@ -54,8 +54,8 @@
                           <label for="inputEmail3" class="col-sm-2 control-label">Balance Type:</label>
                           <div class="col-sm-6">
                             <select name="balance_type" required  class="form-control" required>
-                              <option value="3">Credit</option>
-                              <option value="4">Debit</option>
+                              <option value="3">Credit/Deposit</option>
+                              <option value="4">Debit/Withdraw</option>
                               
                             </select>
                           </div>

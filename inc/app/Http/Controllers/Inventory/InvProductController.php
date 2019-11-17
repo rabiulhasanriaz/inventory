@@ -58,7 +58,9 @@ class InvProductController extends Controller
     }
 
     public function show_pro_grp_by_ajax(Request $request) {
-        $types = Inv_product_type::where('inv_pro_type_grp_id', $request->grp_id)->get();
+        $types = Inv_product_type::where('inv_pro_type_grp_id', $request->grp_id)
+                                ->where('inv_pro_type_status',1)
+                                ->get();
         return view('pages.ajax.product_group', compact('types'));
     }
 
@@ -114,7 +116,7 @@ class InvProductController extends Controller
         $pro_edit->inv_pro_det_pro_description = $request->pro_desc;
         $pro_edit->inv_pro_det_buy_price = $request->pro_buy;
         $pro_edit->inv_pro_det_sell_price = $request->pro_sell;
-        $pro_edit->inv_pro_det_pro_warranty = $request->pro_warranty;
+        $pro_edit->inv_pro_det_pro_warranty = $request->warranty_change;
         $pro_edit->inv_pro_det_short_qty = $request->pro_short;
         $pro_edit->inv_pro_det_update_by = $update_by;
         $pro_edit->inv_pro_det_update_at = $update_at;
@@ -261,5 +263,14 @@ class InvProductController extends Controller
         $type_edit->inv_pro_type_updated_at = $update_at;
         $type_edit->save();
         return redirect()->route('inventory.type_list')->with(['mod_up' => 'Product type Updated Successfully']);
+    }
+
+
+    public function product_short_notify(){
+        $com = Auth::user()->au_company_id;
+        $pro_det = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                                     ->where('inv_pro_det_status',1)
+                                     ->get();
+        return view('inventory.product.short_quantity',compact('pro_det'));
     }
 }

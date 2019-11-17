@@ -60,8 +60,26 @@ class Inv_acc_bank_statement extends Model
         return ($creditBalance-$debitBalance);
     }
 
-    public static function getAvailableBalanceByBankId() {
-        
+
+    //================ 16-11-19 ======================
+
+    public static function getTotalExpensesByCategory($exCatId){
+        $expensesId=Inv_acc_expense::getTotalExpensesIdByCategoryId($exCatId);
+        //dd($expensesId);
+        $expenses=Inv_acc_bank_statement::whereIn('inv_abs_reference_id',$expensesId)->where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_reference_type',3)->orWhere('inv_abs_reference_type',4)->sum('inv_abs_debit');
+        return $expenses;
+    }
+
+    public static function getTotalExpensesByExpenses($expId)
+    {
+        $expenses=Inv_acc_bank_statement::where('inv_abs_reference_id',$expId)->where('inv_abs_status',1)->where('inv_abs_reference_type',3)->orWhere('inv_abs_reference_type',4)->sum('inv_abs_debit');
+        return $expenses;
+    }
+    public static function getAvailableBalanceByBankId($bankId)
+    {
+        $creditBalance=Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->sum('inv_abs_credit');
+        $debitBalance=Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->sum('inv_abs_debit');
+        return ($creditBalance-$debitBalance);
     }
 
 }

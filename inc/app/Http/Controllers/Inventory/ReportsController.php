@@ -120,6 +120,8 @@ class ReportsController extends Controller
                                         ->where('inv_pro_inv_tran_type',1)
                                         ->where('inv_pro_inv_invoice_no',$invoice)
                                         ->get();
+
+        return view('inventory.reports.buy_print',compact('invoice','invoice_detail'));
         $pdf = PDF::loadView('inventory.reports.BuyIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }
@@ -138,6 +140,8 @@ class ReportsController extends Controller
                                         ->where('inv_pro_inv_tran_type',1)
                                         ->where('inv_pro_inv_invoice_no',$invoice)
                                         ->get();
+        return view('inventory.reports.sell_print',compact('invoice','invoice_detail'));
+
         $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }

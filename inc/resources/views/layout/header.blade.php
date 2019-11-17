@@ -1,13 +1,13 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="" class="logo" style="text-decoration: none;">
+    <a href="" class="logo" style="text-decoration: none; background-color: white;">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">{{ Auth::user()->au_company_name }}</span>
+      <span class="logo-mini"><img src="{{ asset('asset/logo_text.png') }}" alt=""></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">{{ Auth::user()->au_company_name }}</span>
+      <span class="logo-lg"><img src="{{ asset('asset/logo_text.png') }}" alt=""></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
+    <nav class="navbar navbar-static-top" style="height: 0px;">
       <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="text-decoration: none;">
         <span class="sr-only">Toggle navigation</span>
@@ -16,10 +16,18 @@
         <span class="icon-bar"></span>
         
       </a>
+      <div style="text-align:center; width:80%;">
+          <span id="clock" style="color:white;"></span><br>
+          <span style="color: white; font-size: 19px;">{{ Auth::user()->au_company_name }}</span>
+      </div>
+      {{-- &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      <br>
       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-      <span id="clock" style="color:white;"></span>
+       --}}
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
@@ -29,7 +37,7 @@
           <!-- Tasks: style can be found in dropdown.less -->
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-top: -50px;">
               <img src="{{ asset('/asset/image/')}}/{{ Auth::user()->au_company_img }}" class="user-image" alt="User Image">
               <span class="hidden-xs">{{ Auth::user()->au_name }}</span>
             </a>

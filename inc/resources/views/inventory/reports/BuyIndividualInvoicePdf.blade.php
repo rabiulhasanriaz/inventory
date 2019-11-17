@@ -192,6 +192,8 @@ footer {
               <tr>
                   <td id="text">Bought By</td>
                   <td id="desc">{{ Auth::user()->au_company_name }}</td>
+                  <td id="text">Issue Date</td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
               </tr>
           </table>
         {{-- <div>Invoice</div>
@@ -228,7 +230,14 @@ footer {
           @foreach ($invoice as $buy)
           <tr>
               <td class="service">{{ ++$sl }}</td>
-              <td class="desc">{{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}</td>
+              <td class="desc">
+                @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
+                {{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}
+                @else
+                {{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}<br>
+                <b>{{ implode(', ', App\Inv_product_inventory::ProductSerial($buy->inv_pro_inv_id)) }}</b>
+                @endif
+              </td>
               <td class="qty">{{ $buy->inv_pro_inv_tran_desc }}</td>
               <td class="unit">
                   @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)

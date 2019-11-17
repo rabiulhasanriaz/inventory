@@ -174,4 +174,8 @@ class Inv_product_inventory extends Model
         return $total;
     }
 
+    public static function ProductSerial($pro_inv_id){
+        return Inv_product_inventory_detail::where('inv_pro_invdet_proinv_id', $pro_inv_id)->pluck('inv_pro_invdet_slno')->toArray();
+    }
+
 }

@@ -31,14 +31,11 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <div class="box-body">
-
-            <div class="col-sm-6">
             {{ Form::open(['action' => 'Inventory\InventoryCartController@invTemporaryProduct' , 'method' => 'get' , 'class' => ' form-horizontal']) }}
-            <div class="form-group">
+                <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 text-right control-label">Customer :</label>
                     <div class="col-sm-6">
-                        <select name="customer" id="" class="form-control select2" required>
+                        <select name="customer" id="" class="form-control select2" style="width: 299px;" required>
                             <option value="">Select One</option>
                             @foreach ($customers as $customer)
                             <option value="{{ $customer->inv_cus_id }}">
@@ -48,32 +45,9 @@
                         </select>
                     </div>
                 </div>    
-                        <div class="box shopping_cart">
-                                <div class="box-header with-border">
-                                        <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
-                                            Sales Invoice
-                                        </h3>
-                                        </div>   
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Description</th>
-                                        <th>Sold Qty</th>
-                                        <th>Unit Price</th>
-                                        <th>Amount</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="show-cart-conten">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                        <button class="btn btn-success btn-sm pull-right">Submit</button>
-                    {{ Form::close() }}
-                </div>
-            <div class="col-sm-6">
-                    <table id="example1" class="table table-bordered table-striped">
+            <div class="box-body">
+            <div class="col-sm-12">
+                    <table id="sell_product_list_table" class="table table-bordered table-striped">
                             <thead>
                             <tr>
                                 <th>SL</th>
@@ -92,7 +66,7 @@
                                     <td>{{ $sell->inv_pro_det_pro_name }}</td>
                                     <td>{{ $sell->type_info['inv_pro_type_name'] }}</td>
                                     <td align="center">{{ $sell->inv_pro_det_available_qty }}</td>
-                                    <td><input type="text" autocomplete="off" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
+                                    <td class="text-center"><input type="text" autocomplete="off" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
                                     <td class="text-center">
                                         @if($sell->inv_pro_det_pro_warranty == 0)
                                         <input type="text" autocomplete="off" class="form-control" style="width: 50px;" id="pro_qty_{{ $sell->inv_pro_det_id }}" placeholder="Qty">
@@ -114,6 +88,34 @@
 
 
                   </div>
+                  <div class="box-body">
+
+                    <div class="col-sm-12">
+                                <div class="box shopping_cart">
+                                        <div class="box-header with-border">
+                                                <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
+                                                    Sales Invoice
+                                                </h3>
+                                                </div>   
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Sold Qty</th>
+                                                <th>Unit Price</th>
+                                                <th>Amount</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="show-cart-conten">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-success btn-sm pull-right">Submit</button>
+                            {{ Form::close() }}
+                        </div>
+                        </div>
               </div>
              </section>
 
@@ -147,6 +149,12 @@
         border: 1px solid grey;
         overflow: scroll;
     }
+    input {
+        height: 27px !important;
+    }
+    .btn-sm {
+        padding: 3px 8px;
+    }
 </style>
 @endsection
 @section('custom_script')
@@ -154,8 +162,11 @@
     $(document).ready(function(){
 
     @if(session()->has('print_invoice'))
-        let route = "{!! route('reports.sell-pdf', session()->get('print_invoice')) !!}";
-        window.open(route, '_blank');
+        
+        let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";
+        window.open(sell_print, '_blank');
+        
+       
     @endif
 
     $( "#from" ).datepicker({
@@ -167,6 +178,11 @@
         daysOfWeekHighlighted: "7",
             todayHighlight: true,
         });
+
+    var table = $('#sell_product_list_table').DataTable( {
+        pageLength : 5,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']]
+    } );
     });
 
     $(document).ready(function(){

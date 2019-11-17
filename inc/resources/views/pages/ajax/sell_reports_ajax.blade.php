@@ -4,6 +4,7 @@
                           <tr>
                               <th>SL</th>
                               <th>Product Name</th>
+                              <th>Issue Date</th>
                               <th>Description</th>
                               <th>Warranty</th>
                               <th>Sold Qty</th>
@@ -18,6 +19,7 @@
                           <tr>
                                 <td>{{ ++$sl }}</td>
                                 <td>{{ $detail->getProductWarranty['inv_pro_det_pro_name'] }}</td>
+                                <td>{{ $detail->inv_pro_inv_issue_date }}</td>
                                 <td>{{ $detail->inv_pro_inv_tran_desc }}</td>
                                 <td>
                                     @if ($detail->getProductWarranty['inv_pro_det_pro_warranty'] == 0)

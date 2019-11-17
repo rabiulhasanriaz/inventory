@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
-@section('pro_inv_class','menu-open')
+@section('report_class','menu-open')
 @section('sell_reports','active')
 @section('content')
 <section class="content">
@@ -42,6 +42,7 @@
                         <tr>
                           <th>SL</th>
                           <th>Invoice No</th>
+                          <th>Issue Date</th>
                           <th>Cus Name</th>
                           <th>Description</th>
                           <th>Amount</th>
@@ -58,6 +59,7 @@
                         <tr>
                             <td>{{ ++$sl }}</td>
                             <td>{{ $sell->inv_pro_inv_invoice_no }}</td>
+                            <td>{{ $sell->inv_pro_inv_issue_date }}</td>
                             <td>{{ $sell->getCustomerInfo['inv_cus_name'] }}</td>
                             <td>{{ $sell->inv_pro_inv_tran_desc }}</td>
                             <td class="text-right">{{ App\Inv_product_inventory::getTotalDebit($sell->inv_pro_inv_invoice_no) }}</td>
@@ -86,7 +88,7 @@
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colspan="4" style="text-align:right; font-weight: bolder;">Total:</td>
+                            <td colspan="5" style="text-align:right; font-weight: bolder;">Total:</td>
                             <td style="font-weight: bolder; text-align: right;">{{ number_format($balance,2) }}</td>
                             <td style="text-align: center;font-weight: bolder;">---</td>
                           </tr>

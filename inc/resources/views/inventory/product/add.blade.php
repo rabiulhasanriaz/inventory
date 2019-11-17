@@ -127,7 +127,7 @@
                         <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2 control-label">Product Description</label>
                                 <div class="col-sm-6">
-                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" placeholder="Enter Product Description" required>
+                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" placeholder="Enter Product Description">
                                 </div> 
                         </div>
                         <div class="form-group">

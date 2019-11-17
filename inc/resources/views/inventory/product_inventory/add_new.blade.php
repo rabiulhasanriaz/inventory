@@ -51,7 +51,7 @@
                             <select name="supplier" style="width: 170px;" id="" class="form-control select2" required>
                                 <option value="">Select One</option>
                                 @foreach ($suppliers as $sup)
-                                <option value="{{ $sup->inv_sup_id }}" {{ ($sup->inv_sup_id==$sup->inv_sup_id)?'selected':'' }}>
+                                <option value="{{ $sup->inv_sup_id }}">
                                     {{ $sup->inv_sup_com_name }}
                                 </option>
                                 @endforeach
@@ -119,7 +119,7 @@
                                         <input type="text" autocomplete="off" data-date-format="yyyy-mm-dd" class="form-control from" id="exp_date_{{ $sell->inv_pro_det_id }}" style="width: 100px;" placeholder="Expire Date">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}">
+                                        <input type="text" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_buy_price }}">
                                     </td>
                                     <td>
                                         @if($sell->inv_pro_det_pro_warranty == 0)
@@ -235,7 +235,7 @@
     $(document).ready(function(){
 
     @if(session()->has('print_buy_invoice'))
-        let route = "{!! route('reports.buy-pdf', session()->get('print_buy_invoice')) !!}";
+        let route = "{!! route('reports.buy-print', session()->get('print_buy_invoice')) !!}";
         window.open(route, '_blank');
     @endif
 
