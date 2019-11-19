@@ -25,28 +25,64 @@
             Sell
           </h1>
         </section>
-               <div class="box">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Sell Product</h3>
-                </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-            {{ Form::open(['action' => 'Inventory\InventoryCartController@invTemporaryProduct' , 'method' => 'get' , 'class' => ' form-horizontal']) }}
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-3 text-right control-label">Customer :</label>
-                    <div class="col-sm-6">
-                        <select name="customer" id="" class="form-control select2" style="width: 299px;" required>
-                            <option value="">Select One</option>
-                            @foreach ($customers as $customer)
-                            <option value="{{ $customer->inv_cus_id }}">
-                                {{ $customer->inv_cus_name }} ({{ $customer->inv_cus_com_name }})
-                            </option>  
-                            @endforeach
-                        </select>
-                    </div>
-                </div>    
+                {{ Form::open(['action' => 'Inventory\InventoryCartController@invTemporaryProduct' , 'method' => 'get' , 'class' => 'form-horizontal']) }}
+                <div class="box">
+                 <div class="box-header with-border">
+                   <h3 class="box-title">Add Product</h3>
+                 </div>
+                 <!-- /.box-header -->
+                 <!-- form start -->
+                 <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-3 text-right control-label">Customer :</label>
+                        <div class="col-sm-6">
+                            <select name="customer" id="" class="form-control select2" style="width: 299px;" required>
+                                <option value="">Select One</option>
+                                @foreach ($customers as $customer)
+                                <option value="{{ $customer->inv_cus_id }}">
+                                    {{ $customer->inv_cus_name }} ({{ $customer->inv_cus_com_name }})
+                                </option>  
+                                @endforeach
+                            </select>
+                        </div>
+                </div>
+                <div class="box-body">
+                <div class="col-sm-12 text-center">
+                    
+                <div class="col-sm-5">
+                        <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 text-right control-label">Group:</label>
+                                <div class="col-sm-5">
+                                    <select name="group" style="width:200px;" id="product_category" class="form-control select2" required>
+                                        <option value="">Select One</option>
+                                        @foreach ($groups as $group)
+                                        <option value="{{ $group->inv_pro_grp_id }}">
+                                            {{ $group->inv_pro_grp_name }} 
+                                        </option>  
+                                        @endforeach
+                                    </select>
+                                </div>
+                        </div>
+                </div>
+                <div class="col-sm-5">
+                        <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-3 text-right control-label">Type:</label>
+                                <div class="col-sm-5 product_category_wrapper">
+                                    <select name="type" id="product_model" class="form-control select2" required>
+                                        <option value="">Select Group First</option>
+                                        
+                                    </select>
+                                </div>
+                        </div>
+                </div>
+                <div class="col-xs-2">
+                    <button type="button" id="pro_search"  class="btn btn-info" name="searchbtn">Search</button>
+                </div>
+                </div>
+                </div>
             <div class="box-body">
-            <div class="col-sm-12">
+            <div class="col-sm-12 product_wrapper">
                     <table id="sell_product_list_table" class="table table-bordered table-striped">
                             <thead>
                             <tr>
@@ -58,7 +94,7 @@
                                 <th style="width: 110px; text-align: center;">Sell</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="product_table_body">
                             @php($sl=0)
                             @foreach ($sell_pro as $sell)
                                 <tr>
@@ -159,6 +195,35 @@
 @endsection
 @section('custom_script')
 <script>
+
+        $(document).ready(function(){
+            $('#product_category').on("change",function(){
+            let grp_id = $("#product_category").val();
+            let link = "{{ route('buy.type_submit_ajax') }}";
+            $.ajax({
+                type: "GET",
+                url: link,
+                data: { grp_id: grp_id},
+                success: function (result) {
+                $(".product_category_wrapper").html(result);
+                }
+            });
+            });
+
+            $('#pro_search').on("click",function(){
+                let type_id = $("#product_model").val();
+                let link = "{{ route('buy.product-search') }}";
+                $.ajax({
+                    type: "GET",
+                    url: link,
+                    data: { type_id: type_id},
+                    success: function (result) {
+                    $(".product_wrapper").html(result);
+                    }
+                });
+            });
+        });
+
     $(document).ready(function(){
 
     @if(session()->has('print_invoice'))
@@ -179,10 +244,10 @@
             todayHighlight: true,
         });
 
-    var table = $('#sell_product_list_table').DataTable( {
-        pageLength : 5,
-        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']]
-    } );
+        var table = $('#sell_product_list_table').DataTable( {
+            pageLength : 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']]
+        } );
     });
 
     $(document).ready(function(){

@@ -215,12 +215,12 @@ footer {
         <thead>
           <tr>
             <th class="service">SL</th>
-            <th class="desc">PRODUCT NAME</th>
-            <th>DESCRIPTION</th>
-            <th>WARRANTY</th>
-            <th>QUANTITY</th>
-            <th>UNIT PRICE</th>
-            <th>AMOUNT</th>
+            <th class="desc">PRODUCT NAME/পণ্যের নাম</th>
+            <th>DESCRIPTION/বর্ণনা</th>
+            <th>WARRANTY/ওয়্যারেন্টি</th>
+            <th>QUANTITY/পরিমাণ</th>
+            <th>UNIT PRICE/একক দাম</th>
+            <th>AMOUNT/পরিমাণ</th>
           </tr>
         </thead>
         <tbody>

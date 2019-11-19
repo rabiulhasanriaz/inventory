@@ -58,8 +58,8 @@
                              <option value="">Select A Customer</option>
                               @foreach($inv_customers as $inv_customer)
                               <option value="{{$inv_customer->inv_cus_id}}">
-                                {{$inv_customer->inv_cus_name }} 
-                              ({{$inv_customer->inv_cus_com_name}})
+                                {{$inv_customer->inv_cus_name }} -
+                              {{$inv_customer->inv_cus_com_name}}
                               </option>
                               @endforeach
                             </select>

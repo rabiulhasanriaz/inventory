@@ -86,6 +86,7 @@
         <!-- ./col -->
       </div>
       @endif
+      
       <!-- /.row -->
       <!-- Main row -->
       <div class="row">

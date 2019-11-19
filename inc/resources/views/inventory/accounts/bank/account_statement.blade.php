@@ -2,7 +2,7 @@
 @section('inventory_class','menu-open')
 @section('accounts_class','menu-open')
 @section('voucher_class','menu-open')
-@section('ledger_class','active')
+@section('acc_state_class','active')
 @section('content')
 <section class="content">
         <section class="content-header">
@@ -18,25 +18,19 @@
                       </ul>
                   </div>
               @endif
+
+           
+
+
                    
-            <form action="{{route('accounts.general_ledger')}}" method="post">
+            <form action="" method="post">
               <input type="hidden" name="_token" value="{{ csrf_token()   }}" id="_token">
-              <div class="col-xs-3">
-              <select class="form-control select2" required name="supplier_id">
-                <option value="">Select A Supplier</option>
-                @foreach($inv_Suppliers as $supplier)
-                <option value="{{$supplier->inv_sup_id}}">
-                  {{$supplier->inv_sup_person }}
-                  ({{$supplier->inv_sup_com_name}})
-                </option>
-                @endforeach
-              </select>
-             </div>
+            
              <div class="col-xs-3">
-              <input type="text" name="start_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="{{ request()->start_date }}" class="form-control" id="start_date" placeholder="Enter Start Date" >
+              <input type="text" name="start_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="{{ request()->start_date }}" class="form-control" id="start_date" placeholder="Enter Start Date"  required>
              </div>
               <div class="col-xs-3">
-              <input type="text" name="end_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="{{ request()->end_date }}" class="form-control" id="end_date" placeholder="Enter End Date" >
+              <input type="text" name="end_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="{{ request()->end_date }}" class="form-control" id="end_date" placeholder="Enter End Date"  required>
              </div>
                 <div class="col-xs-3">
                   <button type="submit" class="btn btn-info" name="searchbtn">Search</button>
@@ -55,31 +49,33 @@
             </section>
             
             @if(request()->has('searchbtn'))
-
+            
             @php
               $totalDebit=0;
               $totalCredit=0;
-              $totalBalance=App\Inv_product_inventory::getOpenningBalance(request()->start_date,request()->supplier_id);
+
+              $totalBalance=App\Inv_acc_bank_statement::getOpenningBalance(request()->start_date);
 
             @endphp
               
               <div class="box">
                     <div class="box-header">
                       <h3 class="box-title">
-                       Generate General Ledger
+                      Account's Statement
 
                        </h3>
-                       <form method="get" action="" target="_blank">
+                      {{-- <form method="get" action="" target="_blank">
                          <button class="btn btn-warning" style="float: right; margin-top: -15px;margin-right: 5px;" id="print_btn"><i class="fa fa-print"></i> Print</button> 
                         
                         <button class="btn btn-primary" style="float: right; margin-top: -15px;margin-right: 5px;" id="download_btn"><i class="fa fa-download"></i> Download</button> 
                         
                         <input type="hidden" name="sdate" value="{{ request()->start_date}}" id="sdate">
                         <input type="hidden" name="edate" value="{{ request()->end_date}}" id="edate">
-                        <input type="hidden" name="supid" value="{{ request()->supplier_id}}" id="supid">
+                       
                          
                        </form>
                       
+                      --}}
                         <hr>
                     </div>
                    
@@ -87,17 +83,14 @@
                     <div class="box-body">
 
                       <div class="col-sm-4">
-                       <b> Company Name: </b>
-                        <span>
-                         {{ App\Inv_supplier::getSupplierCompany(request()->supplier_id)->inv_sup_com_name}}
-                       </span><br>
-                       <b>Period: </b>
-                       <span>
-                         {{request()->start_date}} To {{request()->end_date}}
-                       </span>
+                       <b>From: </b>
+                       <span>{{request()->start_date}}</span><br>
+                       <b>To: </b>
+                       <span>{{request()->end_date}}</span>
+                       
                       </div>
                       <div class="col-sm-4">
-                        <b>General Ledger<br>(Account Wise)</b>
+                        
                       </div>
 
                       <div class="col-sm-4">
@@ -112,69 +105,63 @@
                       </div>
 
                       <div class="col-sm-12" style="margin-top: 50px;">
-                        
-                        @if($ledgers->count()>0 )
-                       
+
                         <table class="table table-bordered table-striped" style="border-style: none !important;">
                           <tr>
-                            <th>Voucher Date</th>
-                            <th>Narration</th>
-                            <th>Cheque No</th>
+                            <th style="text-align: center;"> Date</th>
+                            <th style="text-align: center;">Details</th>
+                            <th style="text-align: center;">Bank</th>
                           
-                            <th>Credit</th>
-                            <th>Debit</th>
-                            <th>Running Balance</th>
+                            <th style="text-align: center;">Credit</th>
+                            <th style="text-align: center;">Debit</th>
+                            <th style="text-align: center;">Running Balance</th>
                           </tr>
        <!--=========== Openning Balance================-->
                           <tr>
-                            <td colspan="2">
-                            <b>Account Name:</b>
-                             
-                            
-                               {{App\Inv_supplier::getSupplierNameByID(request()->supplier_id)->inv_sup_person}}
-                            </td>
-                            <td colspan="3">
+                           <td style="text-align: center;">
+                             {{request()->start_date}}
+                           </td>
+                            <td colspan="4" style="text-align: center;font-weight: bold;">
                               Openning Balance as on 
                             
                               {{request()->start_date}}
                             </td>
                             <td style="text-align: right;">
-                              {{App\Inv_product_inventory::getOpenningBalance(request()->start_date,request()->supplier_id)}}
+                              {{number_format(App\Inv_acc_bank_statement::getOpenningBalance(request()->start_date),2)}}
                             </td>
                           </tr>
 
   <!--=========== End Opening Openning Balance================-->
-
-
-                    @foreach($ledgers as $ledger)
-
-                      @php
-                          $totalCredit+=App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-                          $totalDebit+=App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-                          $totalBalance+=App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id);
-                      @endphp
-                          <tr>
-                            <td>
-                              {{$ledger->inv_pro_inv_issue_date}}
+               @foreach($statements as $statement)
+            @php
+                  $totalCredit+=$statement->inv_abs_credit;
+                  $totalDebit+=$statement->inv_abs_debit;
+                  $totalBalance+=$statement->inv_abs_credit-$statement->inv_abs_debit;
+           @endphp
+                      <tr>
+                            <td style="text-align: center;">
+                                {{$statement->inv_abs_transaction_date}}
                             </td>
                             <td>
-                              {{$ledger->inv_pro_inv_tran_desc}}
+                            {{$statement->inv_abs_description}}
                             </td>
                             <td>
-                              {{$ledger->inv_pro_inv_invoice_no}}
+                              @php($bank_info = App\Inv_acc_bank_statement::get_Bank_Name_By_Bank_ID($statement-> inv_abs_bank_id) )
+                              {{ @$bank_info->bank_name }}
+
                             </td>
                             <td style="text-align: right;">
-                              {{App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} CR
+                             {{number_format($statement->inv_abs_credit,2)}}
                             </td>
                             <td style="text-align: right;">
-                              {{App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} DR
+                               {{number_format($statement->inv_abs_debit,2)}}
                             </td>
                             <td style="text-align: right;">
-                              {{ number_format(App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id),2 )}}
+                              {{ number_format($totalBalance,2) }}
                             </td>
                            
                           </tr>
-                          @endforeach
+                      @endforeach
 
                           <tr>
                             <td style="text-align: center; font-weight: bolder;">
@@ -184,19 +171,18 @@
                               Total:
                             </td>
                              <td style="text-align: right; font-weight: bolder;">
-                              {{number_format($totalCredit)}}
+                                {{number_format($totalCredit,2)}}
                             </td>
                              <td style="text-align:right; font-weight: bolder;">
-                              {{number_format($totalDebit)}}
+                             {{number_format($totalDebit,2)}}
                             </td>
                             <td style="text-align: right;font-weight: bolder;">
-                              {{number_format($totalBalance)}}
+                             {{number_format($totalBalance,2)}}
                             </td>
                           </tr>
                         </table>
-                        @else
-                           <h2> No Data Found In Between {{request()->start_date}} and {{request()->end_date}}</h2>
-                        @endif
+                     
+                       
                       </div>
                       
                     </div>

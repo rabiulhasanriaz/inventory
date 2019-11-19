@@ -43,10 +43,10 @@
                           <th>SL</th>
                           <th>Bank Name</th>
                           <th>Branch Name</th>
-                          <th>Account Name</th>
+                         
                           <th>Account No</th>
-                          <th>Open Date</th>
-                          <th>Account Type</th>
+                          <th>Credit</th>
+                          <th>Debit</th>
                           <th>Balance</th>
                           <th class="text-center">Action</th>
                         </tr>
@@ -58,11 +58,15 @@
                             <td>{{ ++$sl }}</td>
                             <td>{{ $bank->bank_info->bank_name }}</td>
                             <td>{{ $bank->inv_abi_branch_name }}</td>
-                            <td>{{ $bank->inv_abi_account_name }}</td>
+                            
                             <td>{{ $bank->inv_abi_account_no }}</td>
-                            <td>{{ $bank->inv_abi_open_date }}</td>
-                            <td>{{ ($bank->inv_abi_account_type == 1)?'Bank':'Cash' }}</td>
-                            <td>{{App\Inv_acc_bank_statement::getAvailableBalanceByBankId($bank->inv_abi_id)}}</td>
+                           <td style="text-align: right;">
+                             {{number_format(App\Inv_acc_bank_statement::getTotalCreditByBankId($bank->inv_abi_id),2)}}
+                           </td>
+                            <td style="text-align: right;">
+                              {{number_format(App\Inv_acc_bank_statement::getTotalDebitByBankId($bank->inv_abi_id),2)}}
+                            </td>
+                            <td style=" text-align: right;">{{number_format(App\Inv_acc_bank_statement::getAvailableBalanceByBankId($bank->inv_abi_id),2)}}</td>
                             <td align="center">
                                 <a href="{{ route('accounts.bank-statement-detail', $bank->inv_abi_id) }}" class="action_btn btn-success"><i class="fa fa-eye"></i></a>
                                 <a href="{{ route('accounts.update-bank', $bank->inv_abi_id) }}" class="action_btn btn_edit"><i class="fa fa-edit"></i></a>

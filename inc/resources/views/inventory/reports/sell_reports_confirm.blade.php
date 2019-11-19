@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
 @section('report_class','menu-open')
-@section('sell_reports','active')
+@section('sell_reports_confirm','active')
 @section('content')
 <section class="content">
     @if(session()->has('confirm'))
@@ -41,7 +41,7 @@
             </section>
             <div class="box">
                     <div class="box-header">
-                      <h3 class="box-title">Sell Detail</h3>
+                      <h3 class="box-title">Confirm Report</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -83,12 +83,10 @@
                                     <a href="javascript:void(0);" onclick="sell_reports('{{ $sell->inv_pro_inv_invoice_no }}')">Details</a>
                                   </li>
                                   <li class="divider"></li>
-                                  @if (Auth::user()->au_user_type == 4 || Auth::user()->au_user_type == 5)
                                   <li>
-                                    <a href="{{ route('reports.sell-confirm',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Confirm</a>
-                                  </li>
-                                  <li class="divider"></li>
-                                  @endif
+                                    <a href="" onclick="">Edit</a>
+                                 </li>
+                                <li class="divider"></li>
                                   <li>
                                     <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Download</a>
                                   </li>

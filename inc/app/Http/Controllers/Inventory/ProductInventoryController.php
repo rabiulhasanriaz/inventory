@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Input;
 use App\Inv_supplier;
 use App\Inv_product_detail;
 use App\Inv_customer;
+use App\Inv_product_type;
+use App\Inv_product_groups;
 use App\Inv_product_inventory;
 use App\Inv_supplier_inventory;
 use App\Inv_product_inventory_detail;
@@ -135,16 +137,48 @@ class ProductInventoryController extends Controller
     }
 
     public function sell_product(Request $request){
+       
         $com = Auth::user()->au_company_id;
         
-        $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
-                                      ->where('inv_pro_det_status',1)
-                                      ->get();
         $customers = Inv_customer::where('inv_cus_com_id',$com)
                                   ->where('inv_cus_status',1)
                                   ->get();
+
+        $groups = Inv_product_groups::where('inv_pro_grp_com_id',$com)
+                                    ->where('inv_pro_grp_status',1)
+                                    ->get();
+
+        if ($request->has('searchbtn')) {
+            $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                                        ->where('inv_pro_det_type_id',$request->type)
+                                        ->where('inv_pro_det_status',1)
+                                        ->get();
+        }else{
+            $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                                    ->where('inv_pro_det_status',1)
+                                    ->get();
+        }
+                                    
         
-        return view('inventory.product_inventory.sell_product',compact('sell_pro','customers'));
+        return view('inventory.product_inventory.sell_product',compact('sell_pro','customers','groups'));
+    }
+
+    public function show_pro_type_ajax(Request $request) {
+        $types = Inv_product_type::where('inv_pro_type_grp_id', $request->grp_id)
+                                ->where('inv_pro_type_status',1)
+                                ->get();
+        return view('pages.ajax.sell_product_model_ajax', compact('types'));
+    }
+
+    public function product_search_ajax(Request $request){
+        $com = Auth::user()->au_company_id;
+        // return request()->all();
+        $sell_product = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                                          ->where('inv_pro_det_type_id',$request->type_id)
+                                          ->where('inv_pro_det_status',1)
+                                          ->get();
+        return view('pages.ajax.product_search_sell_ajax',compact('sell_product'));
+
     }
 
 }

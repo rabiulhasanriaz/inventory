@@ -216,6 +216,9 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
 
 
             Route::get('accounts.supplier-voucher-details','Inventory\SupplierAccountsController@loadAjaxInvoiceDetails')->name('accounts.supplier-voucher-details');
+
+            //=========18-11-19================
+            Route::get('accounts.today-payment','Inventory\SupplierAccountsController@supplierTodayPaymentReport')->name('accounts.today-payment');
         });
         // ================= Supplier Accounts Routes List End============= 
 
@@ -250,6 +253,10 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
 
 
             Route::get('cusotmer-voucher-details','Inventory\CustomerAccountsController@loadAjaxInvoiceDetails')->name('cusotmer-voucher-details');
+
+            //===========18-11-19 ============
+
+            Route::get('today-payment','Inventory\CustomerAccountsController@customerTodayPaymentReport')->name('today-payment');
         });
 
         //==============Inventory Customer Account Routes End======================
@@ -281,6 +288,11 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_product/cart-update','Inventory\InventoryCartController@updatecart')->name('update-cart');
         Route::post('sell_product/car-submit','Inventory\InventoryCartController@cartSubmit')->name('car-submit');
         Route::get('sell_product/sell_product_invoice','Inventory\InventoryCartController@invTemporaryProduct')->name('sell_temp_invoice');
+
+
+        Route::get('product_type_ajax','Inventory\ProductInventoryController@show_pro_type_ajax')->name('type_submit_ajax');
+        Route::get('product_search_ajax','Inventory\ProductInventoryController@product_search_ajax')->name('product-search');
+
     });
 
     Route::group(['prefix' => 'reports', 'as' => 'reports.'],function(){
@@ -288,12 +300,14 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('buy_invoice_pdf','Inventory\ReportsController@buy_invoice_pdf_generate')->name('pdf-generate');
         Route::get('sell_invoice_pdf','Inventory\ReportsController@sell_invoice_pdf_generate')->name('sell-pdf-generate');
         Route::get('sell_reports','Inventory\ReportsController@sell_reports')->name('sell-reports');
+        Route::get('sell_reports_confirm','Inventory\ReportsController@sell_confirm_reports')->name('sell-confirm_reports');
         Route::get('sell_report_ajax','Inventory\ReportsController@sell_report_ajax')->name('sell-reports-ajax');
         Route::get('buy_reports','Inventory\ReportsController@buy_reports')->name('buy-reports');
         Route::get('buy_reports_ajax','Inventory\ReportsController@buy_reports_ajax')->name('buy-reports-ajax');
         Route::get('buy_pdf/{invoice}','Inventory\ReportsController@buy_reports_pdf')->name('buy-pdf');
         Route::get('sell_pdf/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-pdf');
         Route::get('sell_statement_download','Inventory\ReportsController@sellReportsDownload')->name('sell-reports-download');
+        Route::get('sell_confirm/{id}','Inventory\ReportsController@sell_confirm')->name('sell-confirm');
         Route::get('buy_statement_download','Inventory\ReportsController@BuyReportsDownload')->name('buy-reports-download');
 
         Route::get('sell_print/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-print');
@@ -325,6 +339,21 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
             
         Route::get('general_ledger','Inventory\BankAccountController@showGeneralLedgerForm')->name('general_ledger');
         Route::post('general_ledger','Inventory\BankAccountController@showGeneralLedgerData')->name('general_ledger');
+
+
+        //=====================17-11-19 ================
+
+        Route::get('general_ledger_download','Inventory\BankAccountController@downLoadGeneralLedger')->name('general_ledger_download');
+
+        //=====================17-11-19 ================
+
+//  ====================18-11-19 ===============
+                Route::get('account-statement','Inventory\BankAccountController@showAccountStatementForm')->name('account-statement');
+        Route::post('account-statement','Inventory\BankAccountController@showAccountStatementData')->name('account-statement');
+
+        // ==================/18-11-19==================
+
+        
         
 
         // Routes for loading ajax for balance query
@@ -345,6 +374,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('expense-categories-load-ajax','Inventory\ExpenseCategoryController@showAjaxLoadedExpensesCategory')->name('expense-categories-load-ajax');
 
         Route::get('expense-load-ajax','Inventory\ExpenseCategoryController@showAjaxLoadedExpenses')->name('expense-load-ajax');
+
     });
     //Inventory Account End
 

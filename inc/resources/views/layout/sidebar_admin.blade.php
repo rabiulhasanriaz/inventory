@@ -583,13 +583,14 @@
                                         <!--   End Contra Menu -->
 
                                         <!--=============  General Ledger ===============-->            
+                                        
+                                        <!--============= End General Ledger ===============-->
+                                            </li>
                                         <li class=" @yield('ledger_class')">
                                             <a href="{{route('accounts.general_ledger')}}" style="text-decoration: none;">
                                               <i class="fa fa-circle-o"></i> <span>General Ledger</span>
                                             </a>
-                                            </li>
-                                        <!--============= End General Ledger ===============-->
-                                            </li>
+                                          </li>
                                       </ul> 
                                     </li>
                                     
@@ -610,6 +611,11 @@
                                               <li class="@yield('buy_reports')">
                                                   <a href="{{ route('reports.buy-reports') }}">
                                                     <i class="fa fa-circle-o"></i> Buy Reports
+                                                  </a>
+                                              </li>
+                                              <li class="@yield('sell_reports_confirm')">
+                                                  <a href="{{ route('reports.sell-confirm_reports') }}">
+                                                    <i class="fa fa-circle-o"></i> Confirm Sell Reports
                                                   </a>
                                               </li>
                                         </ul>

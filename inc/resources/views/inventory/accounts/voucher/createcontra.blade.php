@@ -44,7 +44,8 @@
                               <option value="">Select A Bank</option>
                               
                               @foreach($banks as $bank)
-                              <option value="{{$bank->inv_abi_bank_id}}">
+                            
+                              <option value="{{$bank->inv_abi_id}}">
                                 {{$bank->bank_info['bank_name'] }} ({{$bank->inv_abi_account_no}})
 
                               </option>
@@ -52,6 +53,13 @@
                             </select>
                          
                           </div>
+                          <div class="col-sm-3">
+                            @if($cash<=500)
+                            <span style="color:red; font-weight: bold;">Avaible Balance in Cash is {{$cash}} Tk </span>
+                            @else
+                            <span style="color:green; font-weight: bold;">Avaible Balance in Cash is {{$cash}} Tk </span>
+                            @endif
+                            </div><br>
                           <div class="col-sm-3 bank_balance_div"></div>
                         </div>
                         <div class="form-group">

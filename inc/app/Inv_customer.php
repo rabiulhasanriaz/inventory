@@ -81,5 +81,11 @@ class Inv_customer extends Model
 
         return $new_memo_no;
     }
+
+      //=============18-11-19 ======================
+      public static function getCustomerNameById($customer_id)
+      {
+         return  Inv_customer::where('inv_cus_id',$customer_id)->first()->inv_cus_name;
+      }
     
 }

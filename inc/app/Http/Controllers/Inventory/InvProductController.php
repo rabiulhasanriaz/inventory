@@ -268,9 +268,14 @@ class InvProductController extends Controller
 
     public function product_short_notify(){
         $com = Auth::user()->au_company_id;
+        
         $pro_det = Inv_product_detail::where('inv_pro_det_com_id',$com)
-                                     ->where('inv_pro_det_status',1)
-                                     ->get();
+            ->where('inv_pro_det_status',1)
+            ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
+            ->where('inv_pro_det_short_qty','!=','')
+            ->get();
+        // dd($pro_det);
+                                     
         return view('inventory.product.short_quantity',compact('pro_det'));
     }
 }

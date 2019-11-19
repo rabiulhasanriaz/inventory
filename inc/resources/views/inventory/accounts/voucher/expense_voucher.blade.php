@@ -58,6 +58,13 @@
                               @endforeach
                             </select>
                           </div>
+                          <div class="col-sm-3">
+                            @if($cash<=500)
+                            <span style="color:red; font-weight: bold;">Avaible Balance in Cash is {{$cash}} Tk </span>
+                            @else
+                            <span style="color:green; font-weight: bold;">Avaible Balance in Cash is {{$cash}} Tk </span>
+                            @endif
+                            </div>
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Expense:</label>

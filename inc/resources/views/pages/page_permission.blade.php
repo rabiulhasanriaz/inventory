@@ -48,8 +48,9 @@
   <div class="form-group" style="padding-top: 10px;">
       <div class="col-sm-12">
         <div class="row custom_color" style="left: 40px; position: relative;">
-
           @foreach($permissions as $main_menu)
+          {{-- @if(Auth::user()->au_user_type == 4 || Auth::user()->au_permission_status == 1 || Auth::user()->au_permission_status == 2 || Auth::user()->au_permission_status == 3 || Auth::user()->au_permission_status == 4) --}}
+
             <h2><i class="fa fa-folder" aria-hidden="true"></i> {{ $main_menu->permission_title }}</h2>
             <ul class="list-group list-group-horizontal">
               @foreach($main_menu->sub_menues as $first_step_sub_menues)
@@ -72,7 +73,9 @@
                 @endif
               @endforeach
             </ul>
+            {{-- @endif --}}
           @endforeach
+          
         </div>
       </div>
 

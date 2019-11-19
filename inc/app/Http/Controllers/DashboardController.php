@@ -206,11 +206,18 @@ class DashboardController extends Controller
     }
 
     public function page_permission($au_id){
-      $admin_user = Admin_user::where('au_id', $au_id)->first();
+      $com = Auth::user()->au_company_id;
+      $admin_user = Admin_user::where('au_id', $au_id)
+                              ->where('au_company_id',$com)
+                              ->first();
 
       if(!empty($admin_user)) {
+        $company_access = explode('-', Auth::user()->au_permission_status);
         $exist_permissions = explode('-', $admin_user->au_permission_status);
-        $permissions = Au_access::where('parent_menu', null)->where('status', 1)->get();
+        $permissions = Au_access::where('parent_menu', null)
+                                ->where('status', 1)
+                                ->whereIn('au_access_company_id', $company_access)
+                                ->get();
         return view('pages.page_permission', compact('permissions', 'exist_permissions', 'admin_user'));
 
       } else {

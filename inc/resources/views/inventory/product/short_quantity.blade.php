@@ -40,9 +40,7 @@
                           <th>Product Name</th>
                           <th>Available Stock</th>
                           <th>Short Qty</th>
-                          <th>Warrenty</th>
                           <th>Buy Price</th>
-                          <th>Sell Price</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -60,15 +58,7 @@
                                 {{ $detail->inv_pro_det_short_qty }}
                                 @endif
                             </td>
-                            <td>
-                              @if ($detail->inv_pro_det_pro_warranty == 0)
-                                 No Warranty 
-                              @else
-                              {{ $detail->inv_pro_det_pro_warranty }} days
-                              @endif
-                            </td>
                             <td class="text-right">{{ $detail->inv_pro_det_buy_price }}</td>
-                            <td class="text-right">{{ $detail->inv_pro_det_sell_price }}</td>
                           </tr>
                         @endforeach
                         </tbody>

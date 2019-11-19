@@ -33,7 +33,44 @@
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
           <!-- Notifications: style can be found in dropdown.less -->
+          <li class="dropdown notifications-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-top: -45px;">
+                  @php
+                  $com = Auth::user()->au_company_id;
 
+                  $short_notify = App\Inv_product_detail::where('inv_pro_det_com_id',$com)
+                      ->where('inv_pro_det_status',1)
+                      ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
+                      ->where('inv_pro_det_short_qty','!=','')
+                      ->count();
+                  
+                  $short_detail = App\Inv_product_detail::where('inv_pro_det_com_id',$com)
+                      ->where('inv_pro_det_status',1)
+                      ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
+                      ->where('inv_pro_det_short_qty','!=','')
+                      ->get();
+                @endphp
+                <i class="fa fa-bell-o"></i>
+                
+                <span class="label label-danger">{{ $short_notify }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header">You have {{ $short_notify }} short products</li>
+                <li>
+                  <!-- inner menu: contains the actual data -->
+                  <ul class="menu">
+                    @foreach ($short_detail as $short)
+                    <li>
+                        <a href="#">
+                          <i class="fa fa-arrow-right text-aqua"></i> {{ $short->inv_pro_det_pro_name }}
+                        </a>
+                    </li>
+                    @endforeach
+                  </ul>
+                </li>
+                {{-- <li class="footer"><a href="#">View all</a></li> --}}
+              </ul>
+            </li>
           <!-- Tasks: style can be found in dropdown.less -->
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">

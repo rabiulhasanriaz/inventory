@@ -95,6 +95,10 @@ class SupplierAccountsController extends Controller
 			            'supplier_id'=>'required',
 			            'discount'=>'nullable|numeric|min:0',
 			        ]);
+
+			$balance=Inv_acc_bank_statement::getAvailableBalanceByBankId($request->bank_id);
+		if($balance>= $request->amount){
+
 			$inv_Pro_Invt=new Inv_product_inventory();
 			$invoiceNo=Carbon::now()->format('YmdHis');
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
@@ -151,6 +155,12 @@ class SupplierAccountsController extends Controller
 
             Session::flash('msg','Payment Successfull.');
             return redirect()->back();
+        }
+        else
+        {
+        	Session::flash('errmsg','Insufficent Balance Found.');
+        	return redirect()->back()->withInput();
+        }
 
 		}
 		catch(Exceptionn $err)
@@ -296,4 +306,12 @@ class SupplierAccountsController extends Controller
 				->get();
 		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
 	}
+
+	// =================== 18-11-19 ===============
+	public function supplierTodayPaymentReport()
+	{
+		$todayPayments=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_transaction_date',Carbon::now()->format('Y-m-d'))->where('inv_abs_reference_type',2)->where('inv_abs_status',1)->orderBy('inv_abs_id','asc')->get();
+		return view('inventory.supplier.accounts.today_payments',compact('todayPayments'));
+	}
+
 }

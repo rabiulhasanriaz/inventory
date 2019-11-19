@@ -43,7 +43,7 @@
                           <th>SL</th>
                           <th>Transaction Date</th>
                           <th>Reference</th>
-                          <th>Description</th>
+                          <th>Details</th>
                           <th>Credit</th>
                           <th>Debit</th>
                           <th>Balance</th>
@@ -54,29 +54,44 @@
                         @php($total_balance = 0)
                         @php($total_credit = 0)
                         @php($total_debit = 0)
-                        @foreach ($statements as $statement)
-                            @php($debit = $statement->inv_abs_debit)
-                            @php($credit = $statement->inv_abs_credit)
-                            @php($total_debit = $total_debit + $debit)
-                            @php($total_credit = $total_credit + $credit)
-                            @php($total_balance = $total_balance + $credit - $debit)
+                        @php($reference='')
+                      @foreach ($statements as $statement)
+                       
+                             @php($debit = $statement->inv_abs_debit)
+                             @php($credit = $statement->inv_abs_credit)
+                             @php($total_debit = $total_debit + $debit)
+                             @php($total_credit = $total_credit + $credit)
+                             @php($total_balance = $total_balance + $credit - $debit)
+                        
+                           @if($statement->inv_abs_reference_type==1)
+                                @php($reference='Customer Transaction.')
+                              
+                                @elseif($statement->inv_abs_reference_type==2)
+                                  @php($reference='Supplier Transaction.')
+                             
+                                  @elseif($statement->inv_abs_reference_type==3||$statement->inv_abs_reference_type==4)
+                                      @php($reference='Expenses')
+                                    
+                                      @elseif($statement->inv_abs_reference_type==5)
+                                        @php($reference='Contra Transaction.')
+                                @endif
                             <tr>
                                 <td>{{ ++$sl }}</td>
                                 <td>{{ $statement->inv_abs_transaction_date }}</td>
-                                <td>{{ $statement->inv_abs_reference_type }}</td>
+                                <td>{{ $reference }}</td>
                                 <td>{{ $statement->inv_abs_description }}</td>
-                                <td>{{ number_format($credit,2) }}</td>
-                                <td>{{ number_format($debit,2) }}</td>
-                                <td>{{ number_format($total_balance,2) }}</td>
+                                <td style="text-align: right;">{{ number_format($credit,2) }}</td>
+                                <td style="text-align: right;">{{ number_format($debit,2) }}</td>
+                                <td style="text-align: right;">{{ number_format($total_balance,2) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4">Total:</td>
-                                <td>{{ number_format($total_credit,2) }}</td>
-                                <td>{{ number_format($total_debit,2) }}</td>
-                                <td>{{ number_format($total_balance,2) }}</td>
+                                <td colspan="4" style="text-align: right; font-weight: bold;">Total:</td>
+                                <td style="text-align: right; font-weight: bold;">{{ number_format($total_credit,2) }}</td>
+                                <td style="text-align: right; font-weight: bold;">{{ number_format($total_debit,2) }}</td>
+                                <td style="text-align: right; font-weight: bold;">{{ number_format($total_balance,2) }}</td>
                             </tr>
                         </tfoot>
                       </table>

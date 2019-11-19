@@ -175,7 +175,8 @@ class CustomerAccountsController extends Controller
 			            'amount'=>'required|numeric|min:0',
 			            'customer_id'=>'required',
 			        ]);
-
+			$balance=Inv_acc_bank_statement::getAvailableBalanceByBankId($request->bank_id);
+			if($balance>=$request->amount){
 			$inv_Pro_Invt=new Inv_product_inventory();
 			$inv_Pro_Invt->inv_pro_inv_com_id=Auth::user()->au_company_id;
 			$inv_Pro_Invt->inv_pro_inv_party_id=$request->customer_id;
@@ -210,6 +211,12 @@ class CustomerAccountsController extends Controller
 
             Session::flash('msg','Payment Successfull.');
             return redirect()->back();
+        }
+        else
+        {
+        	Session::flash('errmsg','Insufficent Balance Found.');
+        	return redirect()->back()->withInput();
+        }
 
 		}
 		catch(Exceptionn $err)
@@ -275,7 +282,7 @@ class CustomerAccountsController extends Controller
 		
 		}
 		
-		//return view('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
+		
 		$pdf = PDF::loadView('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
 		return $pdf->download('account_statements.pdf');
 	}
@@ -288,5 +295,12 @@ class CustomerAccountsController extends Controller
 		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_status',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->get();
 			//dd($invoiceInfos);
 		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
+	}
+
+	// ==================== 18-11-19 =================
+	public function customerTodayPaymentReport()
+	{
+		$todayPayments=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_transaction_date',Carbon::now()->format('Y-m-d'))->where('inv_abs_reference_type',1)->where('inv_abs_status',1)->orderBy('inv_abs_id','asc')->get();
+		return view('inventory.customer.accounts.today_payments',compact('todayPayments'));
 	}
 }

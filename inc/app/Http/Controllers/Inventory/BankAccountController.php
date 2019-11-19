@@ -15,6 +15,7 @@ use Session;
 use DB;
 use App\Inv_supplier;
 use App\Inv_product_inventory;
+use PDF;
 
 class BankAccountController extends Controller
 {
@@ -200,8 +201,9 @@ class BankAccountController extends Controller
 	}
 	public function showContraForm()
 	{
-		$banks=Inv_acc_bank_info::where('inv_abi_company_id',Auth::user()->au_company_id)->get();
-		return view('inventory.accounts.voucher.createcontra',compact('banks'));
+		$banks=Inv_acc_bank_info::where('inv_abi_company_id',Auth::user()->au_company_id)->where('inv_abi_account_type','!=',2)->get();
+		$cash=Inv_acc_bank_statement::getAvailableCashBalanceByCompanyID();
+		return view('inventory.accounts.voucher.createcontra',compact('banks','cash'));
 	}
 
 	public function createContra(Request $request)
@@ -217,7 +219,7 @@ class BankAccountController extends Controller
                 ->first();
             if ($request->pay_type == 1) {
                 /*CASH TO BANK*/
-                $available_cash_balance = Inv_acc_bank_info::singleBankTotalBalance($cashBank->inv_abi_id);
+                $available_cash_balance = Inv_acc_bank_info::getAvailableCashBalanceByCompanyID();
                 
                 if ($available_cash_balance > $request->amount) {
 
@@ -367,13 +369,16 @@ class BankAccountController extends Controller
 
 	public function ajaxLoadBankBalance(Request $request)
 	{
+		$bankBalance=(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_credit'))-(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_debit'));		
 
-		$bankBalance=(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_credit'))-(Inv_acc_bank_statement::where('inv_abs_bank_id',$request->bank_id)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_debit'));			return view('pages.ajax.available_balance_bank',compact('bankBalance'));
+			return view('pages.ajax.available_balance_bank',compact('bankBalance'));
 	}
 	public function ajaxLoadCustomerBalance(Request $request)
 	{
+
 			 $customerBalance=(Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_credit'))-(Inv_product_inventory::where('inv_pro_inv_party_id',$request->customer_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->sum('inv_pro_inv_debit'));
 			 
+
 			 return view('pages.ajax.available_balance_customer',compact('customerBalance'));
 	}
 	public function ajaxLoadSupplierBalance(Request $request)
@@ -404,7 +409,8 @@ class BankAccountController extends Controller
 	public function expensesVoucherForm()
 	{
 		$expenseCategories=Inv_acc_expense_category::where('inv_acc_exp_cat_company_id',Auth::user()->au_company_id)->where('inv_acc_exp_cat_status',1)->orderBy('inv_acc_exp_cat_category_name')->get();
-		return view('inventory.accounts.voucher.expense_voucher',compact('expenseCategories'));
+		$cash=Inv_acc_bank_statement::getAvailableCashBalanceByCompanyID();
+		return view('inventory.accounts.voucher.expense_voucher',compact('expenseCategories','cash'));
 	}
 	public function expensesVoucherStore(Request $request)
 	{
@@ -456,5 +462,44 @@ class BankAccountController extends Controller
 			Session::flash('errmsg','Something Goes Wrong.Please Try Again Later');
 			return redirect()->back();
 		}
+	}
+
+ 	//=========================17-11-19 ====================
+
+	public function downLoadGeneralLedger(Request $request)
+	{
+
+		$ledgers=Inv_product_inventory::where('inv_pro_inv_com_id',Auth::user()->au_company_id)
+			->where('inv_pro_inv_status',1)
+			->where('inv_pro_inv_deal_type',1)
+			->where('inv_pro_inv_party_id',$request->supid)
+			->where('inv_pro_inv_issue_date','>=',$request->sdate)
+			->where('inv_pro_inv_issue_date','<=',$request->edate)
+			->orderBy('inv_pro_inv_issue_date')->get();
+			
+		if($request->has('print_btn'))
+		{
+			return view('inventory.accounts.voucher.general_ledger_print',compact('ledgers'));
+		}
+		else
+		{
+			$pdf = PDF::loadView('inventory.accounts.voucher.general_ledger_download',compact('ledgers'));
+			return $pdf->download("general_ledger_".Auth::user()->au_company_id."_".Carbon::now()->format('d_m_Y').".pdf");
+		}
+			
+		
+	}
+
+	//======================18-11-19 =======================
+	public function showAccountStatementForm()
+	{
+		return view('inventory.accounts.bank.account_statement');
+	}
+
+	public function showAccountStatementData(Request $request)
+	{
+		$statements=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','>=',$request->start_date)->where('inv_abs_transaction_date','<=',$request->end_date)->get();
+
+		return view('inventory.accounts.bank.account_statement',compact('statements'));
 	}
 }

@@ -381,7 +381,7 @@
             @endif
             <!-- End OMS -->
             <!--start Invenory-->
-            @if(check_or_permission([47]) == true)
+            @if(check_or_permission([54,55,56,57,58,59,60,61,62,63,64,65,66,67]) == true)
         <li class="treeview @yield('inventory_class')">
 	          <a href="#" style="text-decoration: none;">
 	            <i class="fa fa-dashboard"></i> <span>Inventory</span>
@@ -390,6 +390,7 @@
 	            </span>
 	          </a>
 		          <ul class="treeview-menu">
+                  @if(check_or_permission([54,55,56]) == true)
                   <li class="treeview @yield('product_class')">
                       <a href="#" style="text-decoration: none;">
                         <i class="fa fa-dashboard"></i> <span>Product</span>
@@ -398,7 +399,7 @@
                         </span>
                       </a>
                         <ul class="treeview-menu">
-                          
+                          @if(in_array('54',$user_accesses))
                           <li class="treeview @yield('inv_pro_grp')">
                             <a href="#" style="text-decoration: none;">
                             <i class="fa fa-dashboard"></i> <span>Product Group</span>
@@ -422,7 +423,8 @@
                            
                           </ul>
                           </li>
-                          
+                          @endif
+                          @if(in_array('55',$user_accesses))
                           <li class="treeview @yield('inv_pro_type')">
                             <a href="#" style="text-decoration: none;">
                             <i class="fa fa-dashboard"></i> <span>Product Type</span>
@@ -446,7 +448,8 @@
                            
                           </ul>
                           </li>
-          
+                          @endif
+                          @if(in_array('56',$user_accesses))
                           <li class="treeview @yield('inv_pro_class')">
                               <a href="#" style="text-decoration: none;">
                               <i class="fa fa-dashboard"></i> <span>Product</span>
@@ -475,6 +478,7 @@
                              
                             </ul>
                             </li>
+                            @endif
                             {{-- <li class="@yield('list_sup_pro')">
                                 <a href="{{ route('inventory.pro_list') }}">
                                   <i class="fa fa-circle-o"></i>Supplier Product List
@@ -482,7 +486,8 @@
                               </li> --}}
                         </ul>
                       </li>
-
+                      @endif
+                      @if(check_or_permission([57,58]) == true)
                       <li class="treeview @yield('supplier_class')">
                           <a href="#" style="text-decoration: none;">
                             <i class="fa fa-dashboard"></i> <span>Supplier</span>
@@ -491,6 +496,7 @@
                             </span>
                           </a>
                             <ul class="treeview-menu">
+                              @if(in_array('57',$user_accesses))
                               <li class="treeview @yield('inv_supplier_class')">
                                   <a href="#" style="text-decoration: none;">
                                     <i class="fa fa-dashboard"></i> <span>Supplier</span>
@@ -516,7 +522,7 @@
                                     
                                   </ul>
                                   </li>
-
+                                  @endif
                                   {{-- <li class="treeview @yield('supplier_product')">
                                       <a href="#" style="text-decoration: none;">
                                       <i class="fa fa-dashboard"></i> <span>Supplier Product</span>
@@ -542,6 +548,7 @@
                                {{--=================   Supplier Accounts Menu Start   ===================--}}
 
                             <ul class="treeview-menu">
+                              @if(in_array('58',$user_accesses))
                               <li class="treeview @yield('inv_supplier_acc_class')">
                                   <a href="#" style="text-decoration: none;">
                                     <i class="fa fa-dashboard"></i> <span>Supplier Accounts</span>
@@ -563,6 +570,12 @@
                                           </a>
                                         </li>
 
+                                        <li class="@yield('supplier_today_payment')">
+                                            <a href="{{ route('inventory.supplier.accounts.today-payment') }}">
+                                              <i class="fa fa-circle-o"></i> Today's Payment
+                                            </a>
+                                          </li>
+                                          
                                         <li class="@yield('supplier_payment_collection')">
                                           <a href="{{ route('inventory.supplier.accounts.payment-collection') }}">
                                             <i class="fa fa-circle-o"></i> Payment Collection
@@ -575,15 +588,14 @@
                                         </li>
                                       </ul>
                                       </li>
+                                    @endif
                                 </ul>
 
                           {{--====================== End Supplier Accounts Menu======================--}}
 
                           </li>
-
-                          
- 
-
+                          @endif
+                          @if(check_or_permission([59,60]) == true)
                           <li class="treeview @yield('customer_class')">
                               <a href="#" style="text-decoration: none;">
                                 <i class="fa fa-dashboard"></i> <span>Customer</span>
@@ -592,6 +604,7 @@
                                 </span>
                               </a>
                                 <ul class="treeview-menu">
+                                  @if(in_array('59',$user_accesses))
                                   <li class="treeview @yield('inv_customer_class')">
                                       <a href="#" style="text-decoration: none;">
                                         <i class="fa fa-dashboard"></i> <span>Customer</span>
@@ -617,10 +630,11 @@
                                         
                                       </ul>
                                       </li>
+                                      @endif
 
 
                                       <!--====================== Start Customer Account Menu ==================-->
-
+                                      @if(in_array('60',$user_accesses))
                                       <li class="treeview @yield('inv_customer_acc_class')">
                                         <a href="#" style="text-decoration: none;">
                                           <i class="fa fa-dashboard"></i> <span>Customer Accounts</span>
@@ -649,6 +663,11 @@
                                               <i class="fa fa-circle-o"></i> Payment Refund
                                             </a>
                                           </li>
+                                          <li class="@yield('customer_today_payment')">
+                                              <a href="{{ route('customer.accounts.today-payment') }}">
+                                                <i class="fa fa-circle-o"></i> Today's Payment
+                                              </a>
+                                          </li>
                                           <li class="@yield('customer_account_statement')">
                                             <a href="{{ route('customer.accounts.account-statement') }}">
                                               <i class="fa fa-circle-o"></i> Account Statements
@@ -656,10 +675,12 @@
                                           </li>
                                         </ul>
                                         </li>
+                                        @endif
                           <!--====================== Start Customer Account Menu ==================-->
                                 </ul>
                               </li>
-
+                              @endif
+                              @if(check_or_permission([61,62]) == true)
                               <li class="treeview @yield('pro_inv_class')">
                                 <a href="#" style="text-decoration: none;">
                                   <i class="fa fa-dashboard"></i> <span>Product Inventory</span>
@@ -668,6 +689,7 @@
                                   </span>
                                 </a>
                                   <ul class="treeview-menu">
+                                    @if(in_array('61',$user_accesses))
                                     <li class="treeview @yield('inv_buy_class')">
                                         <a href="#" style="text-decoration: none;">
                                           <i class="fa fa-dashboard"></i> <span>Purchase Product</span>
@@ -693,18 +715,19 @@
                                           
                                         </ul>
                                         </li>
-                                         
+                                        @endif
+                                        @if(in_array('62',$user_accesses)) 
                                         <li class="@yield('sell_pro')">
                                           <a href="{{ route('buy.pro_sell') }}">
                                             <i class="fa fa-circle-o"></i> Sell Product
                                           </a>
                                         </li>
+                                        @endif
                                   </ul>
 
                                 </li>
-
-
-
+                                @endif
+                                @if(check_or_permission([63,64,65,66]) == true)
                                 <li class="treeview @yield('accounts_class')">
                                     <a href="#" style="text-decoration: none;">
                                       <i class="fa fa-dashboard"></i> <span>Accounts</span>
@@ -715,6 +738,7 @@
                                    <!--  Bank Accounts -->
           
                                       <ul class="treeview-menu">
+                                        @if(in_array('63',$user_accesses))
                                         <li class="treeview @yield('bank_class')">
                                             <a href="#" style="text-decoration: none;">
                                               <i class="fa fa-dashboard"></i> <span>Bank</span>
@@ -743,10 +767,12 @@
                                               </li>
                                             </ul>
                                             </li>
+                                            @endif
                                       </ul>
                                       <!-- End Bank Accounts -->
                                      <!-- Start Expenses -->
                                      <ul class="treeview-menu">
+                                        @if(in_array('64',$user_accesses))
                                         <li class="treeview @yield('expense_class')">
                                             <a href="#" style="text-decoration: none;">
                                               <i class="fa fa-dashboard"></i> <span>Expense</span>
@@ -769,11 +795,13 @@
                                               </li>
                                             </ul>
                                           </li>
+                                          @endif
                                         </ul>
                                           <!--   End Expenses -->
                                           <!-- Strat Contra Menu -->
                                           <!-- Start Expenses -->
                                      <ul class="treeview-menu">
+                                        @if(in_array('65',$user_accesses))
                                         <li class="treeview @yield('voucher_class')">
                                             <a href="#" style="text-decoration: none;">
                                               <i class="fa fa-dashboard"></i> <span>Voucher</span>
@@ -801,22 +829,26 @@
                                                 </a>
                                               </li>
                                             </ul>
+                                          </li>
+                                          @endif
                                           <!--   End Expenses -->
                                         <!--   End Contra Menu -->
 
-                                        <!--=============  General Ledger ===============-->            
+                                        <!--=============  General Ledger ===============-->
+                                        @if(in_array('66',$user_accesses))
                                         <li class=" @yield('ledger_class')">
                                             <a href="{{route('accounts.general_ledger')}}" style="text-decoration: none;">
-                                              <i class="fa fa-dashboard"></i> <span>General Ledger</span>
-                                              <span class="pull-right-container">
-                                                <i class="fa fa-angle-left pull-right"></i>
-                                              </span>
+                                              <i class="fa fa-circle-o"></i> <span>General Ledger</span>
                                             </a>
-                                            </li>
+                                        </li>
+                                        @endif          
                                         <!--============= End General Ledger ===============-->
-                                            </li>
+                                        
                                       </ul> 
                                     </li>
+                                    @endif
+                                    @if(check_or_permission([67]) == true)
+                                    @if(in_array('67',$user_accesses))
                                     <li class="treeview @yield('report_class')">
                                       <a href="#" style="text-decoration: none;">
                                         <i class="fa fa-dashboard"></i> <span>Reports</span>
@@ -838,6 +870,8 @@
                                         </ul>
       
                                       </li>
+                                      @endif
+                                      @endif
 		          </ul>
             </li>
             @endif

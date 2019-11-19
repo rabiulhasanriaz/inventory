@@ -35,11 +35,16 @@ class Inv_acc_bank_statement extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-     public static function get_Bank_Name_By_Bank_ID($id)
+    public static function get_Bank_Name_By_Bank_ID($id)
     {
-        $acc_bank_id=DB::table('inv_acc_bank_infos')->where('inv_abi_id',$id)->pluck('inv_abi_bank_id');
-        return DB::table('inv_banks')->select('bank_name')->where('id',$acc_bank_id)->first();
-
+        $acc_bank= Inv_acc_bank_info::where('inv_abi_id' , $id)->first();
+        $acc_bank_id = @$acc_bank->inv_abi_bank_id;
+      // dd($acc_bank_id);
+        if($acc_bank_id != '') {
+           return Inv_bank::where('id',$acc_bank_id)->first();
+       } else {
+        return "";
+       }
     }
     public static function get_Bank_Name_By_Refer_ID($id)
     {
@@ -59,8 +64,6 @@ class Inv_acc_bank_statement extends Model
         $debitBalance=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_bank_id',$cashBankid)->sum('inv_abs_debit');
         return ($creditBalance-$debitBalance);
     }
-
-
     //================ 16-11-19 ======================
 
     public static function getTotalExpensesByCategory($exCatId){
@@ -80,6 +83,24 @@ class Inv_acc_bank_statement extends Model
         $creditBalance=Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->sum('inv_abs_credit');
         $debitBalance=Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->sum('inv_abs_debit');
         return ($creditBalance-$debitBalance);
+    }
+
+    // =========18-11-19 =================
+    public static function getTotalCreditByBankId($bankId)
+    {
+        return Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_credit');
+    }
+    public static function getTotalDebitByBankId($bankId)
+    {
+        return Inv_acc_bank_statement::where('inv_abs_bank_id',$bankId)->where('inv_abs_status',1)->where('inv_abs_company_id',Auth::user()->au_company_id)->sum('inv_abs_debit');
+    }
+    public static function getOpenningBalance($start_date)
+    {
+
+        $creditBalance=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','<=',$start_date)->sum('inv_abs_credit');
+        $debitBalance=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','<=',$start_date)->sum('inv_abs_debit');
+        return ($creditBalance-$debitBalance);
+        
     }
 
 }

@@ -16,6 +16,8 @@ class Au_access extends Model
     	'permission_title',
       'permission_step',
       'permission_type',
+      'permission_user_type',
+      'au_access_company_id',
     	'status',
     ];
     protected $table = 'au_accesses';
