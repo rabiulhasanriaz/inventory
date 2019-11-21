@@ -219,7 +219,7 @@ class BankAccountController extends Controller
                 ->first();
             if ($request->pay_type == 1) {
                 /*CASH TO BANK*/
-                $available_cash_balance = Inv_acc_bank_info::getAvailableCashBalanceByCompanyID();
+                $available_cash_balance = Inv_acc_bank_statement::getAvailableCashBalanceByCompanyID();
                 
                 if ($available_cash_balance > $request->amount) {
 

@@ -245,11 +245,6 @@
                                   <i class="fa fa-circle-o"></i> Product List
                                 </a>
                               </li>
-                              <li class="@yield('short_quantity')">
-                                <a href="{{ route('inventory.short') }}">
-                                  <i class="fa fa-circle-o"></i> Short Quatity
-                                </a>
-                              </li>
                              
                             </ul>
                             </li>
@@ -591,6 +586,11 @@
                                               <i class="fa fa-circle-o"></i> <span>General Ledger</span>
                                             </a>
                                           </li>
+                                          <li class=" @yield('acc_state_class')">
+                                              <a href="{{route('accounts.account-statement')}}" style="text-decoration: none;">
+                                                <i class="fa fa-circle-o"></i> <span>Account Statement</span>
+                                              </a>
+                                          </li>
                                       </ul> 
                                     </li>
                                     
@@ -618,9 +618,42 @@
                                                     <i class="fa fa-circle-o"></i> Confirm Sell Reports
                                                   </a>
                                               </li>
+                                              <li class="@yield('buy_reports_confirm')">
+                                                  <a href="{{ route('reports.buy-report-confirm') }}">
+                                                    <i class="fa fa-circle-o"></i> Confirm Buy Reports
+                                                  </a>
+                                              </li>
                                         </ul>
       
                                       </li>
+                                      
+                                      <li class="treeview @yield('damage_class')">
+                                          <a href="#" style="text-decoration: none;">
+                                            <i class="fa fa-dashboard"></i> <span>Damage/Crack</span>
+                                            <span class="pull-right-container">
+                                              <i class="fa fa-angle-left pull-right"></i>
+                                            </span>
+                                          </a>
+                                            <ul class="treeview-menu">
+                                                  <li class="@yield('add_damage')">
+                                                    <a href="{{ route('pro_damage.damage-add') }}">
+                                                      <i class="fa fa-circle-o"></i> Add
+                                                    </a>
+                                                  </li>
+                                                  <li class="@yield('damage_list')">
+                                                      <a href="{{ route('pro_damage.damage-list') }}">
+                                                        <i class="fa fa-circle-o"></i> List
+                                                      </a>
+                                                  </li>
+                                            </ul>
+          
+                                        </li>
+                                      <li class="@yield('short_quantity')">
+                                          <a href="{{ route('inventory.short') }}">
+                                            <i class="fa fa-circle-o"></i> Short Quatity
+                                          </a>
+                                      </li>
+                                      
                                     
 		          </ul>
             </li>

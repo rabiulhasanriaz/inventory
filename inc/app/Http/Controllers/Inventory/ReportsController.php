@@ -118,17 +118,49 @@ class ReportsController extends Controller
                                             ->where('inv_pro_inv_status',1)
                                             ->where('inv_pro_inv_deal_type',1)
                                             ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_confirm',0)
                                             ->groupBy('inv_pro_inv_invoice_no')
                                             ->get();
        }else{
         $buy_reports = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                             ->where('inv_pro_inv_deal_type',1)
                                             ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_confirm',0)
                                             ->groupBy('inv_pro_inv_invoice_no')
                                             ->get();
        }
         return view('inventory.product_inventory.buy_reports',compact('buy_reports'));
         
+    }
+
+    public function buy_reports_confirm(Request $request){
+
+        $com = Auth::user()->au_company_id;
+       
+        if ($request->has('searchbtn')) {
+            $request->validate([
+                   'start_date' => 'required',
+                   'end_date' => 'required',
+               ]);
+           $buy_reports=Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                            ->where('inv_pro_inv_issue_date','>=',$request->start_date)
+                                            ->where('inv_pro_inv_issue_date','<=',$request->end_date)
+                                            ->where('inv_pro_inv_status',1)
+                                            ->where('inv_pro_inv_deal_type',1)
+                                            ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_confirm',1)
+                                            ->groupBy('inv_pro_inv_invoice_no')
+                                            ->get();
+       }else{
+        $buy_reports = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                            ->where('inv_pro_inv_deal_type',1)
+                                            ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_confirm',1)
+                                            ->groupBy('inv_pro_inv_invoice_no')
+                                            ->get();
+       }
+
+        return view('inventory.reports.buy_reports_confirm',compact('buy_reports'));
     }
 
     public function buy_reports_ajax(Request $request){
@@ -177,11 +209,16 @@ class ReportsController extends Controller
     }
 
     public function sell_confirm(Request $request,$invoice){
-        $sell_confirm = Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoice)->first();
-        $sell_confirm->inv_pro_inv_confirm = 1;
-        $sell_confirm->save();
+        Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoice)
+            ->update(['inv_pro_inv_confirm' => 1]);
 
         return redirect()->back()->with(['confirm' => 'Product Confirm Successfully']);
+    }
+
+    public function buy_confirm(Request $request,$invoice){
+        Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoice)
+        ->update(['inv_pro_inv_confirm' => 1]);
+        return redirect()->back()->with(['buy_confirm' => 'Buy Confirm Successfully']);
     }
 
     public function sellReportsDownload(Request $request){

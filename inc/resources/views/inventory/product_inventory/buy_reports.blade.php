@@ -4,6 +4,14 @@
 @section('buy_reports','active')
 @section('content')
 <section class="content">
+    @if(session()->has('buy_confirm'))
+    <div class="alert alert-success alert-dismissible" role="alert">
+        {{ session('buy_confirm') }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
         <section class="content-header">
           <div class="box">
               <div class="box-header">
@@ -73,6 +81,10 @@
                                   <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
                                     <li>
                                       <a href="javascript:void(0);" onclick="buy_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                      <a href="{{ route('reports.buy-confirm',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Confirm</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>

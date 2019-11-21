@@ -52,7 +52,6 @@
                                 </tr>
                                 <tr>
                                     <th>Sold By</th>
-                                    
                                     <td>{{ $pro_temps->first()->sold_by['au_name'] }}</td>
                                 </tr>
                             </table>
@@ -144,7 +143,7 @@
                           <button type="submit" class="btn btn-success pull-right">Confirm</button>
                           {{ Form::close() }}
 
-                          <a href="{{ route('buy.pro_sell') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
+                          <a href="{{ route('sell_edit.sell-edit-agin',['invoice' => $invoice_no->inv_pro_inv_invoice_no]) }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
 
                         </div>
                         <!-- /.box-body -->

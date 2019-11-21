@@ -2,58 +2,97 @@
 
 namespace App\Http\Controllers\Inventory;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Cart;
-use DB;
-use Auth;
-use Carbon\Carbon;
+use App\Inv_customer;
+use App\Inv_product_groups;
 use App\Inv_product_detail;
 use App\Inv_product_inventory;
-use App\Inv_product_inventory_detail;
-use App\Inv_customer_inventory;
 use App\Inv_product_temporary;
-use App\Inv_customer;
+use DB;
+use Carbon\Carbon;
 
-
-
-class InventoryCartController extends Controller
+class ProductSellEditController extends Controller
 {
-    public function addToCart(Request $request)
-    {
-        // $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
-        //     ->where('inv_pro_det_com_id', Auth::user()->au_company_id)
-        //     ->where('inv_pro_det_status', 1)
-        //     ->first();
-        
-        // if(!empty($product)) {
-        //     if($product->inv_pro_det_available_qty < $request->pro_qty) {
-        //         return response()->json(['status' => 400]);
-        //     } else {
 
-        //         $rows  = Cart::content();
-        //         $row = $rows->where('id', $request->pro_id)->first();
-        //         if(!empty($row)) {
-        //             $rowId = $row->rowId;
-        //             Cart::update($rowId,['qty' => $request->pro_qty, 'price' => $request->pro_price]);
-        //         } else {
-        //             // Cart::add([
-        //             //     'id' => $product->inv_pro_det_id, 
-        //             //     'name' => $product->inv_pro_det_pro_name, 
-        //             //     'type' => $product->inv_pro_det_type_id,
-        //             //     'qty' => $request->pro_qty, 
-        //             //     'price' => $request->pro_price,
-        //             //     'weight' => 0
-        //             // ]);
+
+    public function sell_product_edit(Request $request,$id){
+
+        DB::beginTransaction();
+        try {
+            $user_id = Auth::user()->au_id;
+            $com = Auth::user()->au_company_id;
+            $customers = Inv_customer::where('inv_cus_com_id',$com)
+                                    ->where('inv_cus_status',1)
+                                    ->get();
+
+            $groups = Inv_product_groups::where('inv_pro_grp_com_id',$com)
+                                        ->where('inv_pro_grp_status',1)
+                                        ->get();
+
+            $sell_pro = Inv_product_detail::where('inv_pro_det_com_id',$com)
+                ->where('inv_pro_det_status',1)
+                ->get();
+
                 
-        //         }
-        //     }
-        // } else {
-        //     return response()->json(['status' => 404]);
-        // }
+            $invoice_no = $id;
 
+            $invoice_products = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                            ->where('inv_pro_inv_invoice_no',$id)
+                            ->where('inv_pro_inv_status',1)
+                            ->where('inv_pro_inv_deal_type', 2)
+                            ->where('inv_pro_inv_tran_type', 1)
+                            ->get();
+
+            
+            if (count($invoice_products)>0) { 
+
+                $sell_customer = $invoice_products->first()->inv_pro_inv_party_id;
+                
+                $check_inv_temp = Inv_product_temporary::where('inv_pro_temp_invoice_no', $invoice_no)
+                    ->where('inv_pro_temp_deal_type', 4)
+                    ->get();
+                if(count($check_inv_temp) > 0) {
+
+                } else {
+                    Inv_product_temporary::where('inv_pro_temp_user_id', $user_id)->delete();
+                    foreach ($invoice_products as $invoice_product) {
+                        $edit_pro_temp = new Inv_product_temporary();
+
+                        $edit_pro_temp->inv_pro_temp_user_id = $user_id;
+                        $edit_pro_temp->inv_pro_temp_pro_id = $invoice_product->inv_pro_inv_prodet_id;
+                        $edit_pro_temp->inv_pro_temp_pro_name = $invoice_product->getProductInfo['inv_pro_det_pro_name'];
+                        $edit_pro_temp->inv_pro_temp_type_name = $invoice_product->getProductInfo->type_info['inv_pro_type_name'];
+                        $edit_pro_temp->inv_pro_temp_qty = $invoice_product->inv_pro_inv_qty;
+                        $edit_pro_temp->inv_pro_temp_invoice_no = $invoice_product->inv_pro_inv_invoice_no;
+                        $edit_pro_temp->inv_pro_temp_unit_price = $invoice_product->inv_pro_inv_unit_price;
+                        $edit_pro_temp->inv_pro_temp_deal_type = 4;
+                        $edit_pro_temp->inv_pro_temp_status = 1;
+                        $edit_pro_temp->inv_pro_temp_created_at = Carbon::now();
+                        $edit_pro_temp->save();
+                    }
+                }
+            } else {
+                // dd("as");
+                return redirect()->back()->with(['sub_err', 'Invalid Inventory']);
+            }
+            
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with(['sub_err' => 'Something went wrong']);
+        }
+
+        DB::commit();
+        return view('inventory.product_return.sell_product_edit',compact('customers','groups','sell_pro', 'invoice_no', 'sell_customer'));
+    }
+
+    public function addToCart(Request $request){
+        $user_id = Auth::user()->au_id;
+        $com = Auth::user()->au_company_id;
         $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
-            ->where('inv_pro_det_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_det_com_id', $com)
             ->where('inv_pro_det_status', 1)
             ->first();
         
@@ -63,9 +102,9 @@ class InventoryCartController extends Controller
                 return response()->json(['status' => 400]);
             }
             
-            $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+            $row = Inv_product_temporary::where('inv_pro_temp_user_id', $user_id)
                 ->where('inv_pro_temp_pro_id', $request->pro_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->first();
             if(!empty($row)) {
                 $row->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
@@ -79,15 +118,16 @@ class InventoryCartController extends Controller
 
             } else {
                 $pro_temp_add = new Inv_product_temporary;
-                $pro_temp_add->inv_pro_temp_user_id = Auth::user()->au_id;
+                $pro_temp_add->inv_pro_temp_user_id = $user_id;
                 $pro_temp_add->inv_pro_temp_pro_id = $product->inv_pro_det_id;
                 $pro_temp_add->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
                 $pro_temp_add->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
                 $pro_temp_add->inv_pro_temp_qty = $request->pro_qty;
                 $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
                 $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
+                $pro_temp_add->inv_pro_temp_invoice_no = $request->invoice_no;
                 $pro_temp_add->inv_pro_temp_slno = '';
-                $pro_temp_add->inv_pro_temp_deal_type = '2';//1=purchase,2=sale
+                $pro_temp_add->inv_pro_temp_deal_type = '4';//1=purchase,2=sale,3=purchase-edit,4=sell-edit
                 $pro_temp_add->inv_pro_temp_status = 1;
                 $pro_temp_add->inv_pro_temp_created_at = Carbon::now();
 
@@ -99,42 +139,10 @@ class InventoryCartController extends Controller
         }
     }
 
+
     public function addToCartWarrentyProduct(Request $request)
     {
-        // $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
-        //     ->where('inv_pro_det_com_id', Auth::user()->au_company_id)
-        //     ->where('inv_pro_det_status', 1)
-        //     ->where('inv_pro_det_pro_warranty', '!=', 0)
-        //     ->first();
         
-        // $product_sl_no = array();
-        // if(!empty($product)) {
-            
-        //     $rows  = Cart::content();
-        //     $row = $rows->where('id', $request->pro_id)->first();
-        //     if(!empty($row)) {
-        //         $product_sl_no = $row->options->pro_sl_nl;
-        //         // $rowId = $row->rowId;
-        //         // Cart::update($rowId,['qty' => $request->pro_qty]);
-        //     } else {
-        //         // Cart::add([
-        //         //     'id' => $product->inv_pro_det_id, 
-        //         //     'name' => $product->inv_pro_det_pro_name, 
-        //         //     'type' => $product->inv_pro_det_type_id,
-        //         //     'qty' => 1,
-        //         //     'price' => $request->pro_price,
-        //         //     'weight' => 0,
-        //         //     'options' => [
-        //         //         'pro_sl_nl' => [
-                            
-        //         //         ]
-        //         //     ]
-        //         // ]);
-        //     }
-            
-        // } else {
-        //     return response()->json(['status' => 404]);
-        // }
         $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
         ->where('inv_pro_det_com_id', Auth::user()->au_company_id)
         ->where('inv_pro_det_status', 1)
@@ -146,7 +154,7 @@ class InventoryCartController extends Controller
             
             $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->pro_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->first();
             if(!empty($row)) {
                 $row->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
@@ -171,8 +179,9 @@ class InventoryCartController extends Controller
                 
                 $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
                 $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
+                $pro_temp_add->inv_pro_temp_invoice_no = $request->invoice_no;
                 $pro_temp_add->inv_pro_temp_slno = '';
-                $pro_temp_add->inv_pro_temp_deal_type = '2';//1=purchase,2=sale
+                $pro_temp_add->inv_pro_temp_deal_type = '4';//1=purchase,2=sale
                 $pro_temp_add->inv_pro_temp_status = 1;
                 $pro_temp_add->inv_pro_temp_updated_at = Carbon::now();
                 $pro_temp_add->save();
@@ -272,14 +281,14 @@ class InventoryCartController extends Controller
     public function removecart(Request $request){
         Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->delete();
     }
 
     public function updatecart(Request $request){
         $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->get();
         $row->inv_pro_temp_qty = $request->pro_qty;
         $row->inv_pro_temp_updated_at = Carbon::now();
@@ -289,14 +298,46 @@ class InventoryCartController extends Controller
 
     public function getCartContent()
     {
+
         $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-        ->where('inv_pro_temp_deal_type',2)
+        ->where('inv_pro_temp_deal_type',4)
         ->get();
 
-        return view('pages.ajax.get_cart_content', compact('cart_content'));
+        return view('pages.ajax.sell_edit.get_cart_content', compact('cart_content'));
+    }
+
+    public function invTemporaryProduct(Request $request){
+        $user = Auth::user()->au_id;
+        $com = Auth::user()->au_company_id;
+        $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
+                                            ->where('inv_pro_temp_deal_type',2)
+                                            ->get();
+        $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
+            ->where('inv_cus_id', $request->customer)
+            ->first();
+        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus'));
     }
 
 
+    public function sell_edit_again(Request $request,$invoice){
+        $invoice_no = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->first();
+        return view('inventory.product_inventory.sell_product_edit_again',compact('invoice_no'));
+    }
+
+    public function sellEditConfirmFormShow(Request $request)
+    {
+        $user = Auth::user()->au_id;
+        $com = Auth::user()->au_company_id;
+        $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
+                                            ->where('inv_pro_temp_deal_type',4)
+                                            ->get();
+        $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
+            ->where('inv_cus_id', $request->customer)
+            ->first();
+        return view('inventory.product_return.product_sell_edit_invoice',compact('pro_temps','pro_cus'));
+    }
 
 
     // Submit cart form for sale
@@ -307,40 +348,43 @@ class InventoryCartController extends Controller
         ]);
         
         DB::beginTransaction();
-        // try {
+        try {
             $com = Auth::user()->au_company_id;
             $user_id = Auth::user()->au_id;
             $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->get();
+
+            if(count($cart_content) <= 0) {
+                return redirect()->back()->with(['sub_err' => 'Empty Cart']);
+            }
             
-            $last_pro_inv = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+            $new_memo_no = $cart_content->first()->inv_pro_temp_invoice_no;
+
+            // check and update previous product available quantity, inventory //
+            $pre_sell_products = Inv_product_inventory::where('inv_pro_inv_invoice_no', $new_memo_no)
+                ->where('inv_pro_inv_com_id', $com)
                 ->where('inv_pro_inv_deal_type', 2)
                 ->where('inv_pro_inv_tran_type', 1)
-                ->orderBy('inv_pro_inv_id', 'DESC')
-                ->first();
-            if(!empty($last_pro_inv)) {
-                $last_pro_inv_memo_no = $last_pro_inv->inv_pro_inv_invoice_no;                
-                $last_data = substr($last_pro_inv_memo_no, 13);
-                if(is_numeric($last_data)) {
-                    $last_number = $last_data + 1;
-                    $last_number_length = strlen($last_number);
-                    if ($last_number_length < 6) {
-                        $less_number = 6-$last_number_length;
-                        $sl_prefix = "";
-                        for ($x=0; $x <$less_number ; $x++) { 
-                            $sl_prefix = $sl_prefix . "0";
-                        }
-                        $last_number = $sl_prefix . $last_number;
-                    }
-                    
-                    $new_memo_no = "INV".$com.date('Y').($last_number);
-                } else {
-                    $new_memo_no = "INV".$com.date('Y')."000001";
+                ->get();
+
+            $pre_inv_edit_count = $pre_sell_products->first()->inv_pro_inv_edit_count;
+
+            foreach ($pre_sell_products as $pre_sell_product) {
+                $pre_pro_det = Inv_product_detail::where('inv_pro_det_com_id', $com)
+                    ->where('inv_pro_det_id', $pre_sell_product->inv_pro_inv_prodet_id)
+                    ->first();
+                if (!empty($pre_pro_det)) {
+                    $pre_pro_det->inv_pro_det_available_qty = $pre_pro_det->inv_pro_det_available_qty + $pre_sell_product->inv_pro_inv_qty;
+                    $pre_pro_det->save();
                 }
-            } else {
-                $new_memo_no = "INV".$com.date('Y')."000001";
             }
+
+            Inv_product_inventory::where('inv_pro_inv_invoice_no', $new_memo_no)
+                ->where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 1)
+                ->delete();
             
             foreach ($cart_content as $content) {
                 $product_id = $content->inv_pro_temp_pro_id;
@@ -348,8 +392,8 @@ class InventoryCartController extends Controller
 
                 $check_product = Inv_product_detail::where('inv_pro_det_id', $product_id)
                     ->where('inv_pro_det_com_id', $com)
-                    ->where('inv_pro_det_status', 1)
                     ->where('inv_pro_det_available_qty', '>=', $req_qty)
+                    ->where('inv_pro_det_status', 1)
                     ->first();
 
                 if(empty($check_product)) {
@@ -409,6 +453,7 @@ class InventoryCartController extends Controller
                 $product_inventory->inv_pro_inv_tran_desc = "Purchase Product";
                 $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
                 $product_inventory->inv_pro_inv_tran_type =  1;//1=buy/sell product-buy
+                $product_inventory->inv_pro_inv_edit_count = $pre_inv_edit_count + 1;
                 $product_inventory->inv_pro_inv_status = 1;
                 $product_inventory->inv_pro_inv_submit_by = $user_id;
                 $product_inventory->inv_pro_inv_submit_at = Carbon::now();
@@ -470,31 +515,18 @@ class InventoryCartController extends Controller
 
             
             Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->delete();
 
             
-        // } catch (\Exception $e) {
-        //     DB::rollback();
-        //     $msg = "Something went wrong to sell product. error-code: 1010".$e->getMessage();
-        //     return redirect()->back()->with(['sub_err' => $msg]);
-        // }
+        } catch (\Exception $e) {
+            DB::rollback();
+            $msg = "Something went wrong to sell product. error-code: 1010".$e->getMessage();
+            return redirect()->back()->with(['sub_err' => $msg]);
+        }
 
         DB::commit();
         $msg = "Sell Products Successfully completed";
         return redirect()->route('buy.pro_sell')->with(['sub_success' => $msg,'print_invoice' => $new_memo_no]);
     }
-
-    public function invTemporaryProduct(Request $request){
-        $user = Auth::user()->au_id;
-        $com = Auth::user()->au_company_id;
-        $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
-                                            ->where('inv_pro_temp_deal_type',2)
-                                            ->get();
-        $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
-            ->where('inv_cus_id', $request->customer)
-            ->first();
-        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus'));
-    }
-
 }

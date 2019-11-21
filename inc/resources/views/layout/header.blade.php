@@ -48,27 +48,31 @@
                       ->where('inv_pro_det_status',1)
                       ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
                       ->where('inv_pro_det_short_qty','!=','')
+                      
                       ->get();
                 @endphp
                 <i class="fa fa-bell-o"></i>
-                
                 <span class="label label-danger">{{ $short_notify }}</span>
               </a>
               <ul class="dropdown-menu">
                 <li class="header">You have {{ $short_notify }} short products</li>
                 <li>
                   <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
+                  <ul class="menu" style="overflow: scroll; height: 200px;">
                     @foreach ($short_detail as $short)
                     <li>
                         <a href="#">
-                          <i class="fa fa-arrow-right text-aqua"></i> {{ $short->inv_pro_det_pro_name }}
+                          <i class="fa fa-arrow-right text-aqua"></i> <b>{{ $short->inv_pro_det_pro_name }}</b><br>
+                          <span class="fa fa-asterisk">
+                            Short: {{ $short->inv_pro_det_short_qty - $short->inv_pro_det_available_qty}},
+                            Available: {{ $short->inv_pro_det_available_qty}}
+                          </span>
                         </a>
                     </li>
                     @endforeach
                   </ul>
                 </li>
-                {{-- <li class="footer"><a href="#">View all</a></li> --}}
+                <li class="footer"><a href="{{ route('inventory.short') }}">View all</a></li>
               </ul>
             </li>
           <!-- Tasks: style can be found in dropdown.less -->

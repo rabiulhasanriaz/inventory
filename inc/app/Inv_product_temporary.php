@@ -10,6 +10,7 @@ class Inv_product_temporary extends Model
     [
         'inv_pro_temp_id',
         'inv_pro_temp_user_id',
+        'inv_pro_temp_cus_id',
         'inv_pro_temp_pro_id',
         'inv_pro_temp_pro_name',
         'inv_pro_temp_type_name',
@@ -17,6 +18,7 @@ class Inv_product_temporary extends Model
         'inv_pro_temp_short_qty',
         'inv_pro_temp_short_remarks',
         'inv_pro_temp_qty',
+        'inv_pro_temp_invoice_no',
         'inv_pro_temp_unit_price',
         'inv_pro_temp_exp_date',
         'inv_pro_temp_slno',
@@ -37,4 +39,5 @@ class Inv_product_temporary extends Model
     public function sold_by(){
         return $this->belongsTo('App\Admin_user','inv_pro_temp_user_id','au_id');
     }
+
 }

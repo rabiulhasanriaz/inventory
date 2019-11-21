@@ -120,6 +120,7 @@ $( "#opendate" ).datepicker({
        daysOfWeekHighlighted: "7",
         todayHighlight: true,
         autoclose: true,
+        endDate:"today",
      });
 $( "#to" ).datepicker({
        daysOfWeekHighlighted: "7",

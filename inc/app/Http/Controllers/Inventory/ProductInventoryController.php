@@ -181,4 +181,50 @@ class ProductInventoryController extends Controller
 
     }
 
+
+    public function damage_add(){
+        $com = Auth::user()->au_company_id;
+        $pro_grp = Inv_product_groups::where('inv_pro_grp_com_id',$com)
+                                         ->where('inv_pro_grp_status',1)
+                                         ->get();
+        return view('inventory.damage.add',compact('pro_grp'));
+    }
+
+    public function show_pro_name_ajax(Request $request) {
+        $types = Inv_product_detail::where('inv_pro_det_type_id', $request->model_id)
+                                ->where('inv_pro_det_status',1)
+                                ->get();
+        return view('pages.ajax.pro_name_ajax', compact('types'));
+    }
+
+    public function damage_add_submit(){
+        $com = Auth::user()->au_company_id;
+        $submit_at = Carbon::now()->format('Y-m-d H:i:s');
+        $submit_by = Auth::user()->au_id;
+        $damage = new Inv_product_inventory;
+        $damage->inv_pro_inv_com_id = $com;
+        $damage->inv_pro_inv_prodet_id = Input::get('product');
+        $damage->inv_pro_inv_total_qty = Input::get('short_total');
+        $damage->inv_pro_inv_short_qty = 0;
+        $damage->inv_pro_inv_qty = Input::get('short_total');
+        $damage->inv_pro_inv_deal_type = 2;
+        $damage->inv_pro_inv_damage_status = 1;
+        $damage->inv_pro_inv_tran_type = 1;
+        $damage->inv_pro_inv_submit_at = $submit_at;
+        $damage->inv_pro_inv_submit_by = $submit_by;
+        $damage->save();
+
+        return redirect()->back()->with(['damage' => 'Damage Product Submitted Successfully']);
+    }
+
+    public function damage_list(){
+        $com = Auth::user()->au_company_id;
+        $damage_list = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                         ->where('inv_pro_inv_deal_type',2)
+                                         ->where('inv_pro_inv_damage_status',1)
+                                         ->where('inv_pro_inv_tran_type',1)
+                                         ->get();
+        return view('inventory.damage.list',compact('damage_list'));
+    }
+
 }

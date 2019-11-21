@@ -27,10 +27,10 @@
         </section>
                 <!-- /.box-header -->
                 <!-- form start -->
-                {{ Form::open(['action' => 'Inventory\InventoryCartController@invTemporaryProduct' , 'method' => 'get' , 'class' => 'form-horizontal']) }}
+                {{ Form::open(['action' => 'Inventory\ProductSellEditController@sellEditConfirmFormShow' , 'method' => 'get' , 'class' => 'form-horizontal']) }}
                 <div class="box">
                  <div class="box-header with-border">
-                   <h3 class="box-title">Add Product</h3>
+                   <h3 class="box-title">Edit Product</h3>
                  </div>
                  <!-- /.box-header -->
                  <!-- form start -->
@@ -40,7 +40,7 @@
                             <select name="customer" id="" class="form-control select2" style="width: 299px;" required>
                                 <option value="">Select One</option>
                                 @foreach ($customers as $customer)
-                                <option value="{{ $customer->inv_cus_id }}">
+                                <option value="{{ $customer->inv_cus_id }}" {{ ($sell_customer == $customer->inv_cus_id)?'selected':'' }}>
                                     {{ $customer->inv_cus_name }} ({{ $customer->inv_cus_com_name }})
                                 </option>  
                                 @endforeach
@@ -89,34 +89,34 @@
                                 <th>SL</th>
                                 <th>Name</th>
                                 <th>Type</th>
-                                <th>A. Stock</th>
+                                <th>Sell Out</th>
                                 <th>Price</th>
-                                <th style="width: 110px; text-align: center;">Sell</th>
+                                <th style="width: 110px; text-align: center;">Edit</th>
                             </tr>
                             </thead>
                             <tbody id="product_table_body">
                             @php($sl=0)
                             @foreach ($sell_pro as $sell)
-                                <tr>
-                                    <td class="text-center">{{ ++$sl }}</td>
-                                    <td>{{ $sell->inv_pro_det_pro_name }}</td>
-                                    <td>{{ $sell->type_info['inv_pro_type_name'] }}</td>
-                                    <td align="center">{{ $sell->inv_pro_det_available_qty }}</td>
-                                    <td class="text-center"><input type="text" autocomplete="off" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
-                                    <td class="text-center">
-                                        @if($sell->inv_pro_det_pro_warranty == 0)
-                                        <input type="text" autocomplete="off" class="form-control" style="width: 50px;" id="pro_qty_{{ $sell->inv_pro_det_id }}" placeholder="Qty">
-                                        <button type="button" class="btn btn-success btn-sm" onclick="addtocart('{{ $sell->inv_pro_det_id }}')">
+                            <tr>
+                                <td class="text-center">{{ ++$sl }}</td>
+                                <td>{{ $sell->inv_pro_det_pro_name }}</td>
+                                <td>{{ $sell->type_info['inv_pro_type_name'] }}</td>
+                                <td align="center">{{ $sell->inv_pro_det_available_qty }}</td>
+                                <td class="text-center"><input type="text" autocomplete="off" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
+                                <td class="text-center">
+                                    @if($sell->inv_pro_det_pro_warranty == 0)
+                                    <input type="text" autocomplete="off" class="form-control" style="width: 50px;" id="pro_qty_{{ $sell->inv_pro_det_id }}" placeholder="Qty">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addtocart('{{ $sell->inv_pro_det_id }}')">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                    @else
+                                    <input type="text" autocomplete="off" class="form-control" style="width: 50px;" placeholder="N/A" disabled>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addWarrentyProduct('{{ $sell->inv_pro_det_id }}')">
                                             <i class="fa fa-plus"></i>
-                                        </button>
-                                        @else
-                                        <input type="text" autocomplete="off" class="form-control" style="width: 50px;" placeholder="N/A" disabled>
-                                        <button type="button" class="btn btn-success btn-sm" onclick="addWarrentyProduct('{{ $sell->inv_pro_det_id }}')">
-                                                <i class="fa fa-plus"></i>
-                                        </button>
-                                        @endif
-                                    </td>
-                                </tr>
+                                    </button>
+                                    @endif
+                                </td>
+                            </tr>
                             @endforeach
                             </tbody>
                         </table>
@@ -138,8 +138,11 @@
                                             <tr>
                                                 <th>Description</th>
                                                 <th>Sold Qty</th>
+                                                <th>Expire Date</th>
                                                 <th>Unit Price</th>
                                                 <th>Amount</th>
+                                                <th>Short Qty</th>
+                                                <th>Short Qty Desc</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -261,6 +264,8 @@
         
     });
 
+    var invoice_no = "{{ $invoice_no }}";
+
     function addtocart(pro_det_id) {
         let pro_qty = parseFloat($("#pro_qty_"+pro_det_id).val());
         let pro_price = parseFloat($("#pro_price_"+pro_det_id).val());
@@ -269,12 +274,11 @@
         } else if(pro_qty < 1) {
             alert("minimum quantity at least 1");
         } else {
-
-            let route_url = "{{ route('buy.add-to-cart') }}";
+            let route_url = "{{ route('sell_edit.add-to-cart') }}";
             $.ajax({
                 type: "GET",
                 url: route_url,
-                data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price},
+                data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price, invoice_no: invoice_no},
                 success: function (result) {
                     if(result.status == 400) {
                         alert("Stock has been cross it's limit");
@@ -287,7 +291,8 @@
     }
 
     function getCartProduct() {
-        let route_url = "{{ route('buy.get-cart') }}";
+        let route_url = "{{ route('sell_edit.get-cart') }}";
+        
         $.ajax({
             type: "GET",
             url: route_url,
@@ -304,7 +309,7 @@
             alert("Minimum Quantity is 1");
             return false;
         }
-        let route_url = "{{ route('buy.update-cart') }}";
+        let route_url = "{{ route('sell_edit.update-cart') }}";
         $.ajax({
             type: "GET",
             url: route_url,
@@ -322,7 +327,7 @@
         }else{
             return false;
         }
-        let route_url = "{{ route('buy.remove-cart') }}";
+        let route_url = "{{ route('sell_edit.remove-cart') }}";
         $.ajax({
             type: "GET",
             url: route_url,
@@ -336,11 +341,11 @@
     function addWarrentyProduct (pro_det_id) {
         let pro_price = parseFloat($("#pro_price_"+pro_det_id).val());
         
-        let route_url = "{{ route('buy.add-to-cart-warrenty-product') }}";
+        let route_url = "{{ route('sell_edit.add-to-cart-warrenty-product') }}";
         $.ajax({
             type: "GET",
             url: route_url,
-            data: { pro_id: pro_det_id, pro_price: pro_price},
+            data: { pro_id: pro_det_id, pro_price: pro_price, invoice_no: invoice_no},
             success: function (result) {
                 if(result.status == 404) {
                     alert("Invalid Warrenty Product");
@@ -358,11 +363,11 @@
 
     function check_sl_no(value, pro_det_id) {
         let sl_no = value;
-        let route_url = "{{ route('buy.add-warrenty-product-sl-no') }}";
+        let route_url = "{{ route('sell_edit.add-warrenty-product-sl-no') }}";
         $.ajax({
             type: "GET",
             url: route_url,
-            data: { pro_id: pro_det_id, sl_no: sl_no},
+            data: { pro_id: pro_det_id, sl_no: sl_no, invoice_no: invoice_no},
             success: function (result) {
                 if(result.status == 404) {
                     alert("Invalid Warrenty Product");
@@ -381,11 +386,11 @@
 
     function remove_product_sl(product_id, sl_no) {
 
-        let route_url = "{{ route('buy.remove-warrenty-product-sl') }}";
+        let route_url = "{{ route('sell_edit.remove-warrenty-product-sl') }}";
         $.ajax({
             type: "GET",
             url: route_url,
-            data: { pro_id: product_id, sl_no: sl_no},
+            data: { pro_id: product_id, sl_no: sl_no, invoice_no: invoice_no},
             success: function (result) {
                 if(result.status == 404) {
                     alert("Invalid Warrenty Product");

@@ -139,12 +139,12 @@
                                 </tr> --}}
                             </tfoot>
                           </table>
-                          {{ Form::open(['action' => 'Inventory\InventoryCartController@cartSubmit','method' => 'post' , 'class' => 'form-horizontal']) }}
+                          {{ Form::open(['action' => 'Inventory\ProductSellEditController@cartSubmit','method' => 'post' , 'class' => 'form-horizontal']) }}
                           <input type="text" class="hidden" name="customer" value="{{ $pro_cus->inv_cus_id }}">
                           <button type="submit" class="btn btn-success pull-right">Confirm</button>
                           {{ Form::close() }}
 
-                          <a href="{{ route('buy.pro_sell') }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
+                          <a href="{{ route('sell_edit.sell-pro-edit', $temp->inv_pro_temp_invoice_no) }}" class="btn btn-danger pull-right" style="margin-right: 5px;">Edit</a>
 
                         </div>
                         <!-- /.box-body -->

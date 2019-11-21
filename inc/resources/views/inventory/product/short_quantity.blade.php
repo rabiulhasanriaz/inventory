@@ -1,7 +1,5 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
-@section('product_class','menu-open')
-@section('inv_pro_class','menu-open')
 @section('short_quantity','active')
 @section('content')
 <section class="content">

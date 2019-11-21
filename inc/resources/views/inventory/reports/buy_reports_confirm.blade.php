@@ -1,12 +1,20 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
 @section('report_class','menu-open')
-@section('sell_reports_confirm','active')
+@section('buy_reports_confirm','active')
 @section('content')
 <section class="content">
     @if(session()->has('confirm'))
     <div class="alert alert-success alert-dismissible" role="alert">
           {{ session('confirm') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+    @if(session()->has('sub_err'))
+    <div class="alert alert-danger alert-dismissible" role="alert">
+          {{ session('sub_err') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -35,7 +43,7 @@
                  </div>
              </div>
               <h1>
-               Sell Reports of {{ Auth::user()->au_company_name }}  
+               Buy Reports of {{ Auth::user()->au_company_name }}  
               </h1>
         
             </section>
@@ -51,7 +59,7 @@
                           <th>SL</th>
                           <th>Invoice No</th>
                           <th>Issue Date</th>
-                          <th>Cus Name</th>
+                          <th>Sup Name</th>
                           <th>Description</th>
                           <th>Amount</th>
                           <th>Action</th>
@@ -62,15 +70,15 @@
                           $sl=0;
                           $balance = 0;
                         @endphp
-                        @foreach ($sell_reports as $sell)
+                        @foreach ($buy_reports as $buy)
                         
                         <tr>
                             <td>{{ ++$sl }}</td>
-                            <td>{{ $sell->inv_pro_inv_invoice_no }}</td>
-                            <td>{{ $sell->inv_pro_inv_issue_date }}</td>
-                            <td>{{ $sell->getCustomerInfo['inv_cus_name'] }}</td>
-                            <td>{{ $sell->inv_pro_inv_tran_desc }}</td>
-                            <td class="text-right">{{ App\Inv_product_inventory::getTotalDebit($sell->inv_pro_inv_invoice_no) }}</td>
+                            <td>{{ $buy->inv_pro_inv_invoice_no }}</td>
+                            <td>{{ $buy->inv_pro_inv_issue_date }}</td>
+                            <td>{{ $buy->getCustomerInfo['inv_cus_name'] }}</td>
+                            <td>{{ $buy->inv_pro_inv_tran_desc }}</td>
+                            <td class="text-right">{{ App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no) }}</td>
                             <td style="text-align: center;">
                               <div class="btn-group">
                                 <button type="button" class="btn btn-info btn-xs">Action</button>
@@ -80,22 +88,22 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
                                   <li>
-                                    <a href="javascript:void(0);" onclick="sell_reports('{{ $sell->inv_pro_inv_invoice_no }}')">Details</a>
+                                    <a href="javascript:void(0);" onclick="sell_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
                                   </li>
                                   <li class="divider"></li>
                                   <li>
-                                    <a href="{{ route('sell_edit.sell-pro-edit',['id' => $sell->inv_pro_inv_invoice_no]) }}">Edit</a>
+                                    <a href="{{ route('buy_edit.buy-edit-pro',['id' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
                                  </li>
                                 <li class="divider"></li>
                                   <li>
-                                    <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Download</a>
+                                    <a href="{{ route('reports.sell-pdf',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Download</a>
                                   </li>
                                 </ul>
                           </div>
                                 
                             </td>
                         </tr>
-                        @php($balance = $balance + App\Inv_product_inventory::getTotalDebit($sell->inv_pro_inv_invoice_no))
+                        @php($balance = $balance + App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no))
                         @endforeach
                         </tbody>
                         <tfoot>

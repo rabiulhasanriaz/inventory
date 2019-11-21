@@ -1,7 +1,6 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
 @section('accounts_class','menu-open')
-@section('voucher_class','menu-open')
 @section('acc_state_class','active')
 @section('content')
 <section class="content">

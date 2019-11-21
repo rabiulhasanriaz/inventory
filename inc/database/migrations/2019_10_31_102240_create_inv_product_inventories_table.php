@@ -34,6 +34,7 @@ class CreateInvProductInventoriesTable extends Migration
             $table->tinyInteger('inv_pro_inv_tran_type')->comments('1=buy/sell product, 2=refund buy/sell product, 3=opening-balance/deposit-withdraw balance,4=supplier-payment/customer-payment-collection,5=supplier-payment-collection/customer-payment-refund');
             $table->tinyInteger('inv_pro_inv_confirm')->default(0)->comments('0=not confirm , 1 = confirm');
             $table->tinyInteger('inv_pro_inv_status')->default('1')->comments('1=active 0=inactive');
+            $table->tinyInteger('inv_pro_inv_edit_count')->default(0)->comments('0=not edit, 1 =edited');
             $table->dateTime('inv_pro_inv_submit_at')->nullable();
             $table->unsignedInteger('inv_pro_inv_submit_by')->nullable();
             $table->dateTime('inv_pro_inv_update_at')->nullable();

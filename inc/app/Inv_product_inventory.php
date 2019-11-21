@@ -30,6 +30,7 @@ class Inv_product_inventory extends Model
         'inv_pro_inv_tran_type',
         'inv_pro_inv_confirm',
         'inv_pro_inv_status',
+        'inv_pro_inv_edit_count',
         'inv_pro_inv_submit_at',
         'inv_pro_inv_submit_by',
         'inv_pro_inv_update_at',
