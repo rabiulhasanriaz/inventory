@@ -466,40 +466,60 @@ class BankAccountController extends Controller
 
  	//=========================17-11-19 ====================
 
-	public function downLoadGeneralLedger(Request $request)
-	{
 
-		$ledgers=Inv_product_inventory::where('inv_pro_inv_com_id',Auth::user()->au_company_id)
-			->where('inv_pro_inv_status',1)
-			->where('inv_pro_inv_deal_type',1)
-			->where('inv_pro_inv_party_id',$request->supid)
-			->where('inv_pro_inv_issue_date','>=',$request->sdate)
-			->where('inv_pro_inv_issue_date','<=',$request->edate)
-			->orderBy('inv_pro_inv_issue_date')->get();
-			
-		if($request->has('print_btn'))
-		{
-			return view('inventory.accounts.voucher.general_ledger_print',compact('ledgers'));
-		}
-		else
-		{
-			$pdf = PDF::loadView('inventory.accounts.voucher.general_ledger_download',compact('ledgers'));
-			return $pdf->download("general_ledger_".Auth::user()->au_company_id."_".Carbon::now()->format('d_m_Y').".pdf");
-		}
-			
-		
-	}
-
-	//======================18-11-19 =======================
-	public function showAccountStatementForm()
-	{
-		return view('inventory.accounts.bank.account_statement');
-	}
-
-	public function showAccountStatementData(Request $request)
-	{
-		$statements=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','>=',$request->start_date)->where('inv_abs_transaction_date','<=',$request->end_date)->get();
-
-		return view('inventory.accounts.bank.account_statement',compact('statements'));
-	}
+	 public function downLoadGeneralLedger(Request $request)
+	 {
+ 
+		 $ledgers=Inv_product_inventory::where('inv_pro_inv_com_id',Auth::user()->au_company_id)
+			 ->where('inv_pro_inv_status',1)
+			 ->where('inv_pro_inv_deal_type',1)
+			 ->where('inv_pro_inv_party_id',$request->supid)
+			 ->where('inv_pro_inv_issue_date','>=',$request->sdate)
+			 ->where('inv_pro_inv_issue_date','<=',$request->edate)
+			 ->orderBy('inv_pro_inv_issue_date')->get();
+			 
+		 if($request->has('print_btn'))
+		 {
+			 return view('inventory.accounts.voucher.general_ledger_print',compact('ledgers'));
+		 }
+		 else
+		 {
+			 $pdf = PDF::loadView('inventory.accounts.voucher.general_ledger_download',compact('ledgers'));
+			 return $pdf->download("general_ledger_".Auth::user()->au_company_id."_".Carbon::now()->format('d_m_Y').".pdf");
+		 }
+			 
+		 
+	 }
+ 
+	 //======================18-11-19 =======================
+	 public function showAccountStatementForm()
+	 {
+		 return view('inventory.accounts.bank.account_statement');
+	 }
+ 
+	 public function showAccountStatementData(Request $request)
+	 {
+		 $statements=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','>=',$request->start_date)->where('inv_abs_transaction_date','<=',$request->end_date)->get();
+ 
+		 return view('inventory.accounts.bank.account_statement',compact('statements'));
+	 }
+	 public function downloadAccountStatement(Request $request)
+	 {
+		 
+		 $statements=Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_transaction_date','>=',$request->sdate)->where('inv_abs_transaction_date','<=',$request->edate)->get();
+ 
+		 
+			 if($request->has('download_btn'))
+			 {
+					 $pdf = PDF::loadView('inventory.accounts.bank.account_statement_download',compact('statements'));
+						 return $pdf->download("account_statement".Auth::user()->au_company_id."_".Carbon::now()->format('d_m_Y').".pdf");
+			 }
+			 if($request->has('print_btn'))
+			 {
+				 
+				 return view('inventory.accounts.bank.account_statement_print',compact('statements'));
+			 }
+ 
+ 
+	 }
 }

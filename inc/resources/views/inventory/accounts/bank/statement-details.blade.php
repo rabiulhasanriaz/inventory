@@ -44,8 +44,9 @@
                           <th>Transaction Date</th>
                           <th>Reference</th>
                           <th>Details</th>
-                          <th>Credit</th>
+                         
                           <th>Debit</th>
+                           <th>Credit</th>
                           <th>Balance</th>
                         </tr>
                         </thead>
@@ -55,8 +56,9 @@
                         @php($total_credit = 0)
                         @php($total_debit = 0)
                         @php($reference='')
+                        
                       @foreach ($statements as $statement)
-                       
+                       @php($person='')
                              @php($debit = $statement->inv_abs_debit)
                              @php($credit = $statement->inv_abs_credit)
                              @php($total_debit = $total_debit + $debit)
@@ -64,9 +66,11 @@
                              @php($total_balance = $total_balance + $credit - $debit)
                         
                            @if($statement->inv_abs_reference_type==1)
+                           @php($person='('.App\Inv_customer::getCustomerNameById($statement->inv_abs_reference_id).')')
                                 @php($reference='Customer Transaction.')
                               
                                 @elseif($statement->inv_abs_reference_type==2)
+                                @php($person='('.App\Inv_supplier::getSupplierNameByID($statement->inv_abs_reference_id)->inv_sup_person.')')
                                   @php($reference='Supplier Transaction.')
                              
                                   @elseif($statement->inv_abs_reference_type==3||$statement->inv_abs_reference_type==4)
@@ -78,10 +82,11 @@
                             <tr>
                                 <td>{{ ++$sl }}</td>
                                 <td>{{ $statement->inv_abs_transaction_date }}</td>
-                                <td>{{ $reference }}</td>
+                                <td>{{ $reference }}<br>{{$person}}</td>
                                 <td>{{ $statement->inv_abs_description }}</td>
-                                <td style="text-align: right;">{{ number_format($credit,2) }}</td>
+                               
                                 <td style="text-align: right;">{{ number_format($debit,2) }}</td>
+                                 <td style="text-align: right;">{{ number_format($credit,2) }}</td>
                                 <td style="text-align: right;">{{ number_format($total_balance,2) }}</td>
                             </tr>
                         @endforeach
@@ -89,8 +94,9 @@
                         <tfoot>
                             <tr>
                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total:</td>
-                                <td style="text-align: right; font-weight: bold;">{{ number_format($total_credit,2) }}</td>
+                                
                                 <td style="text-align: right; font-weight: bold;">{{ number_format($total_debit,2) }}</td>
+                                <td style="text-align: right; font-weight: bold;">{{ number_format($total_credit,2) }}</td>
                                 <td style="text-align: right; font-weight: bold;">{{ number_format($total_balance,2) }}</td>
                             </tr>
                         </tfoot>

@@ -233,6 +233,16 @@ class InventoryPurchaseCartController extends Controller
         try {
             $com = Auth::user()->au_company_id;
             $user_id = Auth::user()->au_id;
+
+            // start check memo no unique
+            $check_memo = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_invoice_no', $request->memo)
+                ->first();
+            if(!empty($check_memo)) {
+                $msg = "Duplicate memo no";
+                return redirect()->back()->with(['sub_err' => $msg]);
+            }
+            // end check memo no unique
             $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_deal_type',1)
                 ->get();

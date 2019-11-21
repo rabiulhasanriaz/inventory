@@ -276,9 +276,9 @@ footer {
       Powered By: IGL Web Ltd.
     </footer>
     <script>
-        window.onload = function(e){ 
-   window.print(); 
-}
+       $(document).ready(function(){
+         window.print();
+        });
      </script>
   </body>
 </html>

@@ -40,19 +40,23 @@
   </style>
 </head>
 <body>
+
   @php
    $sl=0;
     $totalCredit =0;
     $totalDebit=0;
     $totalBalance=0;
-    $countData=$ledgers->count();       
-    $slno=0;      
+    $countData=$statements->count();       
+
+    $slno=0;    
+    $totalBalance=App\Inv_acc_bank_statement::getOpenningBalance(request()->sdate);  
 @endphp
 
 <center>
 
- @foreach($ledgers as $ledger)
+ @foreach($statements as $statement)
 @if($slno==0)
+<center>
   <hr style="margin-top: 5px;">
                 <h1 > <img src="{{ asset('/asset/image/')}}/{{ Auth::user()->au_company_img }}" style="height: 50px; width:50px;">
                   {{ Auth::user()->au_company_name}} 
@@ -67,13 +71,13 @@
   <table style="width: 100%;" >
   <tr>
     <td>
-      <b> Company Name: </b>
+      <b>From: </b>
          <span>
-           {{ App\Inv_supplier::getSupplierCompany(request()->supid)->inv_sup_com_name}}
+             {{request()->sdate}} 
          </span><br>
-      <b>Period: </b>
+      <b>To: </b>
         <span>
-           {{request()->sdate}} To {{request()->edate}}
+          {{request()->edate}}
         </span>
      </td>
     <td colspan="3">
@@ -94,30 +98,27 @@
 
 <table class="table" >
   <tr>
+   <th style="font-weight: bolder;">Date</th>
+    <th style="font-weight: bolder;">Details</th>
+    <th style="font-weight: bolder;">Bank</th>
 
-    <th style="font-weight: bolder;">Voucher Date</th>
-    <th style="font-weight: bolder;">Narration</th>
-    <th style="font-weight: bolder;">Cheque No</th>
-
-    <th style="font-weight: bolder;">Credit</th>
     <th style="font-weight: bolder;">Debit</th>
-    <th style="font-weight: bolder;">Running Balance</th>
+    <th style="font-weight: bolder;">Credit</th>
+    <th style="font-weight: bolder;"> Balance</th>
   </tr>
   <!--=========== Openning Balance================-->
   <tr >
-    <td colspan="2" >
-      <b>Account Name:</b>
-
-
-      {{App\Inv_supplier::getSupplierNameByID(request()->supid)->inv_sup_person}}
-    </td>
-    <td colspan="3" style="text-align: center;">
+    <td style="text-align: center;" >
+      {{request()->sdate}}
+     </td>
+      
+    <td colspan="4" style="text-align: center;">
       Openning Balance as on 
 
       {{request()->sdate}}
     </td>
     <td style="text-align: right;">
-      {{App\Inv_product_inventory::getOpenningBalance(request()->sdate,request()->supid)}}
+      {{number_format(App\Inv_acc_bank_statement::getOpenningBalance(request()->sdate),2)}}
     </td>
   </tr>
 @endif
@@ -127,30 +128,33 @@
 
   $slno++;
   $countData--;
-  $totalCredit+=App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-  $totalDebit+=App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-  $totalBalance+=App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supid);
+  $totalCredit+=$statement->inv_abs_credit;
+  $totalDebit+=$statement->inv_abs_debit;
+  $totalBalance+=$statement->inv_abs_credit-$statement->inv_abs_debit;
+  
   @endphp
 
   <tr>
+      <td style="text-align: center;">
+        {{$statement->inv_abs_transaction_date}}
+      </td>
+      <td>
+        {{$statement->inv_abs_description}}
+      </td>
+      <td>
+        @php($bank_info = App\Inv_acc_bank_statement::get_Bank_Name_By_Bank_ID($statement-> inv_abs_bank_id) )
+        {{ @$bank_info->bank_name }}
 
-    <td>
-      {{$ledger->inv_pro_inv_issue_date}}
-    </td>
-    <td>
-      {{$ledger->inv_pro_inv_tran_desc}}
-    </td>
-    <td>
-      {{$ledger->inv_pro_inv_invoice_no}}
-    </td>
-    <td style="text-align: right;">
-      {{App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} CR
-    </td>
-    <td style="text-align: right;">
-      {{App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} DR
-    </td>
-    <td style="text-align: right;">
-      {{ number_format(App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supid),2 )}}
+      </td>
+
+      <td style="text-align: right;">
+       {{number_format($statement->inv_abs_debit,2)}}
+     </td>
+     <td style="text-align: right;">
+       {{number_format($statement->inv_abs_credit,2)}}
+     </td>
+     <td style="text-align: right;">
+      {{ number_format($totalBalance,2) }}
     </td>
 
   </tr>
@@ -177,13 +181,13 @@
 <table style="width: 100%;" >
   <tr>
     <td>
-      <b> Company Name: </b>
+      <b> From: </b>
          <span>
-           {{ App\Inv_supplier::getSupplierCompany(request()->supid)->inv_sup_com_name}}
+            {{request()->sdate}}
          </span><br>
-      <b>Period: </b>
+      <b>To: </b>
         <span>
-           {{request()->sdate}} To {{request()->edate}}
+            {{request()->edate}}
         </span>
      </td>
     <td colspan="3">
@@ -203,36 +207,37 @@
 </table>
 </div>
   <table class="table" style="margin-top: 10px;">
-  <tr>
-    <th style="font-weight: bolder;">Voucher Date</th>
-    <th style="font-weight: bolder;">Narration</th>
-    <th style="font-weight: bolder;">Cheque No</th>
+   <tr>
+   <th style="font-weight: bolder;">Date</th>
+    <th style="font-weight: bolder;">Details</th>
+    <th style="font-weight: bolder;">Bank</th>
 
-    <th style="font-weight: bolder;">Credit</th>
     <th style="font-weight: bolder;">Debit</th>
-    <th style="font-weight: bolder;">Running Balance</th>
+    <th style="font-weight: bolder;">Credit</th>
+    <th style="font-weight: bolder;"> Balance</th>
   </tr>
 
 @endif
 
 @if($countData==0)
-  <tr>
-    <td style="text-align: center; font-weight: bolder;">
-      #
-    </td>
-    <td style="text-align: right; font-weight: bolder;" colspan="2">
-      Total:
-    </td>
-    <td style="text-align: right; font-weight: bolder;">
+<tr>
+  <td style="text-align: center; font-weight: bolder;">
+    #
+  </td>
+   <td style="text-align: right; font-weight: bolder;" colspan="2">
+    Total:
+  </td>
+   
+   <td style="text-align:right; font-weight: bolder;">
+   {{number_format($totalDebit,2)}}
+  </td>
+  <td style="text-align: right; font-weight: bolder;">
       {{number_format($totalCredit,2)}}
-    </td>
-    <td style="text-align:right; font-weight: bolder;">
-      {{number_format($totalDebit,2)}}
-    </td>
-    <td style="text-align: right;font-weight: bolder;">
-      {{number_format($totalBalance,2)}}
-    </td>
-  </tr>
+  </td>
+  <td style="text-align: right;font-weight: bolder;">
+   {{number_format($totalBalance,2)}}
+  </td>
+</tr>
 </table>
  <div style="margin-top: 20px; ">
                    <span style="font-weight: bolder; font-style:  'Comic Sans MS';  font-size: 16px;">
@@ -241,9 +246,10 @@
   </div>
 @endif
 @endforeach
-</center>
+
 </body>
-</html>
 <script type="text/javascript">
   window.print();
 </script>
+</html>
+</center>

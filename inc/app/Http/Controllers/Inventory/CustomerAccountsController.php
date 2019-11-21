@@ -13,6 +13,8 @@ use App\Inv_acc_bank_info;
 use App\Inv_acc_bank_statement;
 use PDF;
 
+use Dompdf\Dompdf;
+
 class CustomerAccountsController extends Controller
 {
 	public function depositWithdrawForm()
@@ -282,9 +284,10 @@ class CustomerAccountsController extends Controller
 		
 		}
 		
-		
 		$pdf = PDF::loadView('inventory.customer.accounts.accountstatementdetailsdownload',compact('inv_custs'));
 		return $pdf->download('account_statements.pdf');
+		
+		
 	}
 	public function loadAjaxInvoiceDetails(Request $request)
 	{

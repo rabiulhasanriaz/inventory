@@ -70,9 +70,9 @@
 
                        </h3>
                        <form method="get" action="" target="_blank">
-                         <button class="btn btn-warning" style="float: right; margin-top: -15px;margin-right: 5px;" id="print_btn"><i class="fa fa-print"></i> Print</button> 
+                         <button class="btn btn-warning" type="button" style="float: right; margin-top: -15px;margin-right: 5px;" id="print_btn"><i class="fa fa-print"></i> Print</button> 
                         
-                        <button class="btn btn-primary" style="float: right; margin-top: -15px;margin-right: 5px;" id="download_btn"><i class="fa fa-download"></i> Download</button> 
+                        <button class="btn btn-primary" type="button" style="float: right; margin-top: -15px;margin-right: 5px;" id="download_btn"><i class="fa fa-download"></i> Download</button> 
                         
                         <input type="hidden" name="sdate" value="{{ request()->start_date}}" id="sdate">
                         <input type="hidden" name="edate" value="{{ request()->end_date}}" id="edate">

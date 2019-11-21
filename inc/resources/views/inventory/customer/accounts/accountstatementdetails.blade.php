@@ -70,9 +70,11 @@
                         <tr>
                           <th>SL</th>
                           <th>Issue Date</th>
+                          <th>Invoice No</th>
                           <th>Description</th>
-                          <th>Credit</th>
+                          
                           <th>Debit</th>
+                          <th>Credit</th>
                           <th>Balance</th>
                           <th>Action</th>
                         </tr>
@@ -101,20 +103,24 @@
                         @endphp
 
                         <tr>
-                          <td>
+                          <td style="text-align: center;">
                             {{ ++$sl }}
                           </td>
                           <td>
                             {{ $inv_cust->inv_pro_inv_issue_date }}
                           </td>
                           <td>
+                            {{$inv_cust->inv_pro_inv_invoice_no}}
+                          </td>
+                          <td>
                             {{$inv_cust->inv_pro_inv_tran_desc}}
                           </td>
-                          <td style="text-align: right;">
-                            {{ number_format(App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no),2)}}
-                          </td>
+                         
                           <td style="text-align: right;">
                             {{ number_format(App\Inv_product_inventory::getDebitByInvoiceNo($inv_cust->inv_pro_inv_invoice_no),2)}}
+                          </td>
+                           <td style="text-align: right;">
+                            {{ number_format(App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no),2)}}
                           </td>
                           <td style="text-align: right;">
                             {{number_format((App\Inv_product_inventory::getCreditByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_cust->inv_pro_inv_invoice_no)),2) }}
@@ -130,13 +136,16 @@
 
                         </tbody>
                         <tfoot>
+
                           <tr>
+                            <td style="text-align: center;font-weight: bolder;">#</td>
                             <td colspan="3" style="text-align:right; font-weight: bolder;">Total:</td>
-                            <td style="font-weight: bolder; text-align: right;">
-                              {{number_format($total_credit,2)}}
-                            </td>
+                            
                             <td style="font-weight: bolder; text-align: right;">
                               {{number_format($total_debit,2)}}
+                            </td>
+                            <td style="font-weight: bolder; text-align: right;">
+                              {{number_format($total_credit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
                               {{number_format(($total_credit-$total_debit),2)}}
@@ -144,6 +153,7 @@
                             <td style="text-align: center;font-weight: bolder;">---</td>
                           </tr>
                         </tfoot>
+
                       </table>
                     </div>
                     <!-- /.box-body -->

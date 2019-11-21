@@ -43,8 +43,9 @@
                           <th>SL</th>
                           <th>Company</th>
                           <th>Name</th>
+                           <th>Debit</th>
                           <th>Credit</th>
-                          <th>Debit</th>
+                         
                           <th>Balance</th>
                           
                           <th class="text-center">Action</th>
@@ -79,12 +80,13 @@
 
                           <td>{{ $inv_sup->inv_sup_person}}</td>
 
-                          <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupCreditByID($inv_sup->inv_sup_id) , 2) }}</td>
+                         
 
                           
 
                           <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupDebitByID($inv_sup->inv_sup_id) , 2) }}</td>
 
+                           <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupCreditByID($inv_sup->inv_sup_id) , 2) }}</td>
                           
 
                           <td style="text-align: right;">{{ number_format(App\Inv_product_inventory::getSupBalanceByID($inv_sup->inv_sup_id) , 2) }}</td>
@@ -100,11 +102,12 @@
                         <tfoot>
                           <tr>
                             <td colspan="3" style="text-align:right; font-weight: bolder;">Total:</td>
-                            <td style="font-weight: bolder; text-align: right;">
-                              {{ number_format($total_credit ,2) }}
-                            </td>
+                            
                             <td style="font-weight: bolder; text-align: right;">
                               {{ number_format($total_debit ,2) }}
+                            </td>
+                            <td style="font-weight: bolder; text-align: right;">
+                              {{ number_format($total_credit ,2) }}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
                               {{ number_format($total_balance ,2) }}

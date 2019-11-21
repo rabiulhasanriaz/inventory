@@ -91,10 +91,12 @@
                                     <a href="javascript:void(0);" onclick="sell_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
                                   </li>
                                   <li class="divider"></li>
+                                  @if(Auth::user()->au_user_type == 4)
                                   <li>
-                                    <a href="{{ route('buy_edit.buy-edit-pro',['id' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
+                                    <a href="{{ route('buy_edit.buy-edit-pro',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
                                  </li>
                                 <li class="divider"></li>
+                                @endif
                                   <li>
                                     <a href="{{ route('reports.sell-pdf',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Download</a>
                                   </li>

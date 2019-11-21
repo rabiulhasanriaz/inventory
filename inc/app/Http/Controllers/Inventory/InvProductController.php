@@ -207,7 +207,7 @@ class InvProductController extends Controller
         $table = new Inv_product_type;
         $request->validate([
             'group' => 'required',
-            'type' => 'required',
+            'type' => 'required|unique:inv_product_types,inv_pro_type_name',
         ]);
         $table->inv_pro_type_com_id = $company;
         $table->inv_pro_type_grp_id = Input::get('group');

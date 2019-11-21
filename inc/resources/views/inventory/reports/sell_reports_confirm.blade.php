@@ -83,10 +83,12 @@
                                     <a href="javascript:void(0);" onclick="sell_reports('{{ $sell->inv_pro_inv_invoice_no }}')">Details</a>
                                   </li>
                                   <li class="divider"></li>
+                                  @if(Auth::user()->au_user_type == 4)
                                   <li>
-                                    <a href="{{ route('sell_edit.sell-pro-edit',['id' => $sell->inv_pro_inv_invoice_no]) }}">Edit</a>
+                                    <a href="{{ route('sell_edit.sell-pro-edit',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Edit</a>
                                  </li>
                                 <li class="divider"></li>
+                                @endif
                                   <li>
                                     <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Download</a>
                                   </li>

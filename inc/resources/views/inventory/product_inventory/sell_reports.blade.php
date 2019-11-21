@@ -90,6 +90,10 @@
                                   <li class="divider"></li>
                                   @endif
                                   <li>
+                                    <a href="{{ route('sell_edit.sell-pro-edit',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Edit</a>
+                                  </li>
+                                  <li class="divider"></li>
+                                  <li>
                                     <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Download</a>
                                   </li>
                                 </ul>

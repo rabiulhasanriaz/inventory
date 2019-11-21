@@ -232,6 +232,7 @@
 @endsection
 @section('custom_script')
 <script>
+
     $(document).ready(function(){
 
     @if(session()->has('print_buy_invoice'))

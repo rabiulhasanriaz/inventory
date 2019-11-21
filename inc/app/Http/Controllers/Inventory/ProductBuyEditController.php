@@ -173,6 +173,7 @@ class ProductBuyEditController extends Controller
                 ->get();
 
             $pre_inv_edit_count = $pre_sell_products->first()->inv_pro_inv_edit_count;
+            $pre_inv_confirm_status = $pre_sell_products->first()->inv_pro_inv_confirm;
 
             foreach ($pre_sell_products as $pre_sell_product) {
                 $pre_pro_det = Inv_product_detail::where('inv_pro_det_com_id', $com)
@@ -189,7 +190,7 @@ class ProductBuyEditController extends Controller
             
             Inv_product_inventory::where('inv_pro_inv_invoice_no', $new_memo_no)
                 ->where('inv_pro_inv_com_id', $com)
-                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_deal_type', 1)
                 ->where('inv_pro_inv_tran_type', 1)
                 ->delete();
 
@@ -254,6 +255,7 @@ class ProductBuyEditController extends Controller
                 $product_inventory->inv_pro_inv_deal_type =  1;//1=supplier
                 $product_inventory->inv_pro_inv_tran_type =  1;//1=buy/sell product-buy
                 $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_confirm = $pre_inv_confirm_status;
                 $product_inventory->inv_pro_inv_edit_count = $pre_inv_edit_count + 1;
                 $product_inventory->inv_pro_inv_submit_by = $user_id;
                 $product_inventory->inv_pro_inv_submit_at = Carbon::now();
@@ -311,10 +313,9 @@ class ProductBuyEditController extends Controller
     }
 
     public function removecart(Request $request){
-        
         Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',1)
+                ->where('inv_pro_temp_deal_type',3)
                 ->delete();
                 
     }
@@ -322,7 +323,7 @@ class ProductBuyEditController extends Controller
     public function updatecart(Request $request){
         $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',1)
+                ->where('inv_pro_temp_deal_type',3)
                 ->get();
         $row->inv_pro_temp_qty = $request->pro_qty;
         $row->inv_pro_temp_updated_at = Carbon::now();
@@ -342,7 +343,7 @@ class ProductBuyEditController extends Controller
         $user = Auth::user()->au_id;
         $com = Auth::user()->au_company_id;
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
-                                            ->where('inv_pro_temp_deal_type',1)
+                                            ->where('inv_pro_temp_deal_type',3)
                                             ->get();
         $pro_sup = Inv_supplier::where('inv_sup_com_id', $com)
             ->where('inv_sup_id', $request->supplier)

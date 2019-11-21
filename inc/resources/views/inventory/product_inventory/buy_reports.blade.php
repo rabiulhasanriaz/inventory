@@ -12,6 +12,14 @@
       </button>
     </div>
     @endif
+    @if(session()->has('sub_err'))
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        {{ session('sub_err') }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
         <section class="content-header">
           <div class="box">
               <div class="box-header">
@@ -83,8 +91,14 @@
                                       <a href="javascript:void(0);" onclick="buy_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
                                     </li>
                                     <li class="divider"></li>
+                                    @if(Auth::user()->au_user_type == 4 || Auth::user()->au_user_type == 5)
                                     <li>
                                       <a href="{{ route('reports.buy-confirm',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Confirm</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    @endif
+                                    <li>
+                                      <a href="{{ route('buy_edit.buy-edit-pro',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>

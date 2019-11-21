@@ -30,7 +30,7 @@
       </div>
       <!-- search form -->
       <br>
-      @if(check_or_permission([47]) == true)
+      @if(check_or_permission([62,61]) == true)
     <a class="btn btn-info d-block buy-sell-button" href="{{ route('buy.pro_sell') }}" style="margin-bottom:3px;">Sell</a>
     <a class="btn btn-danger d-block buy-sell-button" href="{{ route('buy.buy-product-new') }}">Buy</a>
       @endif

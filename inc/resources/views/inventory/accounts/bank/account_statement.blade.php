@@ -63,10 +63,10 @@
                       Account's Statement
 
                        </h3>
-                      {{-- <form method="get" action="" target="_blank">
-                         <button class="btn btn-warning" style="float: right; margin-top: -15px;margin-right: 5px;" id="print_btn"><i class="fa fa-print"></i> Print</button> 
+                   <form method="get" action="" target="_blank">
+                         <button class="btn btn-warning" type="button" style="float: right; margin-top: -15px;margin-right: 5px;" id="print_btn"><i class="fa fa-print"></i> Print</button> 
                         
-                        <button class="btn btn-primary" style="float: right; margin-top: -15px;margin-right: 5px;" id="download_btn"><i class="fa fa-download"></i> Download</button> 
+                        <button class="btn btn-primary" type="button" style="float: right; margin-top: -15px;margin-right: 5px;" id="download_btn"><i class="fa fa-download"></i> Download</button> 
                         
                         <input type="hidden" name="sdate" value="{{ request()->start_date}}" id="sdate">
                         <input type="hidden" name="edate" value="{{ request()->end_date}}" id="edate">
@@ -74,7 +74,7 @@
                          
                        </form>
                       
-                      --}}
+                  
                         <hr>
                     </div>
                    
@@ -111,8 +111,9 @@
                             <th style="text-align: center;">Details</th>
                             <th style="text-align: center;">Bank</th>
                           
-                            <th style="text-align: center;">Credit</th>
+                            
                             <th style="text-align: center;">Debit</th>
+                            <th style="text-align: center;">Credit</th>
                             <th style="text-align: center;">Running Balance</th>
                           </tr>
        <!--=========== Openning Balance================-->
@@ -149,11 +150,12 @@
                               {{ @$bank_info->bank_name }}
 
                             </td>
-                            <td style="text-align: right;">
-                             {{number_format($statement->inv_abs_credit,2)}}
-                            </td>
+                            
                             <td style="text-align: right;">
                                {{number_format($statement->inv_abs_debit,2)}}
+                            </td>
+                            <td style="text-align: right;">
+                             {{number_format($statement->inv_abs_credit,2)}}
                             </td>
                             <td style="text-align: right;">
                               {{ number_format($totalBalance,2) }}
@@ -169,11 +171,12 @@
                              <td style="text-align: right; font-weight: bolder;" colspan="2">
                               Total:
                             </td>
-                             <td style="text-align: right; font-weight: bolder;">
-                                {{number_format($totalCredit,2)}}
-                            </td>
+                             
                              <td style="text-align:right; font-weight: bolder;">
                              {{number_format($totalDebit,2)}}
+                            </td>
+                            <td style="text-align: right; font-weight: bolder;">
+                                {{number_format($totalCredit,2)}}
                             </td>
                             <td style="text-align: right;font-weight: bolder;">
                              {{number_format($totalBalance,2)}}
@@ -247,8 +250,8 @@ $("#download_btn").click(function () {
             let sdate = $("#sdate").val();
             let edate = $("#edate").val();
             let _token=$("#_token").val();
-            let supid=$("#supid").val();
-            let route = "{{ route('accounts.general_ledger_download',request()->supid)}}?sdate="+ sdate +"&edate="+edate+"&supid="+supid+"&download_btn";
+          
+            let route = "{{ route('accounts.account-statement-download')}}?sdate="+ sdate +"&edate="+edate+"&download_btn";
             window.open(route, '_blank');
         });
 
@@ -257,8 +260,8 @@ $("#print_btn").click(function () {
             let sdate = $("#sdate").val();
             let edate = $("#edate").val();
             let _token=$("#_token").val();
-            let supid=$("#supid").val();
-            let route = "{{ route('accounts.general_ledger_download',request()->supid)}}?sdate="+ sdate +"&edate="+edate+"&supid="+supid+"&print_btn";
+           
+            let route = "{{ route('accounts.account-statement-download')}}?sdate="+ sdate +"&edate="+edate+"&print_btn";
             window.open(route, '_blank');
         });
 </script>

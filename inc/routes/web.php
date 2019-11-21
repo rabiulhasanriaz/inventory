@@ -249,6 +249,18 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
             
             Route::get('account-statement-details/{customer_id}','Inventory\CustomerAccountsController@showAccountStatementDetails')->name('account-statement-details');
 
+              //=====================17-11-19 ================
+
+        Route::get('general_ledger_download','Inventory\BankAccountController@downLoadGeneralLedger')->name('general_ledger_download');
+
+        //=====================17-11-19 ================
+
+//  ====================18-11-19 ===============
+      Route::get('account-statement','Inventory\BankAccountController@showAccountStatementForm')->name('account-statement');
+        Route::post('account-statement','Inventory\BankAccountController@showAccountStatementData')->name('account-statement');
+            
+       
+
             Route::get('download-customer-account-statement-details/{customer_id}','Inventory\CustomerAccountsController@downloadAccountStatementDetails')->name('download-customer-account-statement-details');
 
 
@@ -318,7 +330,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
     });
 
     Route::group(['prefix' => 'sell' , 'as' => 'sell_edit.'],function(){
-        Route::get('sell-edit/{id}','Inventory\ProductSellEditController@sell_product_edit')->name('sell-pro-edit');
+        Route::get('sell-edit/{invoice}','Inventory\ProductSellEditController@sell_product_edit')->name('sell-pro-edit');
         Route::get('sell_edit/add-to-cart','Inventory\ProductSellEditController@addToCart')->name('add-to-cart');
         Route::get('sell_edit/add-to-cart-warrenty-product','Inventory\ProductSellEditController@addToCartWarrentyProduct')->name('add-to-cart-warrenty-product');
         Route::get('sell_edit/add-warrenty-product-sl-no','Inventory\ProductSellEditController@addWarrentyProductSlNo')->name('add-warrenty-product-sl-no');
@@ -335,7 +347,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
     });
 
     Route::group(['prefix' => 'buy' , 'as' => 'buy_edit.'],function(){
-        Route::get('buy-edit/{id}','Inventory\ProductBuyEditController@buy_product_edit')->name('buy-edit-pro');
+        Route::get('buy-edit/{invoice}','Inventory\ProductBuyEditController@buy_product_edit')->name('buy-edit-pro');
 
         Route::get('buy_edit/add-to-cart','Inventory\ProductBuyEditController@addToCart')->name('add-to-cart');
         Route::get('buy_edit/add-to-cart-warrenty-product','Inventory\ProductBuyEditController@addToCartWarrentyProduct')->name('add-to-cart-warrenty-product');
@@ -397,8 +409,9 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         // ==================/18-11-19==================
 
         
-        
-
+        //=======================20-11-19===================
+        Route::get('account-statement-download','Inventory\BankAccountController@downloadAccountStatement')->name('account-statement-download');
+//================/20-11-19================
         // Routes for loading ajax for balance query
 
         Route::get('ajax-load-bank-balance','Inventory\BankAccountController@ajaxLoadBankBalance')->name('ajax-load-bank-balance');

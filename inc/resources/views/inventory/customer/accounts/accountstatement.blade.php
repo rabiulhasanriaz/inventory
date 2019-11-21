@@ -43,8 +43,9 @@
                           <th>SL</th>
                           <th>Company</th>
                           <th>Name</th>
-                          <th>Credit</th>
                           <th>Debit</th>
+                          <th>Credit</th>
+                          
                           <th>Balance</th>
                           
                           <th class="text-center">Action</th>
@@ -77,8 +78,9 @@
                           <td>{{ $inv_cus_invt->inv_cus_com_name }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_name}}</td>
                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id),2)}}</td>
-                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                         
                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('customer.accounts.account-statement-details',$inv_cus_invt->inv_cus_id)}}">
@@ -92,11 +94,12 @@
                         <tfoot>
                           <tr>
                             <td colspan="3" style="text-align:right; font-weight: bolder;">Total:</td>
-                            <td style="font-weight: bolder; text-align: right;">
-                              {{number_format($total_credit,2)}}
-                            </td>
+                            
                             <td style="font-weight: bolder; text-align: right;">
                               {{number_format($total_debit,2)}}
+                            </td>
+                            <td style="font-weight: bolder; text-align: right;">
+                              {{number_format($total_credit,2)}}
                             </td>
                             <td style="font-weight: bolder; text-align: right;">
                               {{number_format($total_balance,2)}}

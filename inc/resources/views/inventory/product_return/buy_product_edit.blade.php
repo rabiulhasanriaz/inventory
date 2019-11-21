@@ -324,7 +324,7 @@
             alert("Minimum Quantity is 1");
             return false;
         }
-        let route_url = "{{ route('buy.buy-update-cart') }}";
+        let route_url = "{{ route('buy_edit.update-cart') }}";
         $.ajax({
             type: "GET",
             url: route_url,
@@ -343,7 +343,7 @@
             return false;
         }
         
-        let route_url = "{{ route('buy.buy-remove-cart') }}";
+        let route_url = "{{ route('buy_edit.remove-cart') }}";
         $.ajax({
             type: "GET",
             url: route_url,
@@ -358,7 +358,7 @@
         let pro_price = parseFloat($("#pro_price_"+pro_det_id).val());
         let exp_date = $("#exp_date_"+pro_det_id).val();
         
-        let route_url = "{{ route('buy.buy-add-to-cart-warrenty-product') }}";
+        let route_url = "{{ route('buy_edit.add-to-cart-warrenty-product') }}";
         
         $.ajax({
             type: "GET",
@@ -390,7 +390,7 @@
             alert("sl no is required");
             return false;
         }
-        let route_url = "{{ route('buy.buy-add-warrenty-product-sl-no') }}";
+        let route_url = "{{ route('buy_edit.add-warrenty-product-sl-no') }}";
         $.ajax({
             type: "GET",
             url: route_url,
@@ -413,7 +413,7 @@
 
     function remove_product_sl(product_id, sl_no) {
 
-        let route_url = "{{ route('buy.buy-remove-warrenty-product-sl') }}";
+        let route_url = "{{ route('buy_edit.remove-warrenty-product-sl') }}";
         $.ajax({
             type: "GET",
             url: route_url,

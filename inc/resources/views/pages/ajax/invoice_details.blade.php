@@ -71,8 +71,8 @@
 					<tr>
 						<td style="text-align: right;font-weight: bolder;" colspan="3">Total: </td>
 						<td style="text-align: right;font-weight: bolder;">{{$totalQuantaty}}</td>
-						<td style="text-align: right;font-weight: bolder;">{{$totalUnitPrice}}</td>
-						<td style="text-align: right;font-weight: bolder;">{{$totalPrice}}</td>
+						<td style="text-align: right;font-weight: bolder;">{{number_format($totalUnitPrice,2)}}</td>
+						<td style="text-align: right;font-weight: bolder;">{{number_format($totalPrice,2)}}</td>
 					</tr>
 				</tfoot>
 
@@ -85,8 +85,9 @@
 						<th style="text-align:center;">SL</th>
 
 						<th style="text-align:center;">Description</th>
-						<th style="text-align:center;">Credit</th>
 						<th style="text-align:center;">Debit</th>
+						<th style="text-align:center;">Credit</th>
+						
 						<th style="text-align:center;">Balance</th>
 
 
@@ -108,11 +109,12 @@
 						<td style="text-align: center;"> 
 							{{$invoiceInfo->inv_pro_inv_tran_desc}}
 						</td>
-						<td style="text-align: right;">
-							{{ number_format($invoiceInfo->inv_pro_inv_credit,2) }}
-						</td>
+					
 						<td style="text-align: right;">
 							{{ number_format($invoiceInfo->inv_pro_inv_debit,2) }}
+						</td>
+							<td style="text-align: right;">
+							{{ number_format($invoiceInfo->inv_pro_inv_credit,2) }}
 						</td>
 						<td style="text-align: right;">
 							{{ number_format(($invoiceInfo->inv_pro_inv_credit) - ($invoiceInfo->inv_pro_inv_debit),2) }}
@@ -125,8 +127,9 @@
 				<tfoot>
 					<tr>
 						<td style="text-align: right;font-weight: bolder;" colspan="2">Total: </td>
-						<td style="text-align: right;font-weight: bolder;">{{ number_format($totalCredit,2)}} </td>
+						
 						<td style="text-align: right;font-weight: bolder;">{{number_format($totalDebit,2)}} </td>
+						<td style="text-align: right;font-weight: bolder;">{{ number_format($totalCredit,2)}} </td>
 						<td style="text-align: right;font-weight: bolder;">{{ number_format($totalCredit-$totalDebit,2) }} </td>
 					</tr>
 				</tfoot>
