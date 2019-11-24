@@ -256,8 +256,6 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         //=====================17-11-19 ================
 
 //  ====================18-11-19 ===============
-      Route::get('account-statement','Inventory\BankAccountController@showAccountStatementForm')->name('account-statement');
-        Route::post('account-statement','Inventory\BankAccountController@showAccountStatementData')->name('account-statement');
             
        
 
@@ -327,6 +325,10 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_print/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-print');
         Route::get('buy_print/{invoice}','Inventory\ReportsController@buy_reports_pdf')->name('buy-print');
 
+        Route::get('buy_return_print/{invoice}','Inventory\ReportsController@buyReturnInvoicePrint')->name('buy-return-print');
+        Route::get('sell_return_print/{invoice}','Inventory\ReportsController@sellReturnInvoicePrint')->name('sell-return-print');
+
+
     });
 
     Route::group(['prefix' => 'sell' , 'as' => 'sell_edit.'],function(){
@@ -361,6 +363,33 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
 
 
         Route::get('buy_edit_again/{invoice}','Inventory\ProductBuyEditController@sell_edit_again')->name('sell-edit-again');
+    });
+
+    Route::group(['prefix' => 'return' , 'as' => 'product_return.'],function(){
+        Route::get('sell_return','Inventory\ProductReturnController@sale_return')->name('sell-return-view');
+        Route::get('sell_return_ajax','Inventory\ProductReturnController@sale_product_ajax')->name('sale-return-ajax');
+        
+        Route::get('sell/add-to-cart','Inventory\ProductSellReturnController@addToCart')->name('sell.add-to-cart');
+        Route::get('sell/add-to-cart-warrenty-product','Inventory\ProductSellReturnController@addToCartWarrentyProduct')->name('sell.add-to-cart-warrenty-product');
+        Route::get('sell/add-warrenty-product-sl-no','Inventory\ProductSellReturnController@addWarrentyProductSlNo')->name('sell.add-warrenty-product-sl-no');
+        Route::get('sell/remove-warrenty-product-sl','Inventory\ProductSellReturnController@removeWarrentyProductSlNo')->name('sell.remove-warrenty-product-sl');
+        Route::get('sell/get-cart','Inventory\ProductSellReturnController@getCartContent')->name('sell.get-cart');
+        Route::get('sell/cart-remove','Inventory\ProductSellReturnController@removecart')->name('sell.remove-cart');
+        Route::get('sell/sell-confirm','Inventory\ProductSellReturnController@invTemporaryProduct')->name('sell.sell-confirm');
+        Route::post('sell/cart-submit','Inventory\ProductSellReturnController@cartSubmit')->name('sell.cart-submit');
+
+        
+        Route::get('buy_return','Inventory\ProductReturnController@buy_return')->name('buy-return-view');
+        Route::get('buy_return_ajax','Inventory\ProductReturnController@buy_product_ajax')->name('buy-return-ajax');
+        
+        Route::get('buy/add-to-cart','Inventory\ProductBuyReturnController@addToCart')->name('buy.add-to-cart');
+        Route::get('buy/add-to-cart-warrenty-product','Inventory\ProductBuyReturnController@addToCartWarrentyProduct')->name('buy.add-to-cart-warrenty-product');
+        Route::get('buy/add-warrenty-product-sl-no','Inventory\ProductBuyReturnController@addWarrentyProductSlNo')->name('buy.add-warrenty-product-sl-no');
+        Route::get('buy/remove-warrenty-product-sl','Inventory\ProductBuyReturnController@removeWarrentyProductSlNo')->name('buy.remove-warrenty-product-sl');
+        Route::get('buy/get-cart','Inventory\ProductBuyReturnController@getCartContent')->name('buy.get-cart');
+        Route::get('buy/cart-remove','Inventory\ProductBuyReturnController@removecart')->name('buy.remove-cart');
+        Route::get('buy/buy-confirm','Inventory\ProductBuyReturnController@invTemporaryProduct')->name('buy.buy-confirm');
+        Route::post('buy/cart-submit','Inventory\ProductBuyReturnController@cartSubmit')->name('buy.cart-submit');
     });
 
     Route::group(['prefix' => 'damage' , 'as' => 'pro_damage.'],function(){

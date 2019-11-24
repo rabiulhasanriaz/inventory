@@ -77,10 +77,10 @@
                           <td>{{ ++$sl }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_com_name }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_name}}</td>
+                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                        
                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id),2)}}</td>
-                         
-                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id),2)}}</td>
-                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id),2)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('customer.accounts.account-statement-details',$inv_cus_invt->inv_cus_id)}}">

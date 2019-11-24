@@ -280,4 +280,44 @@ class ReportsController extends Controller
 		return $pdf->download('buy_statements.pdf');
     }
 
+    public function buyReturnInvoicePrint(Request $request,$invoice){
+        $com = Auth::user()->au_company_id;
+
+        $invoice_detail = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_deal_type',1)
+                                        ->where('inv_pro_inv_tran_type',2)
+                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->first();
+
+        $invoice = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_deal_type',1)
+                                        ->where('inv_pro_inv_tran_type',2)
+                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->get();
+
+        return view('inventory.reports.buy_return_print',compact('invoice','invoice_detail'));
+        $pdf = PDF::loadView('inventory.reports.BuyIndividualInvoicePdf',compact('invoice','invoice_detail'));
+        return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
+    }
+
+    public function sellReturnInvoicePrint(Request $request,$invoice){
+        $com = Auth::user()->au_company_id;
+
+        $invoice_detail = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_deal_type',2)
+                                        ->where('inv_pro_inv_tran_type',2)
+                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->first();
+
+        $invoice = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_deal_type',2)
+                                        ->where('inv_pro_inv_tran_type',2)
+                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->get();
+        return view('inventory.reports.sell_return_print',compact('invoice','invoice_detail'));
+
+        $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
+        return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
+    }
+
 }

@@ -182,11 +182,11 @@ footer {
                   <td id="text">Supplier Name</td>
                   <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_person'] }}</td>
                   <td id="text">Invoice No:</td>
-                  <td id="desc"></td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
               <tr>
                   <td id="text">Address</td>
-                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_address'] }}</td>
+                  <td id="desc"></td>
                   <td id="text">Mobile</td>
                   <td id="desc"></td>
               </tr>
@@ -194,7 +194,7 @@ footer {
                   <td id="text">Bought By</td>
                   <td id="desc">{{ Auth::user()->au_company_name }}</td>
                   <td id="text">Issue Date</td>
-                  <td id="desc"></td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
               </tr>
           </table>
         {{-- <div>Invoice</div>
@@ -250,9 +250,9 @@ footer {
                   <td>{{ $buy->inv_pro_inv_short_qty }}</td>
                   <td>{{ $buy->inv_pro_inv_total_qty }}</td>
                   <td>{{ $buy->inv_pro_inv_unit_price }}</td>
-                  <td class="total">{{ $buy->inv_pro_inv_debit }}</td>
+                  <td class="total">{{ $buy->inv_pro_inv_credit }}</td>
               </tr>
-              @php($balance = $balance + $buy->inv_pro_inv_debit)
+              @php($balance = $balance + $buy->inv_pro_inv_credit)
               @endforeach
               <tr>
                 <td colspan="7">SUBTOTAL :</td>
@@ -263,7 +263,7 @@ footer {
                 <td class="total">0000.00</td>
               </tr>
               <tr>
-                <td colspan="7" class="grand total">NET PAYABLE AMOUNT :</td>
+                <td colspan="7" class="grand total">NET REFUNDABLE AMOUNT :</td>
                 <td class="grand total">{{ number_format($balance,2) }}</td>
               </tr>
             </tbody>

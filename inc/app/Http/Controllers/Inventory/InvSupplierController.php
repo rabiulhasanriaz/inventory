@@ -36,6 +36,7 @@ class InvSupplierController extends Controller
 
         DB::beginTransaction();
         try {
+            
             $sup = new Inv_supplier;
             $sup->inv_sup_com_id = $company_id;
             $sup->inv_sup_com_name = Input::get('company');

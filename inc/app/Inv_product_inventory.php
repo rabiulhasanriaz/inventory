@@ -30,6 +30,7 @@ class Inv_product_inventory extends Model
         'inv_pro_inv_tran_type',
         'inv_pro_inv_confirm',
         'inv_pro_inv_status',
+        'inv_pro_inv_sell_ref',
         'inv_pro_inv_edit_count',
         'inv_pro_inv_submit_at',
         'inv_pro_inv_submit_by',
@@ -178,6 +179,36 @@ class Inv_product_inventory extends Model
 
     public static function ProductSerial($pro_inv_id){
         return Inv_product_inventory_detail::where('inv_pro_invdet_proinv_id', $pro_inv_id)->pluck('inv_pro_invdet_slno')->toArray();
+    }
+
+
+    public static function product_buy_return_available_qty($pro_inv_id) {
+        $inv = Inv_product_inventory::where('inv_pro_inv_id', $pro_inv_id)
+            ->where('inv_pro_inv_deal_type', 1)
+            ->where('inv_pro_inv_tran_type', 1)
+            ->first();
+        $return_qty = Inv_product_inventory::where('inv_pro_inv_sell_ref', $pro_inv_id)
+            ->where('inv_pro_inv_deal_type', 1)
+            ->where('inv_pro_inv_tran_type', 2)
+            ->where('inv_pro_inv_prodet_id', $inv->inv_pro_inv_prodet_id)
+            ->sum('inv_pro_inv_qty');
+        $available_return_qty = $inv->inv_pro_inv_qty - $return_qty;
+        return $available_return_qty;
+    }
+
+
+    public static function product_sell_return_available_qty($pro_inv_id) {
+        $inv = Inv_product_inventory::where('inv_pro_inv_id', $pro_inv_id)
+            ->where('inv_pro_inv_deal_type', 2)
+            ->where('inv_pro_inv_tran_type', 1)
+            ->first();
+        $return_qty = Inv_product_inventory::where('inv_pro_inv_sell_ref', $pro_inv_id)
+            ->where('inv_pro_inv_deal_type', 2)
+            ->where('inv_pro_inv_tran_type', 2)
+            ->where('inv_pro_inv_prodet_id', $inv->inv_pro_inv_prodet_id)
+            ->sum('inv_pro_inv_qty');
+        $available_return_qty = $inv->inv_pro_inv_qty - $return_qty;
+        return $available_return_qty;
     }
 
 }

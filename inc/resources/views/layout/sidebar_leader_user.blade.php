@@ -909,6 +909,31 @@
                                       </li>
                                       @endif
                                       @endif
+                                      @if(check_or_permission([71]) == true)
+                                      @if(in_array('70',$user_accesses))
+                                      <li class="treeview @yield('return_class')">
+                                        <a href="#" style="text-decoration: none;">
+                                          <i class="fa fa-dashboard"></i> <span>Return</span>
+                                          <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                          </span>
+                                        </a>
+                                          <ul class="treeview-menu">
+                                                <li class="@yield('sale_return')">
+                                                  <a href="{{ route('product_return.sell-return-view') }}">
+                                                    <i class="fa fa-circle-o"></i> Sale Return
+                                                  </a>
+                                                </li>
+                                                <li class="@yield('buy_return')">
+                                                    <a href="{{ route('product_return.buy-return-view') }}">
+                                                      <i class="fa fa-circle-o"></i> Buy Return
+                                                    </a>
+                                                </li>
+                                          </ul>
+        
+                                      </li>
+                                      @endif
+                                      @endif
                                       @if(check_or_permission([69]) == true)
                                       @if(in_array('69',$user_accesses))
                                       <li class="@yield('short_quantity')">
