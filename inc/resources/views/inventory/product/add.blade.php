@@ -68,7 +68,7 @@
                         </div>
                         <div id="others-supplier"></div>
                         <div class="form-group">
-                          <label for="inputEmail3" class="col-sm-2 control-label"> Product Name/Model
+                          <label for="inputEmail3" class="col-sm-2 control-label"> Product Model
                               <b class="text-danger">*</b>
                           </label>
                           <div class="col-sm-6">
@@ -133,7 +133,8 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Short Quantity</label>
                           <div class="col-sm-6">
-                            <input type="number" name="pro_short" autocomplete="off" value="{{ old('pro_short') }}" class="form-control" id="" placeholder="Enter Product Short Quantity">
+                            <input type="number" name="pro_short" autocomplete="off" value="{{ (old('pro_short') == '')? '0':old('pro_short') }}" class="form-control" id="" placeholder="Enter Product Short Quantity">
+                            <p>(0 Quantity will not appear on your Quantity List)</p>
                           </div> 
                         </div>
                       </div>

@@ -76,8 +76,12 @@
                                   @elseif($statement->inv_abs_reference_type==3||$statement->inv_abs_reference_type==4)
                                       @php($reference='Expenses')
                                     
-                                      @elseif($statement->inv_abs_reference_type==5)
-                                        @php($reference='Contra Transaction.')
+                                  @elseif($statement->inv_abs_reference_type==5)
+                                    @php($reference='Contra Transaction.')
+                                  @elseif($statement->inv_abs_reference_type==6)
+                                  @php($reference='Bank Withdraw.')
+                                  @elseif($statement->inv_abs_reference_type==7)
+                                  @php($reference='Bank Deposit.')
                                 @endif
                             <tr>
                                 <td>{{ ++$sl }}</td>

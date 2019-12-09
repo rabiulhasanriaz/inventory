@@ -307,7 +307,7 @@ class InventoryCartController extends Controller
         ]);
         
         DB::beginTransaction();
-        // try {
+        try {
             $com = Auth::user()->au_company_id;
             $user_id = Auth::user()->au_id;
             $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
@@ -379,6 +379,7 @@ class InventoryCartController extends Controller
                 }  else {
                     $req_sl_ids = explode(',', $content->inv_pro_temp_slno);
                     $k = 0;
+                    $new_req_sl_ids =array();
                     foreach ($req_sl_ids as $sl_id) {
                         if($sl_id == '') {
                             unset($req_sl_ids[$k]);
@@ -474,11 +475,11 @@ class InventoryCartController extends Controller
                 ->delete();
 
             
-        // } catch (\Exception $e) {
-        //     DB::rollback();
-        //     $msg = "Something went wrong to sell product. error-code: 1010".$e->getMessage();
-        //     return redirect()->back()->with(['sub_err' => $msg]);
-        // }
+        } catch (\Exception $e) {
+            DB::rollback();
+            $msg = "Something went wrong to sell product. error-code: 1010".$e->getMessage();
+            return redirect()->back()->with(['sub_err' => $msg]);
+        }
 
         DB::commit();
         $msg = "Sell Products Successfully completed";

@@ -669,6 +669,27 @@
                                             </ul>
           
                                         </li>
+                                        <li class="treeview @yield('profit_loss')">
+                                          <a href="#" style="text-decoration: none;">
+                                            <i class="fa fa-dashboard"></i> <span>Profit/Loss</span>
+                                            <span class="pull-right-container">
+                                              <i class="fa fa-angle-left pull-right"></i>
+                                            </span>
+                                          </a>
+                                            <ul class="treeview-menu">
+                                                  <li class="@yield('profit_class')">
+                                                    <a href="{{ route('profit_loss.profit') }}">
+                                                      <i class="fa fa-circle-o"></i> Profit Statement
+                                                    </a>
+                                                  </li>
+                                                  <li class="@yield('loss_class')">
+                                                      <a href="{{ route('profit_loss.loss') }}">
+                                                        <i class="fa fa-circle-o"></i> Loss Statement
+                                                      </a>
+                                                  </li>
+                                            </ul>
+          
+                                        </li>
                                       <li class="@yield('short_quantity')">
                                           <a href="{{ route('inventory.short') }}">
                                             <i class="fa fa-circle-o"></i> Short Quatity

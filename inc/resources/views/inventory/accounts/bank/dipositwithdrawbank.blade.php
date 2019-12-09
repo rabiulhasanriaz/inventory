@@ -54,8 +54,8 @@
                           <label for="inputEmail3" class="col-sm-2 control-label">Balance Type:</label>
                           <div class="col-sm-6">
                             <select name="balance_type" required  class="form-control" required>
-                              <option value="3">Credit/Deposit</option>
-                              <option value="4">Debit/Withdraw</option>
+                              <option value="6">Credit/Deposit</option>
+                              <option value="7">Debit/Withdraw</option>
                               
                             </select>
                           </div>
@@ -66,7 +66,7 @@
                            <input type="text" name="trans_date" data-date-format="yyyy-mm-dd" autocomplete="off"  class="form-control" id="opendate" placeholder="Select A Date" >
                           </div>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Expenses Category:</label>
                           <div class="col-sm-6">
                             <select name="category_id" required class="form-control select2" id="category" onchange="loadExpense()">
@@ -77,15 +77,15 @@
                               @endforeach
                             </select>
                           </div>
-                        </div>
-                        <div class="form-group">
+                        </div> --}}
+                        {{-- <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Expense:</label>
                           <div class="col-sm-6 expense_name_div"> 
                              <select name="expense_id" required   class="form-control select2" id="expense_id" >
                               <option value="">Choose A Category First</option>
                             </select>
                           </div>
-                        </div>
+                        </div> --}}
 
                          <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Reference:</label>

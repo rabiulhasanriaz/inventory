@@ -264,7 +264,7 @@ class InventoryPurchaseCartController extends Controller
 
                 $req_sl_ids = explode(',', $content->inv_pro_temp_slno);
                 $k = 0;
-                
+                $new_req_sl_ids = array();
                 foreach ($req_sl_ids as $sl_id) {
                     if($sl_id == '') {
                         unset($req_sl_ids[$k]);

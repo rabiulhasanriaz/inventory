@@ -279,13 +279,13 @@ class SdsController extends Controller
                                       ->Where('qb_company_id',$com_id)
                                       ->orWhere('qb_staff_id',$user_id)
                                       ->get();
-        return view('pages.customer_list',compact('my_customers','user'));
+        return view('pages.customer_list',compact('my_customers'));
     }
     public function user_customer_list($id) {
         $com_id = Auth::user()->au_company_id;
         $user_id = $id;
         $my_customers = Sds_query_book::where('qb_entry_by', $user_id)->where('qb_company_id',$com_id)->get();
-        return view('pages.customer_list',compact('my_customers','user'));
+        return view('pages.customer_list',compact('my_customers'));
     }
     public function client_feedback(Request $request,$id){
 
@@ -523,7 +523,7 @@ class SdsController extends Controller
     public function order_customer(){
         $com_id = Auth::user()->au_company_id;
         $orders = Client_feedback::where('cf_client_feedback',6)->where('cf_company_id',$com_id)->get();
-        return view('pages.order_customer',compact('orders','cus_detail'));
+        return view('pages.order_customer',compact('orders'));
     }
     public function visited_customer(){
         return view('pages.visited_customer');

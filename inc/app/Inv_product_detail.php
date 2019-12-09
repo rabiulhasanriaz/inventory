@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Inv_product_detail extends Model
 {
@@ -43,8 +44,13 @@ class Inv_product_detail extends Model
         $product = Inv_product_detail::where('inv_pro_det_id',$id)
                                      ->first();
         $supplier_id = explode('-',$product->inv_pro_det_sup);
+        
         if (!empty($supplier_id)) {
             $suppliers = Inv_supplier::whereIn('inv_sup_id',$supplier_id)->get();
+            if (count($suppliers) <= 0) {
+                return null;
+            }
+            
             return $suppliers;
         }else {
             return null;
@@ -60,6 +66,162 @@ class Inv_product_detail extends Model
         }
         return '';
     }
+
+
+    public static function get_total_buy_qty($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 1)
+                ->where('inv_pro_inv_tran_type', 1)
+                ->sum('inv_pro_inv_total_qty');
+
+            return $total_buy_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_buy_return_qty($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 1)
+                ->where('inv_pro_inv_tran_type', 2)
+                ->sum('inv_pro_inv_qty');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_sell_qty($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 1)
+                ->sum('inv_pro_inv_qty');
+
+            return $total_buy_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_sell_return_qty($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 2)
+                ->sum('inv_pro_inv_qty');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_buy_price($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 1)
+                ->where('inv_pro_inv_tran_type', 1)
+                ->sum('inv_pro_inv_debit');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_sell_price($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 1)
+                ->sum('inv_pro_inv_debit');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_buy_return_price($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 1)
+                ->where('inv_pro_inv_tran_type', 2)
+                ->sum('inv_pro_inv_credit');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function get_total_sell_return_price($pro_id) {
+        $com = Auth::user()->au_company_id;
+
+        $product = Inv_product_detail::where('inv_pro_det_com_id', $com)
+            ->where('inv_pro_det_id', $pro_id)
+            ->first();
+        if(!empty($product)) {
+            $total_buy_ret_qty = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
+                ->where('inv_pro_inv_prodet_id', $product->inv_pro_det_id)
+                ->where('inv_pro_inv_deal_type', 2)
+                ->where('inv_pro_inv_tran_type', 2)
+                ->sum('inv_pro_inv_credit');
+
+            return $total_buy_ret_qty;
+        } else {
+            return 0;
+        }
+    }
+
+
+    
 
     
 }

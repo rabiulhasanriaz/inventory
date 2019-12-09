@@ -152,7 +152,7 @@ class BankAccountController extends Controller
 				$inv_Acc_Statement=new Inv_acc_bank_statement();
 				$inv_Acc_Statement->inv_abs_company_id=Auth::user()->au_company_id;
 				//$inv_Acc_Statement->inv_abs_inventory_id=
-				$inv_Acc_Statement->inv_abs_reference_id=$request->expense_id;// balance 3 for credit and 4 for debit
+				// $inv_Acc_Statement->inv_abs_reference_id=$request->expense_id;// balance 3 for credit and 4 for debit
 				$inv_Acc_Statement->inv_abs_reference_type= $request->balance_type;
 				$inv_Acc_Statement->inv_abs_bank_id=$request->bank_id;
 				
@@ -162,7 +162,7 @@ class BankAccountController extends Controller
 				$inv_Acc_Statement->inv_abs_submit_by=Auth::user()->au_id;
 				$inv_Acc_Statement->inv_abs_submit_at=Carbon::now();
 				
-				if($request->balance_type==3)
+				if($request->balance_type==6)
 				{
 					$inv_Acc_Statement->inv_abs_credit=$request->paid_amount;
 					$inv_Acc_Statement->inv_abs_debit=0;

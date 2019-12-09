@@ -399,6 +399,11 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('pro_damage_list','Inventory\ProductInventoryController@damage_list')->name('damage-list');
     });
 
+    Route::group(['prefix' => 'profit_loss' , 'as' => 'profit_loss.'],function(){
+        Route::get('profit','Inventory\ProfitLossController@profit_statement')->name('profit');
+        Route::get('loss','Inventory\ProfitLossController@loss_statement')->name('loss');
+    });
+
 
     //=============Inventory Account Controller Start================
     Route::group(['prefix' => 'accounts','as' => 'accounts.'],  function(){

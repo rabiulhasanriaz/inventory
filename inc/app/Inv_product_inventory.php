@@ -211,4 +211,13 @@ class Inv_product_inventory extends Model
         return $available_return_qty;
     }
 
+    public static function profitLoss($pro_id){
+        $pro_loss = Inv_product_inventory::where('inv_pro_inv_prodet_id',$pro_id)
+                                            ->where('inv_pro_inv_deal_type',2)
+                                            ->where('inv_pro_inv_tran_type',2)
+                                            ->first();
+        
+                                            return $pro_loss;
+    }
+
 }

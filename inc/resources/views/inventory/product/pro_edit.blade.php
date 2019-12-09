@@ -55,7 +55,7 @@
                               <b class="text-danger" ></b>
                           </label>
                           <div class="col-sm-6" id="select_div">
-                              <select name="supplier[]" class="form-control select2" id="select" required>
+                              <select name="supplier[]" class="form-control select2" id="select">
                                   <option value="">Select</option>                          
                                   @foreach($suppliers as $supplier)           
                                     <option value="{{ $supplier->inv_sup_id }}">
