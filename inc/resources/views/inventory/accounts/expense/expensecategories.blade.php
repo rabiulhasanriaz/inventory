@@ -22,6 +22,14 @@
 </button>
 </div>
 @endif
+@if(Session::has('exp_up'))
+<div class="alert alert-success alert-dismissible" role="alert">
+{{ session('exp_up') }}
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+@endif
 
                    <div class="box">
                     <div class="box-header with-border">
@@ -87,10 +95,26 @@
                                       {{number_format(App\Inv_acc_bank_statement::getTotalExpensesByCategory($row->inv_acc_exp_cat_category_id),2)}}
                                     </td>
                                 <td style="text-align: center;">
-                                  <a href="#" onclick="showCategoryExpensesDetails('{{ $row->inv_acc_exp_cat_category_id }}')" data-toggle="modal" data-target="#details">
-
-                                  <i class="fa fa-eye"></i>
-                                </a>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info btn-xs">Action</button>
+                                        <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown">
+                                          <span class="caret"></span>
+                                          <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
+                                          <li>
+                                              <a href="#" onclick="showCategoryExpensesDetails('{{ $row->inv_acc_exp_cat_category_id }}')" data-toggle="modal" data-target="#details">
+                                              Show
+                                            </a>
+                                          </li>
+                                          <li class="divider"></li>
+                                          <li>
+                                              <a href="{{ route('accounts.expense-category-edit',['cat_id' => $row->inv_acc_exp_cat_category_id]) }}">
+                                              Update
+                                            </a>
+                                          </li>
+                                        </ul>
+                                  </div>
                                 </td>
                                 </tr>
                             @endforeach
@@ -162,6 +186,7 @@ $( "#to" ).datepicker({
       }
     });
   }
+
 
 
 </script>

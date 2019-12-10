@@ -192,7 +192,7 @@ footer {
               </tr>
               <tr>
                   <td id="text">Sold By</td>
-                  <td id="desc">{{ Auth::user()->au_company_name }}</td>
+                  <td id="desc">{{ $invoice_detail->getSoldByInfo['au_name'] }}</td>
                   <td id="text">Issue Date</td>
                   <td id="desc">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
               </tr>

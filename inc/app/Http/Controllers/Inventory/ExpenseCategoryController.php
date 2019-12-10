@@ -22,6 +22,26 @@ class ExpenseCategoryController extends Controller
             ->get();
         return view('inventory.accounts.expense.expensecategories',compact('categories'));
 	}
+
+	public function expense_category_edit(Request $request,$id){
+		$categories = Inv_acc_expense_category::where('inv_acc_exp_cat_status', 1)
+			->where('inv_acc_exp_cat_company_id',Auth::user()->au_company_id)
+            ->orderBy('inv_acc_exp_cat_category_name')
+            ->get();
+		$cat_edit = Inv_acc_expense_category::where('inv_acc_exp_cat_category_id',$id)
+											->where('inv_acc_exp_cat_company_id',Auth::user()->au_company_id)
+											->first();
+		return view('inventory.accounts.expense.expense_category_edit',compact('cat_edit','categories'));
+	}
+
+	public function expense_category_update(Request $request,$id){
+		
+		$cat_update = Inv_acc_expense_category::find($id);
+		$cat_update->inv_acc_exp_cat_category_name = $request->exp_category;
+		$cat_update->save();
+
+		return redirect()->route('accounts.expense-categories')->with(['exp_up' => 'Expense Categories Updated Successfully']);
+	}
 	public function showExpenses()
 	{
 		$categories = Inv_acc_expense_category::where('inv_acc_exp_cat_status', 1)

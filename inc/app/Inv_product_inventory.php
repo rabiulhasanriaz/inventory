@@ -161,6 +161,10 @@ class Inv_product_inventory extends Model
         return $this->belongsTo('App\Inv_customer','inv_pro_inv_party_id','inv_cus_id');
     }
 
+    public function getSoldByInfo(){
+        return $this->belongsTo('App\Admin_user','inv_pro_inv_submit_by','au_id');
+    }
+
     public function getSupplierInfo(){
         return $this->belongsTo('App\Inv_supplier','inv_pro_inv_party_id','inv_sup_id');
     }

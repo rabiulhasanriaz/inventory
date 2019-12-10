@@ -420,6 +420,10 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('expense-categories','Inventory\ExpenseCategoryController@showExpenseCategories')->name('expense-categories');
         Route::get('expenses','Inventory\ExpenseCategoryController@showExpenses')->name('expenses');
         Route::post('expense-categories','Inventory\ExpenseCategoryController@storeExpenseCategory')->name('expense-categories');
+        //Riaz's Created
+        Route::get('expense_category_edit/{cat_id}','Inventory\ExpenseCategoryController@expense_category_edit')->name('expense-category-edit');
+        Route::post('expense_category_update/{id}','Inventory\ExpenseCategoryController@expense_category_update')->name('expense-category-update');
+        //
         Route::post('expenses','Inventory\ExpenseCategoryController@storeExpenses')->name('expenses');
         Route::get('ajax-load_expense','Inventory\ExpenseCategoryController@ajaxLoadExpense')->name('ajax-load_expense');
         Route::get('create-contra','Inventory\BankAccountController@showContraForm')->name('create-contra');

@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inv_acc_expense_category extends Model
 {
+
     protected $table = 'inv_acc_expense_categories';
-   // protected $primaryKey = 'inv_abi_id';
+    protected $primaryKey = 'inv_acc_exp_cat_category_id';
     public $incrementing = true;
     public $timestamps = false;
 
