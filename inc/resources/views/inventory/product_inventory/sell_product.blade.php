@@ -293,6 +293,7 @@
             url: route_url,
             data: {},
             success: function (result) {
+                console.log("Riaz");
                 $("#show-cart-conten").html(result);
             }
         });
@@ -342,6 +343,8 @@
             url: route_url,
             data: { pro_id: pro_det_id, pro_price: pro_price},
             success: function (result) {
+                // console.log(result);
+                // return false;
                 if(result.status == 404) {
                     alert("Invalid Warrenty Product");
                 } else if(result.status == 406) {
@@ -364,6 +367,7 @@
             url: route_url,
             data: { pro_id: pro_det_id, sl_no: sl_no},
             success: function (result) {
+                
                 if(result.status == 404) {
                     alert("Invalid Warrenty Product");
                 } else if(result.status == 402) {
@@ -373,7 +377,6 @@
                     $("#w_product_sl_scan_inp").val("");
                     getCartProduct();
                 }
-                
             }
         });
     }

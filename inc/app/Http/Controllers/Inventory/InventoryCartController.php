@@ -140,6 +140,13 @@ class InventoryCartController extends Controller
         ->where('inv_pro_det_status', 1)
         ->where('inv_pro_det_pro_warranty', '!=', 0)
         ->first();
+        $product_exist_slno = Inv_product_inventory_detail::where('inv_pro_invdet_com_id',Auth::user()->au_company_id)
+                                                           ->where('inv_pro_invdet_sell_id',NULL)
+                                                           ->where('inv_pro_invdet_pro_id',$product->inv_pro_det_id)
+                                                           ->where('inv_pro_invdet_sell_status',0)
+                                                           ->get();
+            // return $product->inv_pro_det_id;
+            //     return $product_exist_slno;
     
         $product_sl_no = array();
         if(!empty($product)) {
@@ -171,9 +178,10 @@ class InventoryCartController extends Controller
                 
                 $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
                 $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
-                $pro_temp_add->inv_pro_temp_slno = '';
+                $pro_temp_add->inv_pro_temp_slno = '';        
                 $pro_temp_add->inv_pro_temp_deal_type = '2';//1=purchase,2=sale
                 $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_type = 2; //1=non-warranty , 2= warranty
                 $pro_temp_add->inv_pro_temp_updated_at = Carbon::now();
                 $pro_temp_add->save();
             }
@@ -182,7 +190,7 @@ class InventoryCartController extends Controller
             return response()->json(['status' => 404]);
         }
 
-        return view('pages.ajax.warrenty_product_get_sl_no_inner_form', compact('product', 'product_sl_no'));
+        return view('pages.ajax.warrenty_product_get_sl_no_inner_form', compact('product', 'product_sl_no','product_exist_slno'));
     }
 
     public function addWarrentyProductSlNo(Request $request)
@@ -289,6 +297,9 @@ class InventoryCartController extends Controller
 
     public function getCartContent()
     {
+        Inv_product_temporary::where('inv_pro_temp_type',2)
+                                ->where('inv_pro_temp_slno','')
+                                ->delete();
         $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
         ->where('inv_pro_temp_deal_type',2)
         ->get();

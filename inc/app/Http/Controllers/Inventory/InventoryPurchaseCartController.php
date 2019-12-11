@@ -110,6 +110,7 @@ class InventoryPurchaseCartController extends Controller
                 $pro_temp_add->inv_pro_temp_slno = '';
                 $pro_temp_add->inv_pro_temp_deal_type = '1';//1=purchase,2=sale
                 $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_type = 2; //1=non-warranty , 2= warranty
                 $pro_temp_add->inv_pro_temp_updated_at = Carbon::now();
 
                 
@@ -211,6 +212,9 @@ class InventoryPurchaseCartController extends Controller
 
     public function getCartContent()
     {
+        Inv_product_temporary::where('inv_pro_temp_type',2)
+                                ->where('inv_pro_temp_slno','')
+                                ->delete();
         $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
         ->where('inv_pro_temp_deal_type',1)
         ->get();
