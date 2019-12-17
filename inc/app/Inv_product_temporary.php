@@ -23,6 +23,7 @@ class Inv_product_temporary extends Model
         'inv_pro_temp_exp_date',
         'inv_pro_temp_slno',
         'inv_pro_temp_deal_type',
+        'inv_pro_temp_type',
         'inv_pro_temp_status',
         'inv_pro_temp_created_at',
         'inv_pro_temp_updated_at',

@@ -39,6 +39,7 @@ class InvProductController extends Controller
             'pro_name' => 'required',
             'pro_buy' => 'required',
             'pro_sell' => 'required',
+            'pro_desc' => 'max:40',
         ]);
         $inv_pro_det->inv_pro_det_com_id = $com;
         $inv_pro_det->inv_pro_det_type_id = Input::get('type');

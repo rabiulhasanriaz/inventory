@@ -47,6 +47,17 @@ class SdsController extends Controller
         $table->au_address=Input::get('au_address');
         $table->au_created_date=$todayD;
         $table->au_user_type=4;
+        if ($request->hasfile('logo')) {
+          $file = $request->file('logo');
+          $extension = $file->getClientOriginalExtension();
+          $filename = time().random_int(10,99) . "." . $extension;
+
+          $path = $request->logo->storeAs('image', $filename);
+
+          $table->au_company_logo = $filename;
+        }else{
+            $table->au_company_logo = "";
+        }
         if ($request->hasfile('au_company_img')) {
                 $file = $request->file('au_company_img');
                 $extension = $file->getClientOriginalExtension();

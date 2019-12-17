@@ -42,6 +42,7 @@
                                         {{ $pro_cus->inv_cus_name }}({{ $pro_cus->inv_cus_com_name }})
                                     </td>
                                     <th>Invoice No:</th>
+                                    {{-- @php($invoiceNo = App\Inv_product_inventory::getInvoice($pro_cus)) --}}
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -62,7 +63,7 @@
                             <tr>
                               <th class="text-center">SL</th>
                               <th class="text-center">Description</th>
-                              <th class="text-center">Warranty</th>
+                              
                               <th class="text-center">Sold Qty</th>
                               <th class="text-center">Unit Price</th>
                               <th class="text-center">Amount</th>
@@ -74,20 +75,19 @@
                             @foreach ($pro_temps as $temp)
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
-                                <td class="text-center">
+                                <td class="text-left">
                                     {{ $temp->inv_pro_temp_type_name }}
                                     <br>
                                     <b>
                                         {{ implode(', ', explode(',',$temp->inv_pro_temp_slno)) }}
-                                    </b>
-                                </td>
-                                <td class="text-center">
+                                    </b><br>
                                     @if ($temp->pro_warranty['inv_pro_det_pro_warranty'] == 0)
-                                     <b>No Warranty</b> 
                                     @else
-                                    {{ $temp->pro_warranty['inv_pro_det_pro_warranty'] }}(Days)
+                                        {{ $temp->pro_warranty['inv_pro_det_pro_warranty'] }}(Days)
                                     @endif
+                                    
                                 </td>
+                                
                                 <td class="text-center">{{ $temp->inv_pro_temp_qty }}</td>
                                 <td class="text-right">{{ number_format($temp->inv_pro_temp_unit_price,2) }}</td>
                                 <td class="text-right">{{ number_format(($temp->inv_pro_temp_unit_price * $temp->inv_pro_temp_qty),2) }}</td>
@@ -98,7 +98,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-right">Total Amount</td>
+                                    <td colspan="3" class="text-right">Total Amount</td>
                                     <td></td>
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
@@ -118,7 +118,7 @@
                                     <td class="text-right"></td>
                                 </tr> --}}
                                 <tr>
-                                    <td colspan="4" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
+                                    <td colspan="3" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
                                     <td></td>
                                     <td class="text-right"><span class="underline">{{ number_format($balance,2) }}</span></td>
                                 </tr>

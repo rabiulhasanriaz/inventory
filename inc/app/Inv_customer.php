@@ -87,5 +87,9 @@ class Inv_customer extends Model
       {
          return  Inv_customer::where('inv_cus_id',$customer_id)->first()->inv_cus_name;
       }
+
+      public function getInvoiceInfo(){
+        return $this->belongsTo('App\Inv_product_inventory','inv_cus_id','inv_pro_inv_party_id');
+    }
     
 }

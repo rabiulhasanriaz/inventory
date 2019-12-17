@@ -1,24 +1,24 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
 @section('report_class','menu-open')
-@section('buy_reports','active')
+@section('combined_reports','active')
 @section('content')
 <section class="content">
-    @if(session()->has('buy_confirm'))
+    @if(session()->has('confirm'))
     <div class="alert alert-success alert-dismissible" role="alert">
-        {{ session('buy_confirm') }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+          {{ session('confirm') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     @endif
     @if(session()->has('sub_err'))
     <div class="alert alert-danger alert-dismissible" role="alert">
-        {{ session('sub_err') }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+          {{ session('sub_err') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     @endif
         <section class="content-header">
           <div class="box">
@@ -27,14 +27,14 @@
             <form action="" method="get">
               <input type="hidden" name="_token" value="" id="_token">
              <div class="col-xs-3">
-              <input type="text" name="start_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="start_date" placeholder="Enter Start Date" >
+              <input type="text" name="start_date" value="{{ $start_date }}" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="start_date" placeholder="Enter Start Date" >
              </div>
               <div class="col-xs-3">
-              <input type="text" name="end_date" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="end_date" placeholder="Enter End Date" >
+              <input type="text" name="end_date" value="{{ $end_date }}" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="end_date" placeholder="Enter End Date" >
              </div>
                 <div class="col-xs-3">
                   <button type="submit" class="btn btn-info" name="searchbtn">Search</button>
-                   <a href="{{ route('reports.buy-reports-download') }}" class="btn btn-warning">Download</a>
+                  <a href="{{ route('reports.sell-reports-download') }}" class="btn btn-warning">Download</a>
                 </div>
                 </form>
                     </div>
@@ -43,13 +43,13 @@
                  </div>
              </div>
               <h1>
-               Buy Reports of {{ Auth::user()->au_company_name }}  
+               Buy & Sell Reports of {{ Auth::user()->au_company_name }}  
               </h1>
         
             </section>
             <div class="box">
                     <div class="box-header">
-                      <h3 class="box-title">Buy Detail</h3>
+                      <h3 class="box-title"> Reports</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -59,9 +59,11 @@
                           <th>SL</th>
                           <th>Invoice No</th>
                           <th>Issue Date</th>
-                          <th>Supplier Name</th>
+                          <th>Sup Name</th>
                           <th>Description</th>
-                          <th>Amount</th>
+                          <th>Debit</th>
+                          <th>Credit</th>
+                          {{-- <th>Amount</th> --}}
                           <th>Action</th>
                         </tr>
                         </thead>
@@ -69,52 +71,64 @@
                         @php
                           $sl=0;
                           $balance = 0;
+                          $total_debit = 0;
+                          $total_credit = 0;
                         @endphp
-                        @foreach ($buy_reports as $buy)
+                        @if ($reports != null)
                         
+                        @foreach ($reports as $buy)
+                        @if ($buy->inv_pro_inv_deal_type == 1)
+                        @php($debit = App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no))
+                        @php($credit = 0)
+                        @else
+                        @php($credit = App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no))  
+                        @php($debit = 0)                          
+                        @endif
                         <tr>
                             <td>{{ ++$sl }}</td>
                             <td>{{ $buy->inv_pro_inv_invoice_no }}</td>
                             <td>{{ $buy->inv_pro_inv_issue_date }}</td>
-                            <td>{{ $buy->getSupplierInfo['inv_sup_person'] }}</td>
+                            <td>{{ $buy->getCustomerInfo['inv_cus_name'] }}</td>
                             <td>{{ $buy->inv_pro_inv_tran_desc }}</td>
-                            <td class="text-right">{{ number_format(App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no),2) }}</td>
+                            <td class="text-right">{{ number_format($debit,2) }}</td>
+                            <td class="text-right">{{ number_format($credit,2) }}</td>
+                            {{-- <td class="text-right">{{ App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no) }}</td> --}}
                             <td style="text-align: center;">
                               <div class="btn-group">
-                                  <button type="button" class="btn btn-info btn-xs">Action</button>
-                                  <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                  </button>
-                                  <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
-                                    <li>
-                                      <a href="javascript:void(0);" onclick="buy_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    {{-- @if(Auth::user()->au_user_type == 4 || Auth::user()->au_user_type == 5)
-                                    <li>
-                                      <a href="{{ route('reports.buy-confirm',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Confirm</a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    @endif --}}
-                                    <li>
-                                      <a href="{{ route('buy_edit.buy-edit-pro',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                      <a href="{{ route('reports.buy-pdf',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Download</a>
-                                    </li>
-                                  </ul>
-                            </div>
+                                <button type="button" class="btn btn-info btn-xs">Action</button>
+                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown">
+                                  <span class="caret"></span>
+                                  <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="margin-left: -40px;">
+                                  <li>
+                                    <a href="javascript:void(0);" onclick="sell_reports('{{ $buy->inv_pro_inv_invoice_no }}')">Details</a>
+                                  </li>
+                                  <li class="divider"></li>
+                                  @if(Auth::user()->au_user_type == 4)
+                                  <li>
+                                    <a href="{{ route('buy_edit.buy-edit-pro',['invoice' => $buy->inv_pro_inv_invoice_no]) }}">Edit</a>
+                                 </li>
+                                <li class="divider"></li>
+                                @endif
+                                  <li>
+                                    <a href="{{ route('reports.buy-pdf',['invoice' => $buy->inv_pro_inv_invoice_no]) }}" target="_blank">Download</a>
+                                  </li>
+                                </ul>
+                          </div>
+                                
                             </td>
                         </tr>
-                        @php($balance = $balance + App\Inv_product_inventory::getTotalDebit($buy->inv_pro_inv_invoice_no))
+                        @php($total_debit = $total_debit + $debit)
+                        @php($total_credit = $total_credit + $credit)
                         @endforeach
+                        @endif
                         </tbody>
                         <tfoot>
                           <tr>
                             <td colspan="5" style="text-align:right; font-weight: bolder;">Total:</td>
-                            <td style="font-weight: bolder; text-align: right;">{{ number_format($balance,2) }}</td>
+                            <td style="font-weight: bolder; text-align: right;">{{ number_format($total_debit,2) }}</td>
+                            <td style="font-weight: bolder; text-align: right;">{{ number_format($total_credit,2) }}</td>                            
                             <td style="text-align: center;font-weight: bolder;">---</td>
                           </tr>
                         </tfoot>
@@ -126,7 +140,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="buyReports" role="dialog">
+<div class="modal fade" id="sellReports" role="dialog">
   <div class="modal-dialog modal-lg">
     <!-- Modal content-->
     <div class="modal-content">
@@ -134,7 +148,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Invoice Details</h4>
       </div>
-      <div class="modal-body" id="buyModalDetails">
+      <div class="modal-body" id="sellModalDetails">
         
                 
       </div>
@@ -224,17 +238,17 @@ $( "#to" ).datepicker({
 </script>
 <script type="text/javascript">
 
-  function buy_reports(buy_id) {
+  function sell_reports(sell_id) {
 
-    let url = "{{ route('reports.buy-reports-ajax') }}";
+    let url = "{{ route('reports.sell-reports-ajax') }}";
     var _token=$("#_token").val();
     $.ajax({  
       type: "GET",
       url: url,
-      data: { buy_id: buy_id,_token:_token},
+      data: { sell_id: sell_id,_token:_token},
       success: function (result) {
-       $("#buyModalDetails").html(result);
-       $("#buyReports").modal("show");
+       $("#sellModalDetails").html(result);
+       $("#sellReports").modal("show");
       }
     });
   }

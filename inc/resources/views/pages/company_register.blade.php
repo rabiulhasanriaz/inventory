@@ -114,6 +114,12 @@
                   </div>
                 </div>
                 <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Company Logo</label>
+                    <div class="col-sm-6">
+                      <input type="file" name="logo" class="form-control" id="inputEmail3" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
                   <label for="inputEmail3" class="col-sm-2 control-label">Image</label>
                   <div class="col-sm-6">
                     <input type="file" name="au_company_img" class="form-control" id="inputEmail3" placeholder="">

@@ -22,8 +22,6 @@
 				<thead>
 					<tr>
 						<th style="text-align:center;">SL</th>
-
-						<th style="text-align:center;">Description</th>
 						<th style="text-align:center;">Product</th>
 					
 						<th style="text-align:center;">Quantaty</th>
@@ -46,12 +44,9 @@
 						<td style="text-align: center;">
 							{{ ++$sl }}
 						</td>
-
-						<td style="text-align: center;"> 
-							{{$invoiceInfo->inv_pro_inv_tran_desc}}
-						</td>
-						<td style="text-align: right;">
+						<td style="text-align: left;">
 							{{$invoiceInfo->getProductInfo['inv_pro_det_pro_name']}}
+							({{ str_limit($invoiceInfo->getProductWarranty['inv_pro_det_pro_description'],40) }})
 						</td>
 						<td style="text-align: right;">
 							{{$invoiceInfo->inv_pro_inv_qty}}
@@ -69,7 +64,7 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td style="text-align: right;font-weight: bolder;" colspan="3">Total: </td>
+						<td style="text-align: right;font-weight: bolder;" colspan="2">Total: </td>
 						<td style="text-align: right;font-weight: bolder;">{{$totalQuantaty}}</td>
 						<td style="text-align: right;font-weight: bolder;">{{number_format($totalUnitPrice,2)}}</td>
 						<td style="text-align: right;font-weight: bolder;">{{number_format($totalPrice,2)}}</td>

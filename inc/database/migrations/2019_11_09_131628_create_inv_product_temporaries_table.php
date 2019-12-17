@@ -28,6 +28,7 @@ class CreateInvProductTemporariesTable extends Migration
             $table->date('inv_pro_temp_exp_date')->nullable();
             $table->tinyInteger('inv_pro_temp_slno')->nullable();
             $table->tinyInteger('inv_pro_temp_deal_type');
+            $table->tinyInteger('inv_pro_temp_type')->default('1');
             $table->tinyInteger('inv_pro_temp_status');
             $table->dateTime('inv_pro_temp_created_at');
             $table->dateTime('inv_pro_temp_updated_at')->nullable();

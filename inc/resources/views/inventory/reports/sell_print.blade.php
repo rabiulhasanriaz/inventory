@@ -146,7 +146,7 @@ footer {
     border-radius: 10px;
     background-color: lightblue;
     display: inline-block;
-    margin-right: 70px;
+    /* margin-right: 70px; */
     padding: 10px;
 }
 .text-center{
@@ -163,20 +163,23 @@ footer {
   </head>
   <body>
     <header class="clearfix">
-      <div id="logo">
-        <img src="">
-      </div>
       <div class="header_company">
-          @php($company_info = App\Admin_user::company_info(Auth::user()->au_company_id))
+          <div class="col-md-4">
+              @php($company_logo = App\Admin_user::company_logo(Auth::user()->au_company_id))
+              <img src="{{ asset('/asset/image/')}}/{{ $company_logo->au_company_logo }}" style="float:left;height:132px; width:190px;">
+          </div>
+          <div class="col-md-8" style="margin-right:180px;">
+            @php($company_info = App\Admin_user::company_info(Auth::user()->au_company_id))
             <h1>{{ Auth::user()->au_company_name }}</h1>
             <p>Address: {{ $company_info->au_address }}</p>
             <p>Mobile: {{ $company_info->au_mobile }}</p>
             <p>Email: {{ $company_info->au_email }}</p>
+          </div>
       </div>
       <div class="text-center">
           <h3 class="invoice">Invoice</h3>
       </div>
-      <div id="company" class="clearfix">
+      <div id="company" class="clearfix" style="margin-right:-64px;">
           <table class="table">
               <tr>
                   <td id="text">Customer Name</td>
@@ -228,9 +231,13 @@ footer {
               @php($sl=0)
               @php($balance=0)
               @foreach ($invoice as $sell)
+              @php($slno = App\Inv_product_inventory::ProductSerialSell($sell->inv_pro_inv_id))
               <tr>
                   <td class="service">{{ ++$sl }}</td>
-                  <td class="desc">{{ $sell->getProductWarranty['inv_pro_det_pro_name'] }}</td>
+                  <td class="desc">
+                    {{ $sell->getProductWarranty['inv_pro_det_pro_name'] }}<br>
+                    {{ implode(', ', $slno) }}
+                  </td>
                   <td class="qty">{{ $sell->inv_pro_inv_tran_desc }}</td>
                   <td class="unit">
                       @if ($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)

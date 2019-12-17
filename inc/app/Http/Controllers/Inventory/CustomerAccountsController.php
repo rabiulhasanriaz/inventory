@@ -291,11 +291,18 @@ class CustomerAccountsController extends Controller
 	}
 	public function loadAjaxInvoiceDetails(Request $request)
 	{
-		$isProductTrans=Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_tran_type',1)->orWhere('inv_pro_inv_tran_type',2)->count();
+		$isProductTrans=Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)
+											->where('inv_pro_inv_tran_type',1)
+											->orWhere('inv_pro_inv_tran_type',2)
+											->count();
 		
 		if($isProductTrans>0)
 			$isProductTrans=1;
-		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)->where('inv_pro_inv_deal_type',2)->where('inv_pro_inv_status',1)->where('inv_pro_inv_com_id',Auth::user()->au_company_id)->get();
+		$invoiceInfos =Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->invoice_id)
+											->where('inv_pro_inv_deal_type',2)
+											->where('inv_pro_inv_status',1)
+											->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
+											->get();
 			//dd($invoiceInfos);
 		return view('pages.ajax.invoice_details',compact('invoiceInfos','isProductTrans'));
 	}

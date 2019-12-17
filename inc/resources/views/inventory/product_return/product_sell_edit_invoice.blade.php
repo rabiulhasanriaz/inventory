@@ -4,9 +4,9 @@
 @section('sell_pro','active')
 @section('content')
 <section class="content">
-        @if(session()->has('det_up'))
-        <div class="alert alert-success alert-dismissible" role="alert">
-          {{ session('det_up') }}
+        @if(session()->has('sub_err'))
+        <div class="alert alert-danget alert-dismissible" role="alert">
+          {{ session('sub_err') }}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

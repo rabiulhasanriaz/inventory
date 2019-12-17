@@ -7,6 +7,7 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Inv_product_inventory;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class ReportsController extends Controller
 {
@@ -318,6 +319,33 @@ class ReportsController extends Controller
 
         $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
+    }
+
+    public function combinedReports(Request $request){
+
+        $com = Auth::user()->au_company_id;
+        $reports = null;
+        if ($request->has('searchbtn')) {
+            $request->validate([
+                   'start_date' => 'required',
+                   'end_date' => 'required',
+               ]);
+               $start_date = $request->start_date;
+               $end_date = $request->end_date;
+           
+       }else {
+           $start_date = Carbon::now()->format('Y-m-d');
+           $end_date = Carbon::now()->format('Y-m-d');
+       }
+       $reports = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                            ->where('inv_pro_inv_issue_date','>=',$start_date)
+                                            ->where('inv_pro_inv_issue_date','<=',$end_date)
+                                            ->where('inv_pro_inv_status',1)
+                                            ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_confirm',0)
+                                            ->groupBy('inv_pro_inv_invoice_no')
+                                            ->get();
+       return view('inventory.reports.combined_reports',compact('reports','start_date','end_date'));
     }
 
 }

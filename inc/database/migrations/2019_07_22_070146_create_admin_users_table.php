@@ -24,6 +24,7 @@ class CreateAdminUsersTable extends Migration
             $table->string('au_password');
             $table->string('au_address');
             $table->string('au_company_img');
+            $table->string('au_company_logo');
             $table->date('au_created_date');
             $table->string('au_expired_date');
             $table->integer('au_status');

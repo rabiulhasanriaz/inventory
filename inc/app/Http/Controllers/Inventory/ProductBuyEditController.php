@@ -11,6 +11,7 @@ use App\Inv_supplier;
 use App\Inv_product_detail;
 use App\Inv_product_inventory;
 use App\Inv_product_temporary;
+use App\Inv_product_inventory_detail;
 
 class ProductBuyEditController extends Controller
 {
@@ -50,6 +51,17 @@ class ProductBuyEditController extends Controller
                 } else {
                     Inv_product_temporary::where('inv_pro_temp_user_id', $user_id)->delete();
                     foreach ($invoice_products as $invoice_product) {
+                        $pro_sl_array = Inv_product_inventory_detail::select('inv_pro_invdet_slno')
+                                                                ->where('inv_pro_invdet_com_id',$com)
+                                                                ->where('inv_pro_invdet_proinv_id',$invoice_product->inv_pro_inv_id)
+                                                                ->where('inv_pro_invdet_pro_id',$invoice_product->inv_pro_inv_prodet_id)
+                                                                ->pluck('inv_pro_invdet_slno')->toArray();
+                        if (count($pro_sl_array) > 0) {
+                            $pro_sl = implode(',',$pro_sl_array);
+                        }else {
+                            $pro_sl = '';
+                        }
+                        
                         $edit_pro_temp = new Inv_product_temporary();
 
                         $edit_pro_temp->inv_pro_temp_user_id = $user_id;
@@ -61,6 +73,7 @@ class ProductBuyEditController extends Controller
                         $edit_pro_temp->inv_pro_temp_unit_price = $invoice_product->inv_pro_inv_unit_price;
                         $edit_pro_temp->inv_pro_temp_deal_type = 3;//3=purchase-edit
                         $edit_pro_temp->inv_pro_temp_status = 1;
+                        $edit_pro_temp->inv_pro_temp_slno = $pro_sl;
                         $edit_pro_temp->inv_pro_temp_created_at = Carbon::now();
                         $edit_pro_temp->save();
                     }
@@ -147,6 +160,127 @@ class ProductBuyEditController extends Controller
         }
     }
 
+   
+
+    public function addToCartWarrentyProduct(Request $request)
+    {
+        $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
+            ->where('inv_pro_det_com_id', Auth::user()->au_company_id)
+            ->where('inv_pro_det_status', 1)
+            ->where('inv_pro_det_pro_warranty', '!=', 0)
+            ->first();
+        
+        $product_sl_no = array();
+        if(!empty($product)) {
+            
+            $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+                ->where('inv_pro_temp_pro_id', $request->pro_id)
+                ->where('inv_pro_temp_deal_type',3)
+                ->first();
+            if(!empty($row)) {
+                $row->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
+                $row->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
+                $row->inv_pro_temp_unit_price = $request->pro_price;
+                $row->inv_pro_temp_exp_date = $request->exp_date;
+                $row->inv_pro_temp_updated_at = Carbon::now();
+
+                $row->save();
+                if($row->inv_pro_temp_slno != '') {
+                    $product_sl_no = explode(',', $row->inv_pro_temp_slno);
+                }
+
+            } else {
+                $pro_temp_add = new Inv_product_temporary;
+                $pro_temp_add->inv_pro_temp_user_id = Auth::user()->au_id;
+                $pro_temp_add->inv_pro_temp_pro_id = $product->inv_pro_det_id;
+                $pro_temp_add->inv_pro_temp_pro_name = $product->inv_pro_det_pro_name;
+                $pro_temp_add->inv_pro_temp_type_name = Inv_product_detail::get_type_name($product->inv_pro_det_id);
+                $pro_temp_add->inv_pro_temp_qty = 0;
+                $pro_temp_add->inv_pro_temp_unit_price = $request->pro_price;
+                $pro_temp_add->inv_pro_temp_exp_date = $request->exp_date;
+                $pro_temp_add->inv_pro_temp_slno = '';
+                $pro_temp_add->inv_pro_temp_deal_type = '3';//1=purchase,2=sale
+                $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_type = 2; //1=non-warranty , 2= warranty
+                $pro_temp_add->inv_pro_temp_updated_at = Carbon::now();
+
+                
+                $pro_temp_add->save();
+                
+
+            }
+            
+        } else {
+            return response()->json(['status' => 404]);
+        }
+
+        return view('pages.ajax.purchase_product.warrenty_product_get_sl_no_inner_form', compact('product', 'product_sl_no'));
+    }
+
+    public function addWarrentyProductSlNo(Request $request)
+    {
+        $com = Auth::user()->au_company_id;
+        $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+                ->where('inv_pro_temp_pro_id', $request->pro_id)
+                ->where('inv_pro_temp_deal_type',3)
+                ->first();
+        if(($request->sl_no == null) || ($request->sl_no == '')) {
+            return false;
+        }
+        if(!empty($row)) {
+            
+            if($row->inv_pro_temp_slno == '') {
+                $pre_sl_no = array();
+            } else {
+                $pre_sl_no = explode(',',$row->inv_pro_temp_slno);
+            }
+            if(in_array($request->sl_no, $pre_sl_no)) {
+                return response()->json(['status' => 402]);//already added
+            } 
+            $pro_all_sl_no = $pre_sl_no;
+            $pro_all_sl_no[] = $request->sl_no;
+            $content_quantity = count($pro_all_sl_no);
+            
+            $row->inv_pro_temp_slno = implode(',', $pro_all_sl_no);
+            $row->inv_pro_temp_qty = $content_quantity;
+            $row->inv_pro_temp_updated_at = Carbon::now();
+            $row->save();
+            
+
+            $content = $row;
+
+            return view("pages.ajax.purchase_product.warrenty_product_sl_no_list", compact('content'));
+        } else {
+            return response()->json(['status' => 406]); //sl no not found
+        }
+    }
+
+    public function removeWarrentyProductSlNo(Request $request)
+    {
+        $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+                ->where('inv_pro_temp_pro_id', $request->pro_id)
+                ->where('inv_pro_temp_deal_type',3)
+                ->first();
+        if(!empty($row)) {
+            $pro_all_sl_no = explode(',',$row->inv_pro_temp_slno);
+            
+            if (($key = array_search($request->sl_no, $pro_all_sl_no)) !== false) {
+                unset($pro_all_sl_no[$key]);
+            }
+            $content_quantity = count($pro_all_sl_no);
+            $row->inv_pro_temp_slno = implode(',', $pro_all_sl_no);
+            $row->inv_pro_temp_qty = $content_quantity;
+            $row->inv_pro_temp_updated_at = Carbon::now();
+            $row->save();
+
+            $content = $row;
+
+            return view("pages.ajax.purchase_product.warrenty_product_sl_no_list", compact('content'));
+        } else {
+            return response()->json(['status' => 406]); //sl no not found
+        }
+    }
+
 
     public function cartSubmit(Request $request){
         $request->validate([
@@ -174,8 +308,9 @@ class ProductBuyEditController extends Controller
 
             $pre_inv_edit_count = $pre_sell_products->first()->inv_pro_inv_edit_count;
             $pre_inv_confirm_status = $pre_sell_products->first()->inv_pro_inv_confirm;
-
+            $pre_sell_product_invID = array();
             foreach ($pre_sell_products as $pre_sell_product) {
+                $pre_sell_product_invID[] = $pre_sell_product->inv_pro_inv_id;
                 $pre_pro_det = Inv_product_detail::where('inv_pro_det_com_id', $com)
                     ->where('inv_pro_det_id', $pre_sell_product->inv_pro_inv_prodet_id)
                     ->first();
@@ -193,6 +328,9 @@ class ProductBuyEditController extends Controller
                 ->where('inv_pro_inv_deal_type', 1)
                 ->where('inv_pro_inv_tran_type', 1)
                 ->delete();
+            Inv_product_inventory_detail::where('inv_pro_invdet_com_id',$com)
+                                        ->whereIn('inv_pro_invdet_proinv_id',$pre_sell_product_invID)
+                                        ->delete();
 
             foreach ($cart_content as $content) {
                 $product_id = $content->inv_pro_temp_pro_id;
@@ -320,15 +458,15 @@ class ProductBuyEditController extends Controller
                 
     }
 
-    public function updatecart(Request $request){
-        $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',3)
-                ->get();
-        $row->inv_pro_temp_qty = $request->pro_qty;
-        $row->inv_pro_temp_updated_at = Carbon::now();
-        $row->save();
-    }
+    // public function updatecart(Request $request){
+    //     $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+    //             ->where('inv_pro_temp_pro_id', $request->content_id)
+    //             ->where('inv_pro_temp_deal_type',3)
+    //             ->get();
+    //     $row->inv_pro_temp_qty = $request->pro_qty;
+    //     $row->inv_pro_temp_updated_at = Carbon::now();
+    //     $row->save();
+    // }
 
     public function getCartContent()
     {

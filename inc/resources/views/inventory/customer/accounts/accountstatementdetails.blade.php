@@ -106,13 +106,13 @@
                           <td style="text-align: center;">
                             {{ ++$sl }}
                           </td>
-                          <td>
+                          <td class="text-center">
                             {{ $inv_cust->inv_pro_inv_issue_date }}
                           </td>
                           <td>
                             {{$inv_cust->inv_pro_inv_invoice_no}}
                           </td>
-                          <td>
+                          <td class="text-center">
                             {{$inv_cust->inv_pro_inv_tran_desc}}
                           </td>
                          

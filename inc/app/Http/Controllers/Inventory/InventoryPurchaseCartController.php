@@ -348,7 +348,6 @@ class InventoryPurchaseCartController extends Controller
                 $api_sender = Admin_user::where('au_company_id',$com)
                                         ->where('au_user_type',4)
                                         ->first();
-
                 $pro_sup = Inv_supplier::where('inv_sup_com_id', $com)
                 ->where('inv_sup_id', $request->supplier)
                 ->first();
@@ -406,7 +405,7 @@ class InventoryPurchaseCartController extends Controller
         }
 
         DB::commit();
-        $msg = "Sell Products Successfully completed";
+        $msg = "Buy Products Successfully completed";
         return redirect()->route('buy.buy-product-new')->with(['sub_success' => $msg , 'print_buy_invoice' => $new_memo_no]);
     }
 
@@ -416,9 +415,11 @@ class InventoryPurchaseCartController extends Controller
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
                                             ->where('inv_pro_temp_deal_type',1)
                                             ->get();
+        $invoice = $request->memo;
+        // dd($invoice);
         $pro_sup = Inv_supplier::where('inv_sup_com_id', $com)
             ->where('inv_sup_id', $request->supplier)
             ->first();
-        return view('inventory.product_inventory.product_buy_invoice',compact('pro_temps','pro_sup'));
+        return view('inventory.product_inventory.product_buy_invoice',compact('pro_temps','pro_sup','invoice'));
     }
 }

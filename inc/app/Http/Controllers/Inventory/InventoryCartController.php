@@ -418,7 +418,7 @@ class InventoryCartController extends Controller
                 $product_inventory->inv_pro_inv_debit = $sub_total;
                 $product_inventory->inv_pro_inv_credit = 0;
                 $product_inventory->inv_pro_inv_issue_date = Carbon::now();
-                $product_inventory->inv_pro_inv_tran_desc = "Purchase Product";
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product";
                 $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
                 $product_inventory->inv_pro_inv_tran_type =  1;//1=buy/sell product-buy
                 $product_inventory->inv_pro_inv_status = 1;

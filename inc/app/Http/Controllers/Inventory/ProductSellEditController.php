@@ -10,6 +10,7 @@ use App\Inv_product_groups;
 use App\Inv_product_detail;
 use App\Inv_product_inventory;
 use App\Inv_product_temporary;
+use App\Inv_product_inventory_detail;
 use DB;
 use Carbon\Carbon;
 
@@ -58,6 +59,18 @@ class ProductSellEditController extends Controller
                 } else {
                     Inv_product_temporary::where('inv_pro_temp_user_id', $user_id)->delete();
                     foreach ($invoice_products as $invoice_product) {
+                        // dd($invoice_product);
+                        $pro_sl_array = Inv_product_inventory_detail::select('inv_pro_invdet_slno')
+                                                                ->where('inv_pro_invdet_com_id',$com)
+                                                                ->where('inv_pro_invdet_proinv_sell_id',$invoice_product->inv_pro_inv_id)
+                                                                ->where('inv_pro_invdet_pro_id',$invoice_product->inv_pro_inv_prodet_id) 
+                                                                ->pluck('inv_pro_invdet_slno')->toArray();
+                        // dd($pro_sl_array);
+                        if (count($pro_sl_array) > 0) {
+                            $pro_sl = implode(',',$pro_sl_array);
+                        }else {
+                            $pro_sl = '';
+                        }
                         $edit_pro_temp = new Inv_product_temporary();
 
                         $edit_pro_temp->inv_pro_temp_user_id = $user_id;
@@ -68,7 +81,9 @@ class ProductSellEditController extends Controller
                         $edit_pro_temp->inv_pro_temp_invoice_no = $invoice_product->inv_pro_inv_invoice_no;
                         $edit_pro_temp->inv_pro_temp_unit_price = $invoice_product->inv_pro_inv_unit_price;
                         $edit_pro_temp->inv_pro_temp_deal_type = 4;
+                        $edit_pro_temp->inv_pro_temp_slno = $pro_sl;
                         $edit_pro_temp->inv_pro_temp_status = 1;
+                        $edit_pro_temp->inv_pro_temp_type = 2;
                         $edit_pro_temp->inv_pro_temp_created_at = Carbon::now();
                         $edit_pro_temp->save();
                     }
@@ -129,6 +144,7 @@ class ProductSellEditController extends Controller
                 $pro_temp_add->inv_pro_temp_slno = '';
                 $pro_temp_add->inv_pro_temp_deal_type = '4';//1=purchase,2=sale,3=purchase-edit,4=sell-edit
                 $pro_temp_add->inv_pro_temp_status = 1;
+                
                 $pro_temp_add->inv_pro_temp_created_at = Carbon::now();
 
                 $pro_temp_add->save();
@@ -148,6 +164,12 @@ class ProductSellEditController extends Controller
         ->where('inv_pro_det_status', 1)
         ->where('inv_pro_det_pro_warranty', '!=', 0)
         ->first();
+
+        $product_exist_slno = Inv_product_inventory_detail::where('inv_pro_invdet_com_id',Auth::user()->au_company_id)
+                                                           ->where('inv_pro_invdet_sell_id',NULL)
+                                                           ->where('inv_pro_invdet_pro_id',$product->inv_pro_det_id)
+                                                           ->where('inv_pro_invdet_sell_status',0)
+                                                           ->get();
     
         $product_sl_no = array();
         if(!empty($product)) {
@@ -183,6 +205,7 @@ class ProductSellEditController extends Controller
                 $pro_temp_add->inv_pro_temp_slno = '';
                 $pro_temp_add->inv_pro_temp_deal_type = '4';//1=purchase,2=sale
                 $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_type = 2; //1=non-warranty , 2= warranty
                 $pro_temp_add->inv_pro_temp_updated_at = Carbon::now();
                 $pro_temp_add->save();
             }
@@ -191,7 +214,7 @@ class ProductSellEditController extends Controller
             return response()->json(['status' => 404]);
         }
 
-        return view('pages.ajax.warrenty_product_get_sl_no_inner_form', compact('product', 'product_sl_no'));
+        return view('pages.ajax.warrenty_product_get_sl_no_inner_form', compact('product', 'product_sl_no','product_exist_slno'));
     }
 
     public function addWarrentyProductSlNo(Request $request)
@@ -200,7 +223,7 @@ class ProductSellEditController extends Controller
         
         $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
             ->where('inv_pro_temp_pro_id', $request->pro_id)
-            ->where('inv_pro_temp_deal_type',2)
+            ->where('inv_pro_temp_deal_type',4)
             ->first();
         if(($request->sl_no == null) || ($request->sl_no == '')) {
             return false;
@@ -255,7 +278,7 @@ class ProductSellEditController extends Controller
     {
         $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->pro_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->where('inv_pro_temp_deal_type',4)
                 ->first();
         if(!empty($row)) {
             $pro_all_sl_no = explode(',',$row->inv_pro_temp_slno);
@@ -310,7 +333,7 @@ class ProductSellEditController extends Controller
         $user = Auth::user()->au_id;
         $com = Auth::user()->au_company_id;
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
-                                            ->where('inv_pro_temp_deal_type',2)
+                                            ->where('inv_pro_temp_deal_type',4)
                                             ->get();
         $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
             ->where('inv_cus_id', $request->customer)
@@ -370,7 +393,10 @@ class ProductSellEditController extends Controller
 
             $pre_inv_edit_count = $pre_sell_products->first()->inv_pro_inv_edit_count;
 
+            $pre_sell_product_invID = array();
+
             foreach ($pre_sell_products as $pre_sell_product) {
+                $pre_sell_product_invID[] = $pre_sell_product->inv_pro_inv_id;
                 $pre_pro_det = Inv_product_detail::where('inv_pro_det_com_id', $com)
                     ->where('inv_pro_det_id', $pre_sell_product->inv_pro_inv_prodet_id)
                     ->first();
@@ -385,6 +411,10 @@ class ProductSellEditController extends Controller
                 ->where('inv_pro_inv_deal_type', 2)
                 ->where('inv_pro_inv_tran_type', 1)
                 ->delete();
+
+            Inv_product_inventory_detail::where('inv_pro_invdet_com_id',$com)
+                ->whereIn('inv_pro_invdet_proinv_sell_id',$pre_sell_product_invID)
+                ->update(['inv_pro_invdet_proinv_sell_id' => NULL,'inv_pro_invdet_sell_id' => NULL, 'inv_pro_invdet_sell_status' => 0]);
             
             foreach ($cart_content as $content) {
                 $product_id = $content->inv_pro_temp_pro_id;
@@ -450,7 +480,7 @@ class ProductSellEditController extends Controller
                 $product_inventory->inv_pro_inv_debit = $sub_total;
                 $product_inventory->inv_pro_inv_credit = 0;
                 $product_inventory->inv_pro_inv_issue_date = Carbon::now();
-                $product_inventory->inv_pro_inv_tran_desc = "Purchase Product";
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product";
                 $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
                 $product_inventory->inv_pro_inv_tran_type =  1;//1=buy/sell product-buy
                 $product_inventory->inv_pro_inv_edit_count = $pre_inv_edit_count + 1;
@@ -473,7 +503,7 @@ class ProductSellEditController extends Controller
                             $msg = "Something went wrong to sell product. product name: ". $content->inv_pro_temp_pro_name .". error-code: 1003";
                             return redirect()->back()->with(['sub_err' => $msg]);
                         }
-
+                        //dd(Inv_product_inventory_detail::all());
                         // search and update previous product details sales_status 
                         $all_inv_ids_of_this_product = Inv_product_inventory::where('inv_pro_inv_com_id', $com)
                             ->where('inv_pro_inv_prodet_id', $check_product->inv_pro_det_id)
@@ -481,12 +511,13 @@ class ProductSellEditController extends Controller
                             ->where('inv_pro_inv_tran_type', 1)
                             ->pluck('inv_pro_inv_id')
                             ->toArray();
-                            
+                        //dump($all_inv_ids_of_this_product);
                         $pre_pro_inv_details = Inv_product_inventory_detail::where('inv_pro_invdet_com_id', $com)
                             ->whereIn('inv_pro_invdet_proinv_id', $all_inv_ids_of_this_product)
                             ->where('inv_pro_invdet_sell_status', 0)
                             ->where('inv_pro_invdet_slno', $request_sl_no)
                             ->first();
+                            //dd($pre_pro_inv_details);
                         
                         if(!empty($pre_pro_inv_details)) {
                             $pre_pro_inv_details->inv_pro_invdet_sell_status = 1;

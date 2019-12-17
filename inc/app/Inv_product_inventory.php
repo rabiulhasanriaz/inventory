@@ -161,6 +161,13 @@ class Inv_product_inventory extends Model
         return $this->belongsTo('App\Inv_customer','inv_pro_inv_party_id','inv_cus_id');
     }
 
+    public static function getInvoice($partyID){
+        $com = Auth::user()->au_company_id;
+        return $invoice = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                               ->where('inv_pro_inv_party_id',$partyID)
+                                               ->first();
+    }
+
     public function getSoldByInfo(){
         return $this->belongsTo('App\Admin_user','inv_pro_inv_submit_by','au_id');
     }
@@ -181,8 +188,20 @@ class Inv_product_inventory extends Model
         return $total;
     }
 
+    public static function getTotalCredit($invoiceId){
+        $com = Auth::user()->au_company_id;
+        $total = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                            ->where('inv_pro_inv_invoice_no',$invoiceId)
+                                            ->sum('inv_pro_inv_credit');
+        return $total;
+    }
+
     public static function ProductSerial($pro_inv_id){
         return Inv_product_inventory_detail::where('inv_pro_invdet_proinv_id', $pro_inv_id)->pluck('inv_pro_invdet_slno')->toArray();
+    }
+
+    public static function ProductSerialSell($pro_inv_id){
+        return Inv_product_inventory_detail::where('inv_pro_invdet_proinv_sell_id', $pro_inv_id)->pluck('inv_pro_invdet_slno')->toArray();
     }
 
 
@@ -224,4 +243,5 @@ class Inv_product_inventory extends Model
                                             return $pro_loss;
     }
 
+    
 }

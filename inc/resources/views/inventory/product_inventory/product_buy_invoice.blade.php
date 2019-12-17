@@ -43,7 +43,7 @@
                                         {{ $pro_sup->inv_sup_person }}({{ $pro_sup->inv_sup_com_name }})
                                     </td>
                                     <th>Invoice No:</th>
-                                    <td></td>
+                                    <td>{{ $invoice }}</td>
                                 </tr>
                                 <tr>
                                     <th>Address</th>

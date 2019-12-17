@@ -314,6 +314,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_report_ajax','Inventory\ReportsController@sell_report_ajax')->name('sell-reports-ajax');
         Route::get('buy_reports','Inventory\ReportsController@buy_reports')->name('buy-reports');
         Route::get('buy_reports_confirm','Inventory\ReportsController@buy_reports_confirm')->name('buy-report-confirm');
+        Route::get('combined_reports','Inventory\ReportsController@combinedReports')->name('combined-reports');
         Route::get('buy_reports_ajax','Inventory\ReportsController@buy_reports_ajax')->name('buy-reports-ajax');
         Route::get('buy_pdf/{invoice}','Inventory\ReportsController@buy_reports_pdf')->name('buy-pdf');
         Route::get('sell_pdf/{invoice}','Inventory\ReportsController@sell_reports_pdf')->name('sell-pdf');
@@ -353,6 +354,8 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
 
         Route::get('buy_edit/add-to-cart','Inventory\ProductBuyEditController@addToCart')->name('add-to-cart');
         Route::get('buy_edit/add-to-cart-warrenty-product','Inventory\ProductBuyEditController@addToCartWarrentyProduct')->name('add-to-cart-warrenty-product');
+        //Buy_edit_new
+        Route::get('buy_edit/update-warranty-product','Inventory\ProductBuyEditController@updateWarrantyProduct')->name('update-warranty-product');
         Route::get('buy_edit/add-warrenty-product-sl-no','Inventory\ProductBuyEditController@addWarrentyProductSlNo')->name('add-warrenty-product-sl-no');
         Route::get('buy_edit/remove-warrenty-product-sl','Inventory\ProductBuyEditController@removeWarrentyProductSlNo')->name('remove-warrenty-product-sl');
         Route::get('buy_edit/get-cart','Inventory\ProductBuyEditController@getCartContent')->name('get-cart');

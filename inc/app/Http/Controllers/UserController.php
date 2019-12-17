@@ -243,17 +243,29 @@ class UserController extends Controller
       if ($request->input('entry') != '') {
         $settings->au_password = md5($request->input('entry'));
       }
-      if ($request->hasfile('au_company_img')) {
-              $file = $request->file('au_company_img');
-              $extension = $file->getClientOriginalExtension();
-              $filename = time() . "." . $extension;
-
-              $request->au_company_img->storeAs('image', $filename);
-
-              $settings->au_company_img = $filename;
-          }else{
-              $settings->au_company_img = "";
+      $settings->au_email = $request->input('email');
+      $settings->au_address = $request->input('address');
+   
+        if ($request->hasfile('logo') != '') {
+            $file = $request->file('logo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().random_int(10,99) . "." . $extension;
+    
+            $path = $request->logo->storeAs('image', $filename);
+            
+                $settings->au_company_logo = $filename;
+            
           }
+        if ($request->hasfile('au_company_img')) {
+            $file = $request->file('au_company_img');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . "." . $extension;
+
+            $request->au_company_img->storeAs('image', $filename);
+
+            $settings->au_company_img = $filename;
+        }
+      
       $settings->save();
       return redirect()->back();
     }

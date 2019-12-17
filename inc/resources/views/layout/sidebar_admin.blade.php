@@ -613,7 +613,7 @@
                                                     <i class="fa fa-circle-o"></i> Buy Reports
                                                   </a>
                                               </li>
-                                              <li class="@yield('sell_reports_confirm')">
+                                              {{-- <li class="@yield('sell_reports_confirm')">
                                                   <a href="{{ route('reports.sell-confirm_reports') }}">
                                                     <i class="fa fa-circle-o"></i> Confirm Sell Reports
                                                   </a>
@@ -622,9 +622,13 @@
                                                   <a href="{{ route('reports.buy-report-confirm') }}">
                                                     <i class="fa fa-circle-o"></i> Confirm Buy Reports
                                                   </a>
+                                              </li> --}}
+                                              <li class="@yield('combined_reports')">
+                                                  <a href="{{ route('reports.combined-reports') }}">
+                                                    <i class="fa fa-circle-o"></i> Combined Reports
+                                                  </a>
                                               </li>
                                         </ul>
-      
                                       </li>
                                       
                                       <li class="treeview @yield('damage_class')">

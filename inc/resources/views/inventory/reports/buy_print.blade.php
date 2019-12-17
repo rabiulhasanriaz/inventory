@@ -146,7 +146,7 @@ footer {
     border-radius: 10px;
     background-color: lightblue;
     display: inline-block;
-    margin-right: 70px;
+    /* margin-right: 70px; */
     padding: 10px;
 }
 .text-center{
@@ -163,38 +163,41 @@ footer {
   </head>
   <body>
     <header class="clearfix">
-      <div id="logo">
-        <img src="">
-      </div>
       <div class="header_company">
-          @php($company_info = App\Admin_user::company_info(Auth::user()->au_company_id))
-            <h1>{{ Auth::user()->au_company_name }}</h1>
-            <p>Address: {{ $company_info->au_address }}</p>
-            <p>Mobile: {{ $company_info->au_mobile }}</p>
-            <p>Email: {{ $company_info->au_email }}</p>
+          <div class="col-md-4">
+              @php($company_logo = App\Admin_user::company_logo(Auth::user()->au_company_id))
+              <img src="{{ asset('/asset/image/')}}/{{ $company_logo->au_company_logo }}" style="float:left;height:132px; width:190px;">
+          </div>
+          <div class="col-md-8" style="margin-right:180px;">
+              @php($company_info = App\Admin_user::company_info(Auth::user()->au_company_id))
+              <h1>{{ Auth::user()->au_company_name }}</h1>
+              <p>Address: {{ $company_info->au_address }}</p>
+              <p>Mobile: {{ $company_info->au_mobile }}</p>
+              <p>Email: {{ $company_info->au_email }}</p>
+          </div>
       </div>
       <div class="text-center">
           <h3 class="invoice">Invoice</h3>
       </div>
-      <div id="company" class="clearfix">
+      <div id="company" class="clearfix" style="margin-right:-64px;">
           <table class="table">
               <tr>
                   <td id="text">Supplier Name</td>
                   <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_person'] }}</td>
                   <td id="text">Invoice No:</td>
-                  <td id="desc"></td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
               <tr>
                   <td id="text">Address</td>
                   <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_address'] }}</td>
                   <td id="text">Mobile</td>
-                  <td id="desc"></td>
+                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_mobile'] }}</td>
               </tr>
               <tr>
                   <td id="text">Bought By</td>
                   <td id="desc">{{ $invoice_detail->getSoldByInfo['au_name'] }}</td>
                   <td id="text">Issue Date</td>
-                  <td id="desc"></td>
+                  <td id="desc">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
               </tr>
           </table>
         {{-- <div>Invoice</div>

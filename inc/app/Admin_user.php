@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,7 +27,8 @@ class Admin_user extends Authenticatable
     'au_permission_status',
     'au_sender_id',
     'au_team_id',
-    'au_company_img'
+    'au_company_img',
+    'au_company_logo'
     ];
 
     protected $primaryKey = 'au_id';
@@ -73,5 +75,14 @@ class Admin_user extends Authenticatable
                                 ->first();
         return $admin_query;
     }
+
+    public static function company_logo($com_id){
+        $logo = Admin_user::where('au_company_id',$com_id)
+                          
+                          ->first();
+        return $logo;
+    }
+
+    
 
 }
