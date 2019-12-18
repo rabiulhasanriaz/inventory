@@ -189,25 +189,34 @@ class ReportsController extends Controller
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }
 
-    public function sell_reports_pdf(Request $request,$invoice){
+    public function sell_reports_pdf(Request $request,$invoice_r){
         $com = Auth::user()->au_company_id;
 
         $invoice_detail = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                         ->where('inv_pro_inv_deal_type',2)
                                         ->where('inv_pro_inv_tran_type',1)
-                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->where('inv_pro_inv_invoice_no',$invoice_r)
                                         ->first();
 
         $invoice = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                         ->where('inv_pro_inv_deal_type',2)
                                         ->where('inv_pro_inv_tran_type',1)
-                                        ->where('inv_pro_inv_invoice_no',$invoice)
+                                        ->where('inv_pro_inv_invoice_no',$invoice_r)
                                         ->get();
-        return view('inventory.reports.sell_print',compact('invoice','invoice_detail'));
+
+        $services_delivery = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_deal_type',2)
+                                        ->whereIn('inv_pro_inv_tran_type',[10,11])
+                                        ->where('inv_pro_inv_invoice_no',$invoice_r)
+                                        ->get();
+                                        // dump($invoice);
+                                        // dd($services_delivery);
+        return view('inventory.reports.sell_print',compact('invoice','invoice_detail','services_delivery'));
 
         $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }
+
 
     public function sell_confirm(Request $request,$invoice){
         Inv_product_inventory::where('inv_pro_inv_invoice_no',$invoice)

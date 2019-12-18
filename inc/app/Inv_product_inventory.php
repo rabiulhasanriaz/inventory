@@ -20,6 +20,8 @@ class Inv_product_inventory extends Model
         'inv_pro_inv_short_remarks',
         'inv_pro_inv_qty',
         'inv_pro_inv_unit_price',
+        'inv_pro_inv_service_charges',
+        'inv_pro_inv_delivery_charges',
         'inv_pro_inv_debit',
         'inv_pro_inv_credit',
         'inv_pro_inv_issue_date',

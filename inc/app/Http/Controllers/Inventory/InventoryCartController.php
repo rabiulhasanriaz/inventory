@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Inventory;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 use Cart;
 use DB;
 use Auth;
@@ -312,7 +313,7 @@ class InventoryCartController extends Controller
 
     // Submit cart form for sale
     public function cartSubmit(Request $request){
-
+        // dd(request()->all());
         $request->validate([
             'customer' => 'required'
         ]);
@@ -479,6 +480,46 @@ class InventoryCartController extends Controller
 
 
             }
+                if ($request->service > 0) {
+                    $product_inventory = new Inv_product_inventory();
+                    $product_inventory->inv_pro_inv_com_id = $com;
+                    $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
+                    $product_inventory->inv_pro_inv_party_id = $request->customer;
+                    $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                    $product_inventory->inv_pro_inv_qty = $req_qty;
+                    $product_inventory->inv_pro_inv_unit_price = $product_price;
+                    $product_inventory->inv_pro_inv_debit = $request->service;
+                    $product_inventory->inv_pro_inv_credit = 0;
+                    $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                    $product_inventory->inv_pro_inv_tran_desc = "Sell Product Service Charge";
+                    $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                    $product_inventory->inv_pro_inv_tran_type =  10;//10=serviceCharges,11=deliveryCharges
+                    $product_inventory->inv_pro_inv_status = 1;
+                    $product_inventory->inv_pro_inv_submit_by = $user_id;
+                    $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                    $product_inventory->save();
+                }
+            if ($request->delivery > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = $req_qty;
+                $product_inventory->inv_pro_inv_unit_price = $product_price;
+                $product_inventory->inv_pro_inv_debit = $request->delivery;
+                $product_inventory->inv_pro_inv_credit = 0;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product Delivery Charge";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  11;//10=serviceCharges,11=deliveryCharges
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                $product_inventory->save();
+            }
 
             
             Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
@@ -503,10 +544,12 @@ class InventoryCartController extends Controller
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
                                             ->where('inv_pro_temp_deal_type',2)
                                             ->get();
+        $service = $request->service;
+        $delivery = $request->delivery;
         $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
             ->where('inv_cus_id', $request->customer)
             ->first();
-        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus'));
+        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus','service','delivery'));
     }
 
 }

@@ -24,6 +24,8 @@ class CreateInvProductInventoriesTable extends Migration
             $table->string('inv_pro_inv_short_remarks')->nullable();
             $table->decimal('inv_pro_inv_qty',8,2)->nullable();
             $table->decimal('inv_pro_inv_unit_price',12,2);
+            $table->decimal('inv_pro_inv_service_charges',10,2)->nullable();
+            $table->decimal('inv_pro_inv_delivery_charges',10,2)->nullable();
             $table->decimal('inv_pro_inv_debit',12,2);
             $table->decimal('inv_pro_inv_credit',12,2);
             $table->date('inv_pro_inv_issue_date');

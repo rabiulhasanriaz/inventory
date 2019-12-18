@@ -156,6 +156,9 @@ footer {
   text-align: right;
   font-weight: bold;
 }
+.qty{
+  text-align: left;
+}
 #desc{
   text-align: left;
 }
@@ -179,25 +182,31 @@ footer {
       <div class="text-center">
           <h3 class="invoice">Invoice</h3>
       </div>
-      <div id="company" class="clearfix" style="margin-right:-64px;">
+      <div id="company" class="clearfix" >
           <table class="table">
               <tr>
-                  <td id="text">Supplier Name</td>
+                  <td id="text" style="text-align: left; width:100px;">Supplier Name</td>
+                  <td style="text-align:center;">:</td>
                   <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_person'] }}</td>
-                  <td id="text">Invoice No:</td>
+                  <td id="text" style="width:320px;">Invoice No:</td>
+                  <td>:</td>
                   <td id="desc">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
               <tr>
-                  <td id="text">Address</td>
-                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_address'] }}</td>
-                  <td id="text">Mobile</td>
-                  <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_mobile'] }}</td>
+                  <td id="text" style="text-align: left; width:100px;">Address</td>
+                  <td style="text-align:center;">:</td>
+                  <td id="desc" style="float:left;">{{ $invoice_detail->getSupplierInfo['inv_sup_address'] }}</td>
+                  <td id="text" style="width:320px;">Bought By</td>
+                  <td>:</td>
+                  <td id="desc" style="text-align:left;">{{ $invoice_detail->getSoldByInfo['au_name'] }}</td>
               </tr>
               <tr>
-                  <td id="text">Bought By</td>
-                  <td id="desc">{{ $invoice_detail->getSoldByInfo['au_name'] }}</td>
-                  <td id="text">Issue Date</td>
-                  <td id="desc">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
+                  <td id="text" style="text-align: left; width:100px;">Mobile</td>
+                  <td style="text-align:center;">:</td>
+                  <td id="desc" style="float:left;">{{ $invoice_detail->getSupplierInfo['inv_sup_mobile'] }}</td>
+                  <td id="text" style="width:320px;">Issue Date</td>
+                  <td>:</td>
+                  <td id="desc" style="text-align:left;">{{ $invoice_detail->inv_pro_inv_issue_date }}</td>
               </tr>
           </table>
         {{-- <div>Invoice</div>
@@ -215,17 +224,15 @@ footer {
       </div> --}}
     </header>
     <main>
-        <table>
-            <thead>
+        <table border="1">
+            <thead style="background-color:#ddd;">
               <tr>
-                <th class="service">SL</th>
-                <th class="desc">PRODUCT NAME</th>
-                <th>DESCRIPTION</th>
-                <th>WARRANTY</th>
-                <th>SHORT QUATITY</th>
-                <th>QUANTITY</th>
-                <th>UNIT PRICE</th>
-                <th>AMOUNT</th>
+                <th class="service">Sl</th>
+                <th>Description</th>
+                <th>Short Quantity</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -234,39 +241,45 @@ footer {
               @foreach ($invoice as $buy)
               <tr>
                   <td class="service">{{ ++$sl }}</td>
-                  <td class="desc">
+                  <td class="qty">
                     @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
-                    {{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}
+                    {{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}<br>
+                    {{ $buy->getProductWarranty->type_info['inv_pro_type_name'] }}<br>
                     @else
                     {{ $buy->getProductWarranty['inv_pro_det_pro_name'] }}<br>
-                    <b>{{ implode(', ', App\Inv_product_inventory::ProductSerial($buy->inv_pro_inv_id)) }}</b>
+                    <b>{{ implode(', ', App\Inv_product_inventory::ProductSerial($buy->inv_pro_inv_id)) }}<br></b>
+                    @endif
+                    @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
+                      
+                    @else
+                      {{ $buy->getProductWarranty['inv_pro_det_pro_warranty'] }} Days<br>
                     @endif
                   </td>
-                  <td class="qty">{{ $buy->inv_pro_inv_tran_desc }}</td>
-                  <td class="unit">
-                      @if ($buy->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
-                      No Warranty
-                      @else
-                      {{ $buy->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
-                      @endif
-                  </td>
-                  <td>{{ $buy->inv_pro_inv_short_qty }}</td>
-                  <td>{{ $buy->inv_pro_inv_total_qty }}</td>
-                  <td>{{ $buy->inv_pro_inv_unit_price }}</td>
-                  <td class="total">{{ $buy->inv_pro_inv_debit }}</td>
+                  <td style="text-align:center;">{{ $buy->inv_pro_inv_short_qty }}</td>
+                  <td style="text-align:center;">{{ $buy->inv_pro_inv_total_qty }}</td>
+                  <td>{{ number_format($buy->inv_pro_inv_unit_price,2) }}</td>
+                  <td class="total">{{ number_format($buy->inv_pro_inv_debit,2) }}</td>
               </tr>
               @php($balance = $balance + $buy->inv_pro_inv_debit)
               @endforeach
               <tr>
-                <td colspan="7">SUBTOTAL :</td>
+                <td colspan="5">Sub Total :</td>
               <td class="total">{{ number_format($balance,2) }}</td>
               </tr>
               <tr>
-                <td colspan="7">DISCOUNT :</td>
-                <td class="total">0000.00</td>
-              </tr>
+                  <td colspan="5">Discount :</td>
+                  <td class="total">0000.00</td>
+                </tr>
+                <tr>
+                  <td colspan="5">Service Charges :</td>
+                  <td class="total">0000.00</td>
+                </tr>
+                <tr>
+                  <td colspan="5">Delivery Charges :</td>
+                  <td class="total">0000.00</td>
+                </tr>
               <tr>
-                <td colspan="7" class="grand total">NET PAYABLE AMOUNT :</td>
+                <td colspan="5" class="grand total">Net Payable Amount :</td>
                 <td class="grand total">{{ number_format($balance,2) }}</td>
               </tr>
             </tbody>
@@ -274,11 +287,11 @@ footer {
           <div id="notices" align="center" style="margin-top: 70px;">
               <table>
                 <tr>
-                  <td>------------------------------</td>
+                  <td style="text-align:left;">------------------------------</td>
                   <td>------------------------------</td>
                 </tr>
                 <tr>
-                  <td>Customer Signature</td>
+                  <td style="text-align:left;">Customer Signature</td>
                   <td>Supplier Signature</td>
                 </tr>
               </table>

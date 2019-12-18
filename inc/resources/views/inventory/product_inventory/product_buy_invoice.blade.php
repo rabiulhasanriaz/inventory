@@ -61,8 +61,7 @@
                             <thead>
                             <tr>
                               <th class="text-center">SL</th>
-                              <th class="text-center">Description</th>
-                              <th class="text-center">Warranty</th>
+                              <th class="text-left">Description</th>
                               <th class="text-center">Bought Qty</th>
                               <th class="text-center">Short Qty</th>
                               <th class="text-center">Remarks</th>
@@ -76,14 +75,12 @@
                             @foreach ($pro_temps as $temp)
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
-                                <td class="text-center">
+                                <td class="text-left">
                                     {{ $temp->inv_pro_temp_pro_name }}
                                     <br>
                                     <b>
-                                        {{ implode(', ', explode(',',$temp->inv_pro_temp_slno)) }}
+                                        {{ implode(', ', explode(',',$temp->inv_pro_temp_slno)) }}<br>
                                     </b>
-                                </td>
-                                <td class="text-center">
                                     @if ($temp->pro_warranty['inv_pro_det_pro_warranty'] == 0)
                                      <b>No Warranty</b> 
                                     @else
@@ -102,7 +99,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="6" class="text-right">Total Amount</td>
+                                    <td colspan="5" class="text-right">Total Amount</td>
                                     <td></td>
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
@@ -122,7 +119,7 @@
                                     <td class="text-right"></td>
                                 </tr> --}}
                                 <tr>
-                                    <td colspan="6" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
+                                    <td colspan="5" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
                                     <td></td>
                                     <td class="text-right"><span class="underline">{{ number_format($balance,2) }}</span></td>
                                 </tr>

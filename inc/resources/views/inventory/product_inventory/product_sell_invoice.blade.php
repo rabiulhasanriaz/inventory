@@ -12,9 +12,9 @@
           </button>
         </div>
         @endif
-        @if(session()->has('pro_del'))
-              <div class="alert alert-success alert-dismissible" role="alert">
-                {{ session('pro_del') }}
+        @if(session()->has('sub_err'))
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                {{ session('sub_err') }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -62,7 +62,7 @@
                             <thead>
                             <tr>
                               <th class="text-center">SL</th>
-                              <th class="text-center">Description</th>
+                              <th class="text-left">Description</th>
                               
                               <th class="text-center">Sold Qty</th>
                               <th class="text-center">Unit Price</th>
@@ -72,6 +72,7 @@
                             <tbody>
                             @php($sl=0)
                             @php($balance=0)
+                            @php($total = 0)
                             @foreach ($pro_temps as $temp)
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
@@ -102,6 +103,17 @@
                                     <td></td>
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right"><span class="underline"><b>Service Charges</b></span></td>
+                                    <td></td>
+                                    <td class="text-right"><span class="underline">{{ number_format($service,2) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right"><span class="underline"><b>Delivery Charges</b></span></td>
+                                    <td></td>
+                                    <td class="text-right"><span class="underline">{{ number_format($delivery,2) }}</span></td>
+                                </tr>
+                                @php($total = $balance + $service + $delivery)
                                 {{-- <tr>
                                     <td colspan="4" class="text-right">Add Vat</td>
                                     <td></td>
@@ -120,7 +132,7 @@
                                 <tr>
                                     <td colspan="3" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
                                     <td></td>
-                                    <td class="text-right"><span class="underline">{{ number_format($balance,2) }}</span></td>
+                                    <td class="text-right"><span class="underline">{{ number_format($total,2) }}</span></td>
                                 </tr>
                                 {{-- <tr>
                                     <td colspan="4" class="text-right"><b>Received Amount</b></td>
@@ -141,6 +153,8 @@
                           </table>
                           {{ Form::open(['action' => 'Inventory\InventoryCartController@cartSubmit','method' => 'post' , 'class' => 'form-horizontal']) }}
                           <input type="text" class="hidden" name="customer" value="{{ $pro_cus->inv_cus_id }}">
+                          <input type="text" class="hidden" name="service" value="{{ $service }}">
+                          <input type="text" class="hidden" name="delivery" value="{{ $delivery }}">
                           <button type="submit" class="btn btn-success pull-right">Confirm</button>
                           {{ Form::close() }}
 

@@ -94,7 +94,7 @@
                                   </li>
                                   <li class="divider"></li>
                                   <li>
-                                    <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Download</a>
+                                    <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}" target="_blank">Download</a>
                                   </li>
                                 </ul>
                           </div>

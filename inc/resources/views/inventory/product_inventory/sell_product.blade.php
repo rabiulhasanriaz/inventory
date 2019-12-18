@@ -52,10 +52,10 @@
                     
                 <div class="col-sm-5">
                         <div class="form-group">
-                                <label for="inputEmail3" class="col-sm-2 text-right control-label">Group:</label>
+                                <label for="inputEmail3" style="margin-right:80px;" class="col-sm-2 control-label">Group:</label>
                                 <div class="col-sm-5">
                                     <select name="group" style="width:200px;" id="product_category" class="form-control select2">
-                                        <option value="">Select One</option>
+                                        <option value="">Select Group</option>
                                         @foreach ($groups as $group)
                                         <option value="{{ $group->inv_pro_grp_id }}">
                                             {{ $group->inv_pro_grp_name }} 
@@ -67,10 +67,10 @@
                 </div>
                 <div class="col-sm-5">
                         <div class="form-group">
-                                <label for="inputEmail3" class="col-sm-3 text-right control-label">Type:</label>
+                                <label for="inputEmail3" class="col-sm-3 control-label">Type:</label>
                                 <div class="col-sm-5 product_category_wrapper">
-                                    <select name="type" id="product_model" class="form-control select2">
-                                        <option value="">Select Group First</option>
+                                    <select name="type" style="width:200px;" id="product_model" class="form-control select2">
+                                        <option value="">Select Type First</option>
                                         
                                     </select>
                                 </div>
@@ -79,6 +79,24 @@
                 <div class="col-xs-2">
                     <button type="button" id="pro_search"  class="btn btn-info" name="searchbtn">Search</button>
                 </div>
+                </div>
+                <div class="col-sm-12">
+                        <div class="col-sm-6">
+                                <div class="form-group">
+                                        <label for="inputEmail3" style="width:150px;" class="col-sm-3 text-right control-label">Service Charge:</label>
+                                        <div class="col-sm-3 product_category_wrapper">
+                                            <input type="text" style="width:200px;" name="service" class="form-control" placeholder="Service Charges">
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" style="margin-left:-130px;">
+                                    <div class="form-group">
+                                            <label for="inputEmail3" style="width:150px;" class="col-sm-3 control-label">Delivery Charge:</label>
+                                            <div class="col-sm-3 product_category_wrapper">
+                                                <input type="text" style="width:200px;" name="delivery" class="form-control" placeholder="Delivery Charges">
+                                            </div>
+                                    </div>
+                            </div>
                 </div>
                 </div>
             <div class="box-body">
@@ -227,8 +245,9 @@
     $(document).ready(function(){
 
     @if(session()->has('print_invoice'))
-        let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";
-        window.open(sell_print, '_blank');
+    let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";     
+        let newTab = window.open(sell_print, '_blank');
+        newTab.location.href = url
     @endif
 
     $( "#from" ).datepicker({
