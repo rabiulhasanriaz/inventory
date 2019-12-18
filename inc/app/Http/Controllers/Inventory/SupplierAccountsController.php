@@ -253,6 +253,7 @@ class SupplierAccountsController extends Controller
 						->where('inv_pro_inv_issue_date','<=',$request->end_date)
 						->where('inv_pro_inv_status',1)
 						->where('inv_pro_inv_deal_type',1)
+						->orderBy('inv_pro_inv_issue_date','desc')
 						->groupBy('inv_pro_inv_invoice_no')->get();
 		}
 		else
@@ -261,6 +262,7 @@ class SupplierAccountsController extends Controller
 						->where('inv_pro_inv_com_id',Auth::user()->au_company_id)
 						->where('inv_pro_inv_deal_type',1)
 						->where('inv_pro_inv_status',1)
+						->orderBy('inv_pro_inv_issue_date','desc')
 						->groupBy('inv_pro_inv_invoice_no')->get();
 		}
 

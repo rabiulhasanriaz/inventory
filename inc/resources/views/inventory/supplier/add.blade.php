@@ -119,10 +119,13 @@
                       </label>
                       <div class="col-sm-6">
                         <label class="radio-inline">
-                          <input type="radio" name="type" value="1">Local
+                          <input type="radio" name="type" value="1">Regular
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="type" value="2">Global
+                            <input type="radio" name="type" value="2">Eregular
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="type" value="3">Importer
                         </label>
                       </div>
                       @if($errors->has('type'))

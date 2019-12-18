@@ -54,7 +54,20 @@
                         </thead>
                         <tbody>
                         @php($sl=0)
+                        @php($debit = 0)
+                        @php($totalDebit = 0)
+                        @php($credit = 0)  
+                        @php($totalCredit = 0) 
+                        @php($balance = 0)
+                        @php($total = 0)
+
                         @foreach ($bank_infos as $bank)
+                        @php($debit = App\Inv_acc_bank_statement::getTotalDebitByBankId($bank->inv_abi_id))
+                        @php($totalDebit += $debit)
+                        @php($credit = App\Inv_acc_bank_statement::getTotalCreditByBankId($bank->inv_abi_id))
+                        @php($totalCredit += $credit)
+                        @php($balance = App\Inv_acc_bank_statement::getAvailableBalanceByBankId($bank->inv_abi_id))
+                        @php($total = $total + $balance)
                         <tr>
                             <td>{{ ++$sl }}</td>
                             <td>{{ $bank->bank_info->bank_name }}</td>
@@ -63,12 +76,12 @@
                             <td>{{ $bank->inv_abi_account_no }}</td>
                            
                             <td style="text-align: right;">
-                              {{number_format(App\Inv_acc_bank_statement::getTotalDebitByBankId($bank->inv_abi_id),2)}}
+                              {{number_format($debit,2)}}
                             </td>
                             <td style="text-align: right;">
-                             {{number_format(App\Inv_acc_bank_statement::getTotalCreditByBankId($bank->inv_abi_id),2)}}
+                             {{number_format($credit,2)}}
                            </td>
-                            <td style=" text-align: right;">{{number_format(App\Inv_acc_bank_statement::getAvailableBalanceByBankId($bank->inv_abi_id),2)}}</td>
+                            <td style=" text-align: right;">{{number_format($balance,2)}}</td>
                             <td align="center">
                                 <a href="{{ route('accounts.bank-statement-detail', $bank->inv_abi_id) }}" class="action_btn btn-success"><i class="fa fa-eye"></i></a>
                                 <a href="{{ route('accounts.update-bank', $bank->inv_abi_id) }}" class="action_btn btn_edit"><i class="fa fa-edit"></i></a>
@@ -77,6 +90,15 @@
                           </tr>
                         @endforeach
                         </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="4" class="text-right"><b>Total:</b></td>
+                            <td class="text-right">{{ number_format($totalDebit,2) }}</td>
+                            <td class="text-right">{{ number_format($totalCredit,2) }}</td>
+                            <td class="text-right">{{ number_format($total,2) }}</td>
+                            <td></td>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                     <!-- /.box-body -->

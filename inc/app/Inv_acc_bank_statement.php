@@ -29,6 +29,9 @@ class Inv_acc_bank_statement extends Model
     	'inv_abs_updated_at'
     	
     ];
+    protected $dates = [
+        'inv_abs_transaction_date',
+    ];
 
     protected $table = 'inv_acc_bank_statements';
     protected $primaryKey = 'inv_abs_id';

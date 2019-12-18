@@ -87,7 +87,7 @@
                         <thead>
                         <tr>
                           <th style="text-align:center;">SL</th>
-                          <th style="text-align:center;">Issue Date</th>
+                          <th style="text-align:center;">Date</th>
                           <th style="text-align: center;">Invoice No</th>
                           <th style="text-align:center;">Description</th>
                            <th style="text-align:center;">Debit</th>
@@ -104,6 +104,9 @@
                         
                           $sl=0;
                           $total_credit=0;
+                          $debit = 0;
+                          $credit = 0;
+                          $balance = 0;
                           $total_debit=0;
                           $total_balance=0;
                           
@@ -112,7 +115,9 @@
                         @foreach($inv_pros as $inv_sup)
                         
                         @php
-                          
+                            $debit = App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
+                            $credit = App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
+                            $balance = $balance + $credit - $debit;
                             $total_credit+=App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
 
                             $total_debit+=App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no);
@@ -129,18 +134,18 @@
                           <td style="text-align: center;">
                             {{$inv_sup->inv_pro_inv_invoice_no}}
                           </td>
-                          <td style="text-align: center;"> 
+                          <td class="text-left"> 
                             {{$inv_sup->inv_pro_inv_tran_desc}}
                           </td>
                           
                           <td style="text-align: right;">
-                            {{ number_format(App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no),2)}}
+                            {{ number_format($debit,2)}}
                           </td>
                           <td style="text-align: right;">
-                            {{ App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)}}
+                            {{ number_format($credit,2) }}
                           </td>
                           <td style="text-align: right;">
-                            {{ number_format((App\Inv_product_inventory::getCreditByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)) - (App\Inv_product_inventory::getDebitByInvoiceNo($inv_sup->inv_pro_inv_invoice_no)),2) }}
+                            {{ number_format($balance,2) }}
                           </td>
                           <td style="text-align: center;">
                               <a href="#" onclick="show_invoice_details('{{ $inv_sup->inv_pro_inv_invoice_no }}')" data-toggle="modal" data-target="#invoice_details">

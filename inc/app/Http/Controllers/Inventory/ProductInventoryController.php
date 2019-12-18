@@ -198,22 +198,26 @@ class ProductInventoryController extends Controller
     }
 
     public function damage_add_submit(){
-        $com = Auth::user()->au_company_id;
-        $submit_at = Carbon::now()->format('Y-m-d H:i:s');
-        $submit_by = Auth::user()->au_id;
-        $damage = new Inv_product_inventory;
-        $damage->inv_pro_inv_com_id = $com;
-        $damage->inv_pro_inv_prodet_id = Input::get('product');
-        $damage->inv_pro_inv_total_qty = Input::get('short_total');
-        $damage->inv_pro_inv_short_qty = 0;
-        $damage->inv_pro_inv_qty = Input::get('short_total');
-        $damage->inv_pro_inv_deal_type = 2;
-        $damage->inv_pro_inv_damage_status = 1;
-        $damage->inv_pro_inv_tran_type = 1;
-        $damage->inv_pro_inv_submit_at = $submit_at;
-        $damage->inv_pro_inv_submit_by = $submit_by;
-        $damage->save();
-
+            $com = Auth::user()->au_company_id;
+            $submit_at = Carbon::now()->format('Y-m-d H:i:s');
+            $submit_by = Auth::user()->au_id;
+        try {
+            $damage = new Inv_product_inventory;
+            $damage->inv_pro_inv_com_id = $com;
+            $damage->inv_pro_inv_prodet_id = Input::get('product');
+            $damage->inv_pro_inv_total_qty = Input::get('short_total');
+            $damage->inv_pro_inv_short_qty = 0;
+            $damage->inv_pro_inv_qty = Input::get('short_total');
+            $damage->inv_pro_inv_deal_type = 2;
+            $damage->inv_pro_inv_damage_status = 1;
+            $damage->inv_pro_inv_tran_type = 1;
+            $damage->inv_pro_inv_submit_at = $submit_at;
+            $damage->inv_pro_inv_submit_by = $submit_by;
+            $damage->save();
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['err' => $e->getMessage()]);
+        }
         return redirect()->back()->with(['damage' => 'Damage Product Submitted Successfully']);
     }
 

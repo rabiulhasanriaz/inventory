@@ -290,7 +290,7 @@ footer {
               
               <tr>
                   <td class="grand total" style="text-align:center;">In Word :</td>
-                  <td class="grand total" colspan="4"></td>
+                  <td class="grand total" style="text-align: left;" colspan="4">{{ App\NumberConverter::number_to_text($balance) }}</td>
               </tr>
             </tbody>
           </table>

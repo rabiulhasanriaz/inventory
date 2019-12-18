@@ -5,9 +5,9 @@
 @section('content')
 <section class="content">
         <section class="content-header">
-            @if(session()->has('det_add'))
-            <div class="alert alert-success alert-dismissible" role="alert">
-                {{ session('det_add') }}
+            @if(session()->has('err'))
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                {{ session('err') }}
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -76,7 +76,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Damage Quantity</label>
                           <div class="col-sm-6">
-                            <input type="number" name="short_total" autocomplete="off" value="{{ old('pro_short') }}" class="form-control" id="" placeholder="Enter Product Damage Quantity">
+                            <input type="number" name="short_total" autocomplete="off" value="{{ old('pro_short') }}" class="form-control" id="" placeholder="Enter Product Damage Quantity" required min="0" step="0.01">
                           </div> 
                         </div>
                       </div>

@@ -38,12 +38,20 @@
                 	<td>{{ $cus_det->inv_cus_email }}</td>
                 </tr>
                 <tr>
-                    <th>Submit By</th>
-                    <td>{{ $cus_det->cus_submit['au_name'] }}</td>
-                  </tr>
-                <tr>
                 	<th>Address</th>
                 	<td>{{ $cus_det->inv_cus_address }}</td>
+                </tr>
+                <tr>
+                    <th>Customer Type</th>
+                    <td>
+                        @if($cus_det->inv_cus_type == 1)
+                        Regular
+                        @elseif($cus_det->inv_cus_type == 2)
+                        Eregular
+                        @elseif($cus_det->inv_cus_type == 3)
+                        Corporate
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                 	<th>Website</th>
@@ -58,6 +66,10 @@
                     Inactive
                     @endif
                   </td>
+                </tr>
+                <tr>
+                    <th>Created By</th>
+                    <td>{{ $cus_det->cus_submit['au_name'] }}</td>
                 </tr>
               </table>
             </div>

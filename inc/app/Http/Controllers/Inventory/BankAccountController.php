@@ -37,7 +37,7 @@ class BankAccountController extends Controller
 			$new_bank->inv_abi_company_id = $company_id;
 			$new_bank->inv_abi_bank_id = $request->bank_id;
 			$new_bank->inv_abi_branch_name = $request->branch_name;
-			$new_bank->inv_abi_account_name = $request->acc_name;
+			$new_bank->inv_abi_account_name = ucfirst($request->acc_name);
 			$new_bank->inv_abi_account_no = $request->acc_no;
 			$new_bank->inv_abi_open_date = $request->opendate;
 			$new_bank->inv_abi_account_type = 1; //1==bank
@@ -390,7 +390,7 @@ class BankAccountController extends Controller
 	}
 
 
-	public function bankStatementDetails($id)
+	public function bankStatementDetails(Request $request,$id)
 	{
 		$bank_info = Inv_acc_bank_info::where('inv_abi_company_id',Auth::user()->au_company_id)
 			->where('inv_abi_id', $id)
@@ -398,12 +398,26 @@ class BankAccountController extends Controller
 		if(empty($bank_info)) {
 			return redirect()->back()->with(['errmsg' => 'Invalid Bank']);
 		}
-
+		$statements = null;
+		if ($request->has('searchbtn')) {
+            $request->validate([
+                   'start_date' => 'required',
+                   'end_date' => 'required',
+               ]);
+               $start_date = $request->start_date;
+               $end_date = $request->end_date;
+           
+       }else {
+           $start_date = Carbon::now()->format('Y-m-d');
+           $end_date = Carbon::now()->format('Y-m-d');
+       }
 		$statements = Inv_acc_bank_statement::where('inv_abs_company_id',Auth::user()->au_company_id) 
-			->where('inv_abs_bank_id', $id)
-			->get();
+											->where('inv_abs_bank_id', $id)
+											->where('inv_abs_transaction_date','>=',$start_date)
+											->where('inv_abs_transaction_date','<=',$end_date)
+											->get();
 
-		return view('inventory.accounts.bank.statement-details', compact('bank_info', 'statements'));
+		return view('inventory.accounts.bank.statement-details', compact('start_date','end_date','bank_info', 'statements'));
 	}
 
 	public function expensesVoucherForm()

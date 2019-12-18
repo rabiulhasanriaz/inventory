@@ -38,10 +38,6 @@
                 	<td>{{ $supplier_info->inv_sup_mobile }}</td>
                 </tr>
                 <tr>
-                    <th>Submit By</th>
-                    <td>{{ $supplier_info->sup_submit_by['au_name'] }}</td>
-                  </tr>
-                <tr>
                 	<th>Email</th>
                 	<td>{{ $supplier_info->inv_sup_email }}</td>
                 </tr>
@@ -50,12 +46,14 @@
                 	<td>{{ $supplier_info->inv_sup_complain_num }}</td>
                 </tr>
                 <tr>
-                    <th>Supplier Typer</th>
+                    <th>Supplier Type</th>
                     <td>
                         @if($supplier_info->inv_sup_type == 1)
-                        Local
+                        Regular
                         @elseif($supplier_info->inv_sup_type == 2)
-                        Global
+                        Eregular
+                        @elseif($supplier_info->inv_sup_type == 3)
+                        Importer
                         @endif
                     </td>
                 </tr>
@@ -68,6 +66,10 @@
                     Deactivate
                     @endif
                   </td>
+                </tr>
+                <tr>
+                    <th>Created By</th>
+                    <td>{{ $supplier_info->sup_submit_by['au_name'] }}</td>
                 </tr>
               </table>
             </div>

@@ -6,6 +6,27 @@
 @section('content')
 <section class="content">
         <section class="content-header">
+            <div class="box">
+                <div class="box-header">
+                     
+              <form action="" method="get">
+                <input type="hidden" name="_token" value="" id="_token">
+               <div class="col-xs-3">
+                <input type="text" name="start_date" value="{{ $start_date }}" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="start_date" placeholder="Enter Start Date" >
+               </div>
+                <div class="col-xs-3">
+                <input type="text" name="end_date" value="{{ $end_date }}" data-date-format="yyyy-mm-dd" autocomplete="off" value="" class="form-control" id="end_date" placeholder="Enter End Date" >
+               </div>
+                  <div class="col-xs-3">
+                    <button type="submit" class="btn btn-info" name="searchbtn">Search</button>
+                    {{-- <a href="{{ route('reports.sell-reports-download') }}" class="btn btn-warning">Download</a> --}}
+                  </div>
+                  </form>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                   </div>
+               </div>
               @if(Session::has('errmsg'))
               <div class="alert alert-danger alert-dismissible" role="alert">
               {{ session('errmsg') }}
@@ -42,12 +63,10 @@
                         <tr>
                           <th>SL</th>
                           <th>Transaction Date</th>
-                          <th>Reference</th>
-                          <th>Details</th>
-                         
+                          <th>Transaction Details</th>
                           <th>Debit</th>
-                           <th>Credit</th>
-                          <th>Balance</th>
+                          <th>Credit</th>
+                          <th class="text-center">Balance</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -84,10 +103,12 @@
                                   @php($reference='Bank Deposit.')
                                 @endif
                             <tr>
-                                <td>{{ ++$sl }}</td>
-                                <td>{{ $statement->inv_abs_transaction_date }}</td>
-                                <td>{{ $reference }}<br>{{$person}}</td>
-                                <td>{{ $statement->inv_abs_description }}</td>
+                                <td class="text-center">{{ ++$sl }}</td>
+                                <td>{{ $statement->inv_abs_transaction_date->format('d M,Y') }}</td>
+                                <td>
+                                  {{ $statement->inv_abs_description }}<br>
+                                  {{ $reference }}<br>{{$person}} 
+                                </td>
                                
                                 <td style="text-align: right;">{{ number_format($debit,2) }}</td>
                                  <td style="text-align: right;">{{ number_format($credit,2) }}</td>
@@ -97,7 +118,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" style="text-align: right; font-weight: bold;">Total:</td>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
                                 
                                 <td style="text-align: right; font-weight: bold;">{{ number_format($total_debit,2) }}</td>
                                 <td style="text-align: right; font-weight: bold;">{{ number_format($total_credit,2) }}</td>
@@ -130,3 +151,21 @@
         }
     </style>
     @endsection
+@section('custom_script')
+<script>
+  $(document).ready(function(){
+
+$( "#start_date" ).datepicker({
+       daysOfWeekHighlighted: "7",
+        todayHighlight: true,
+        autoclose: true,
+     });
+
+
+$( "#to" ).datepicker({
+       daysOfWeekHighlighted: "7",
+        todayHighlight: true,
+     });
+});
+</script>
+@endsection

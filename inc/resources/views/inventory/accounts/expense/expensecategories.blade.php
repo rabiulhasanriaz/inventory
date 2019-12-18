@@ -86,7 +86,7 @@
                         @if(!empty($categories))
                             @foreach($categories as $row)
 
-                              @php($total_expenses=App\Inv_acc_bank_statement::getTotalExpensesByCategory($row->inv_acc_exp_cat_category_id))
+                              @php($total_expenses= $total_expenses + App\Inv_acc_bank_statement::getTotalExpensesByCategory($row->inv_acc_exp_cat_category_id))
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $row->inv_acc_exp_cat_category_name }}</td>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inventory;
 
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Inv_product_inventory;
@@ -12,9 +13,14 @@ class ProductReturnController extends Controller
 {
     public function sale_return(){
         $com = Auth::user()->au_company_id;
+        $today = Carbon::now()->format('Y-m-d');
+        $subDays = Carbon::now()->subDays(15)->format('Y-m-d');
+        // dd($subDays);
         $sale_return = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                             ->where('inv_pro_inv_deal_type',2)
                                             ->where('inv_pro_inv_tran_type',1)
+                                            ->where('inv_pro_inv_issue_date','<=',$today)
+                                            ->where('inv_pro_inv_issue_date','>=',$subDays)
                                             ->where('inv_pro_inv_status',1)
                                             ->groupBy('inv_pro_inv_invoice_no')
                                             ->orderBy('inv_pro_inv_invoice_no')

@@ -40,7 +40,7 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Bank Name:</label>
                           <div class="col-sm-6">
-                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control select2" id="inputEmail3" >
+                            <select name="bank_id" required  value="{{old('bank_id')}}"  class="form-control select2" id="" >
                               <option value="">Select A Bank</option>
                               
                               @foreach($banks as $inv_bank)
@@ -53,19 +53,19 @@
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Branch Name:</label>
                           <div class="col-sm-6">
-                            <input type="text" name="branch_name" autocomplete="off" value="{{ old('branch_name') }}" class="form-control" id="inputEmail3" placeholder="Enter Branch Name" >
+                            <input type="text" name="branch_name" autocomplete="off" value="{{ old('branch_name') }}" class="form-control" id="" placeholder="Enter Branch Name" >
                           </div>
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Account Name:</label>
                           <div class="col-sm-6">
-                            <input type="text" name="acc_name" autocomplete="off" value="{{ old('acc_name') }}" class="form-control" id="inputEmail3" placeholder="Enter Account Name" >
+                            <input type="text" name="acc_name" style="text-transform: uppercase;" autocomplete="off" value="{{ old('acc_name') }}" class="form-control" id="" placeholder="Enter Account Name" >
                           </div>
                         </div>
                         <div class="form-group">
                           <label for="inputEmail3" class="col-sm-2 control-label">Account No:</label>
                           <div class="col-sm-6">
-                            <input type="text" name="acc_no" autocomplete="off" value="{{ old('acc_no') }}" class="form-control" id="inputEmail3" placeholder="Enter Account Number" >
+                            <input type="text" name="acc_no" autocomplete="off" value="{{ old('acc_no') }}" class="form-control" id="" placeholder="Enter Account Number" >
                           </div>
                         </div>
                         <div class="form-group">

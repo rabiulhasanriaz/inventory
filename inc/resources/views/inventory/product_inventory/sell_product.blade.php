@@ -155,7 +155,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Description</th>
-                                                <th>Sold Qty</th>
+                                                <th>Qty</th>
                                                 <th>Unit Price</th>
                                                 <th>Amount</th>
                                                 <th>Action</th>

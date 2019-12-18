@@ -41,7 +41,9 @@
                               <option value="">Select A Bank</option>
                               
                               @foreach($banks as $inv_bank)
-                              <option  value="{{$inv_bank->inv_abi_id}}">{{$inv_bank->bank_info['bank_name']}}</option>
+                              <option  value="{{$inv_bank->inv_abi_id}}">
+                                {{$inv_bank->bank_info['bank_name']}} ({{ $inv_bank->inv_abi_account_name }})
+                              </option>
                               @endforeach
                             </select>
                          

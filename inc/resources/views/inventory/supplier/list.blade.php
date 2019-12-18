@@ -37,11 +37,10 @@
                     <tr>
                       <th>SL</th>
                       <th>Supplier Name</th>
-                      <th>Address</th>
                       <th>Person</th>
                       <th>Mobile</th>
-                      <th>Email</th>
                       <th>Complain Number</th>
+                      <th>Address</th>
                       <th class="text-center">Action</th>
                     </tr>
                     </thead>
@@ -51,11 +50,10 @@
                     <tr>
                         <td>{{ ++$sl }}</td>
                         <td>{{ $sup->inv_sup_com_name }}</td>
-                        <td>{{ $sup->inv_sup_address }}</td>
                         <td>{{ $sup->inv_sup_person }}</td>
                         <td>{{ $sup->inv_sup_mobile }}</td>
-                        <td>{{ $sup->inv_sup_email }}</td>
                         <td>{{ $sup->inv_sup_complain_num }}</td>
+                        <td>{{ $sup->inv_sup_address }}</td>
                         <td align="center">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-info btn-xs">Action</button>
@@ -68,10 +66,10 @@
                                     <a href="{{ route('inventory.list_show',['id' => $sup->inv_sup_id]) }}">Show</a>
                                   </li>
                                   <li class="divider"></li>
-                                  <li>
+                                  {{-- <li>
                                     <a href="{{ route('inventory.supplier_delete',['id' => $sup->inv_sup_id]) }}" onclick="return deletesup()">Delete</a>
                                   </li> 
-                                  <li class="divider"></li>
+                                  <li class="divider"></li> --}}
                                   <li>
                                     <a href="{{ route('inventory.supplier_show',['id' => $sup->inv_sup_id]) }}">Edit</a>
                                   </li>
