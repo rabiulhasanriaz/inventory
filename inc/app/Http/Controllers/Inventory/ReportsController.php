@@ -200,14 +200,17 @@ class ReportsController extends Controller
 
         $invoice = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                         ->where('inv_pro_inv_deal_type',2)
-                                        ->where('inv_pro_inv_tran_type',1)
+                                        ->whereIn('inv_pro_inv_tran_type',[1,10])
                                         ->where('inv_pro_inv_invoice_no',$invoice_r)
+                                        ->orderBy('inv_pro_inv_tran_type','asc')
                                         ->get();
+                                        // dd($invoice);
 
         $services_delivery = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                         ->where('inv_pro_inv_deal_type',2)
-                                        ->whereIn('inv_pro_inv_tran_type',[10,11])
+                                        ->whereIn('inv_pro_inv_tran_type',[11,12])
                                         ->where('inv_pro_inv_invoice_no',$invoice_r)
+                                        ->orderBy('inv_pro_inv_tran_type','desc')
                                         ->get();
                                         // dump($invoice);
                                         // dd($services_delivery);

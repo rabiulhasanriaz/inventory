@@ -52,7 +52,7 @@
                     
                 <div class="col-sm-5">
                         <div class="form-group">
-                                <label for="inputEmail3" style="margin-right:80px;" class="col-sm-2 control-label">Group:</label>
+                                <label for="inputEmail3" class="col-sm-2 control-label">Group:</label>
                                 <div class="col-sm-5">
                                     <select name="group" style="width:200px;" id="product_category" class="form-control select2">
                                         <option value="">Select Group</option>
@@ -79,24 +79,6 @@
                 <div class="col-xs-2">
                     <button type="button" id="pro_search"  class="btn btn-info" name="searchbtn">Search</button>
                 </div>
-                </div>
-                <div class="col-sm-12">
-                        <div class="col-sm-6">
-                                <div class="form-group">
-                                        <label for="inputEmail3" style="width:150px;" class="col-sm-3 text-right control-label">Service Charge:</label>
-                                        <div class="col-sm-3 product_category_wrapper">
-                                            <input type="text" style="width:200px;" name="service" class="form-control" placeholder="Service Charges">
-                                        </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6" style="margin-left:-130px;">
-                                    <div class="form-group">
-                                            <label for="inputEmail3" style="width:150px;" class="col-sm-3 control-label">Delivery Charge:</label>
-                                            <div class="col-sm-3 product_category_wrapper">
-                                                <input type="text" style="width:200px;" name="delivery" class="form-control" placeholder="Delivery Charges">
-                                            </div>
-                                    </div>
-                            </div>
                 </div>
                 </div>
             <div class="box-body">
@@ -139,7 +121,34 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="col-sm-12" style="text-align: center;">
+                    <table class="table table-bordered table-striped" style="width: auto;">
+                        <tbody>
+                            <tr>
+                                <th>Service Charges & Qty</th>
+                                <td>
+                                    <div class="form-group">
+                                        <div class="col-sm-3 product_category_wrapper">
+                                            <input type="text" id="service" autocomplete="off" style="width:200px;" name="service" class="form-control" placeholder="Service Charges">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <div class="col-sm-3 product_category_wrapper">
+                                            <input type="text" id="qty" autocomplete="off" style="width:200px;" name="service" class="form-control" placeholder="Qty">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addServiceCharges()">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
 
                   </div>
                   <div class="box-body">
@@ -157,7 +166,7 @@
                                                 <th>Description</th>
                                                 <th>Qty</th>
                                                 <th>Unit Price</th>
-                                                <th>Amount</th>
+                                                <th style="width:140px;">Amount</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -283,6 +292,8 @@
     function addtocart(pro_det_id) {
         let pro_qty = parseFloat($("#pro_qty_"+pro_det_id).val());
         let pro_price = parseFloat($("#pro_price_"+pro_det_id).val());
+        let service = parseInt($("#service").val());
+        let qty = parseFloat($("#qty").val());
         if(isNaN(pro_qty) || isNaN(pro_price)) {
             alert("quantity field can\'t be empty");
         } else if(pro_qty < 1) {
@@ -294,6 +305,31 @@
                 type: "GET",
                 url: route_url,
                 data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price},
+                success: function (result) {
+                    if(result.status == 400) {
+                        alert("Stock has been cross it's limit");
+                    } else {
+                        getCartProduct();
+                    }
+                }
+            });
+        }
+    }
+
+    function addServiceCharges() {
+        let service = parseInt($("#service").val());
+        let qty = parseFloat($("#qty").val());
+        if(isNaN(qty) || isNaN(service)) {
+            alert("quantity field can\'t be empty");
+        } else if(qty < 1) {
+            alert("minimum quantity at least 1");
+        } else {
+
+            let route_url = "{{ route('buy.add-to-cart-service-charge') }}";
+            $.ajax({
+                type: "GET",
+                url: route_url,
+                data: { qty: qty, service: service},
                 success: function (result) {
                     if(result.status == 400) {
                         alert("Stock has been cross it's limit");

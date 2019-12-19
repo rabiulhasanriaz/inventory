@@ -100,6 +100,40 @@ class InventoryCartController extends Controller
         }
     }
 
+    public function addServiceCharges(Request $request)
+    {
+            $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+                ->where('inv_pro_temp_pro_id', $request->pro_id)
+                ->where('inv_pro_temp_deal_type',5)
+                ->first();
+            if(!empty($row)) {
+                $row->inv_pro_temp_pro_name = 'Sell Service Charge';
+                $row->inv_pro_temp_type_name = 'Sell Service Charge';
+                $row->inv_pro_temp_qty = $request->qty;
+                $row->inv_pro_temp_unit_price = $request->service;
+                $row->inv_pro_temp_updated_at = Carbon::now();
+
+                $row->save();
+
+            } else {
+                $pro_temp_add = new Inv_product_temporary;
+                $pro_temp_add->inv_pro_temp_user_id = Auth::user()->au_id;
+                $pro_temp_add->inv_pro_temp_pro_id = '';
+                $pro_temp_add->inv_pro_temp_pro_name = 'Sell Service Charge';
+                $pro_temp_add->inv_pro_temp_type_name = 'Sell Service Charge';
+                $pro_temp_add->inv_pro_temp_qty = $request->qty;
+                $pro_temp_add->inv_pro_temp_unit_price = $request->service;
+                $pro_temp_add->inv_pro_temp_slno = '';
+                $pro_temp_add->inv_pro_temp_deal_type = '5';//5=Sell Service Charge
+                $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_created_at = Carbon::now();
+
+                $pro_temp_add->save();
+            }
+
+        
+    }
+
     public function addToCartWarrentyProduct(Request $request)
     {
         // $product = Inv_product_detail::where('inv_pro_det_id', $request->pro_id)
@@ -281,7 +315,7 @@ class InventoryCartController extends Controller
     public function removecart(Request $request){
         Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
                 ->where('inv_pro_temp_pro_id', $request->content_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->whereIn('inv_pro_temp_deal_type',[2,5])
                 ->delete();
     }
 
@@ -302,7 +336,8 @@ class InventoryCartController extends Controller
                                 ->where('inv_pro_temp_slno','')
                                 ->delete();
         $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-        ->where('inv_pro_temp_deal_type',2)
+        ->whereIn('inv_pro_temp_deal_type',[2,5])
+        ->orderBy('inv_pro_temp_deal_type','asc')
         ->get();
 
         return view('pages.ajax.get_cart_content', compact('cart_content'));
@@ -480,15 +515,19 @@ class InventoryCartController extends Controller
 
 
             }
-                if ($request->service > 0) {
+            $service_charge_cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+            ->where('inv_pro_temp_deal_type',5)
+            ->first(); 
+                if (!empty($service_charge_cart_content) > 0) {
                     $product_inventory = new Inv_product_inventory();
+                    $debit = $service_charge_cart_content->inv_pro_temp_unit_price * $service_charge_cart_content->inv_pro_temp_qty;
                     $product_inventory->inv_pro_inv_com_id = $com;
                     $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
                     $product_inventory->inv_pro_inv_party_id = $request->customer;
                     $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
-                    $product_inventory->inv_pro_inv_qty = $req_qty;
-                    $product_inventory->inv_pro_inv_unit_price = $product_price;
-                    $product_inventory->inv_pro_inv_debit = $request->service;
+                    $product_inventory->inv_pro_inv_qty = $service_charge_cart_content->inv_pro_temp_qty;
+                    $product_inventory->inv_pro_inv_unit_price = $service_charge_cart_content->inv_pro_temp_unit_price;
+                    $product_inventory->inv_pro_inv_debit = $debit;
                     $product_inventory->inv_pro_inv_credit = 0;
                     $product_inventory->inv_pro_inv_issue_date = Carbon::now();
                     $product_inventory->inv_pro_inv_tran_desc = "Sell Product Service Charge";
@@ -521,9 +560,30 @@ class InventoryCartController extends Controller
                 $product_inventory->save();
             }
 
+            if ($request->discount > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = $req_qty;
+                $product_inventory->inv_pro_inv_unit_price = $product_price;
+                $product_inventory->inv_pro_inv_debit = 0;
+                $product_inventory->inv_pro_inv_credit = $request->discount;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product Discount";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  12;//10=serviceCharges,11=deliveryCharges,12-discount
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                $product_inventory->save();
+            }
+
             
             Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_deal_type',2)
+                ->whereIn('inv_pro_temp_deal_type',[2,5])
                 ->delete();
 
             
@@ -542,14 +602,16 @@ class InventoryCartController extends Controller
         $user = Auth::user()->au_id;
         $com = Auth::user()->au_company_id;
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
-                                            ->where('inv_pro_temp_deal_type',2)
+                                            ->whereIn('inv_pro_temp_deal_type',[2,5])
+                                            ->orderBy('inv_pro_temp_deal_type','asc')
                                             ->get();
-        $service = $request->service;
+        // $service = $request->service;
         $delivery = $request->delivery;
+        $discount = $request->discount;
         $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
             ->where('inv_cus_id', $request->customer)
             ->first();
-        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus','service','delivery'));
+        return view('inventory.product_inventory.product_sell_invoice',compact('pro_temps','pro_cus','delivery','discount'));
     }
 
 }

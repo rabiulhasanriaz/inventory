@@ -300,6 +300,9 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_product/sell_product_invoice','Inventory\InventoryCartController@invTemporaryProduct')->name('sell_temp_invoice');
 
 
+        Route::get('sell_service_charge','Inventory\InventoryCartController@addServiceCharges')->name('add-to-cart-service-charge');
+
+
         Route::get('product_type_ajax','Inventory\ProductInventoryController@show_pro_type_ajax')->name('type_submit_ajax');
         Route::get('product_search_ajax','Inventory\ProductInventoryController@product_search_ajax')->name('product-search');
 

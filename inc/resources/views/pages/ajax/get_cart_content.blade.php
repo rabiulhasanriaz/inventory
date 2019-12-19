@@ -18,3 +18,17 @@
         </td>
     </tr>
 @endforeach
+<tr>
+    <td colspan="3" class="text-right">Discount:</td>
+    <td>
+        <input type="number" placeholder="Discount" name="discount" class="form-control text-right" style="width: 140px; float:right;">
+    </td>
+    <td></td>
+</tr>
+<tr>
+    <td colspan="3" class="text-right">Delivery Charges:</td>
+    <td>
+        <input type="number" placeholder="Delivery Charges" name="delivery" class="form-control text-right" style="width: 140px; float:right;">
+    </td>
+    <td></td>
+</tr>

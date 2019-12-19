@@ -104,16 +104,16 @@
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="text-right"><span class="underline"><b>Service Charges</b></span></td>
+                                    <td colspan="3" class="text-right"><span class="underline"><b>Discount</b></span></td>
                                     <td></td>
-                                    <td class="text-right"><span class="underline">{{ number_format($service,2) }}</span></td>
+                                    <td class="text-right"><span class="underline">{{ number_format($discount,2) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-right"><span class="underline"><b>Delivery Charges</b></span></td>
                                     <td></td>
                                     <td class="text-right"><span class="underline">{{ number_format($delivery,2) }}</span></td>
                                 </tr>
-                                @php($total = $balance + $service + $delivery)
+                                @php($total = ($balance +  $delivery) - $discount)
                                 {{-- <tr>
                                     <td colspan="4" class="text-right">Add Vat</td>
                                     <td></td>
@@ -153,7 +153,7 @@
                           </table>
                           {{ Form::open(['action' => 'Inventory\InventoryCartController@cartSubmit','method' => 'post' , 'class' => 'form-horizontal']) }}
                           <input type="text" class="hidden" name="customer" value="{{ $pro_cus->inv_cus_id }}">
-                          <input type="text" class="hidden" name="service" value="{{ $service }}">
+                          <input type="text" class="hidden" name="discount" value="{{ $discount }}">
                           <input type="text" class="hidden" name="delivery" value="{{ $delivery }}">
                           <button type="submit" class="btn btn-success pull-right">Confirm</button>
                           {{ Form::close() }}

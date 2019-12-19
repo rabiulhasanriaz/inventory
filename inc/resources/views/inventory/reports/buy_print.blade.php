@@ -188,7 +188,7 @@ footer {
                   <td id="text" style="text-align: left; width:100px;">Supplier Name</td>
                   <td style="text-align:center;">:</td>
                   <td id="desc">{{ $invoice_detail->getSupplierInfo['inv_sup_person'] }}</td>
-                  <td id="text" style="width:320px;">Invoice No:</td>
+                  <td id="text" style="width:320px;">Invoice No</td>
                   <td>:</td>
                   <td id="desc">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
@@ -269,18 +269,14 @@ footer {
               <tr>
                   <td colspan="5">Discount :</td>
                   <td class="total">0000.00</td>
-                </tr>
-                <tr>
-                  <td colspan="5">Service Charges :</td>
-                  <td class="total">0000.00</td>
-                </tr>
-                <tr>
-                  <td colspan="5">Delivery Charges :</td>
-                  <td class="total">0000.00</td>
-                </tr>
+              </tr>
               <tr>
                 <td colspan="5" class="grand total">Net Payable Amount :</td>
                 <td class="grand total">{{ number_format($balance,2) }}</td>
+              </tr>
+              <tr>
+                <td class="grand total" style="text-align:center;">In Word:</td>
+                <td colspan="5" class="grand total" style="text-align:left;">{{ App\NumberConverter::number_to_text($balance) }}</td>
               </tr>
             </tbody>
           </table>
