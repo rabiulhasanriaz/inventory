@@ -117,13 +117,14 @@
                        
                         <table class="table table-bordered table-striped" style="border-style: none !important;">
                           <tr>
-                            <th>Voucher Date</th>
-                            <th>Narration</th>
-                            <th>Cheque No</th>
+                            <th>Sl</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Invoice</th>
                           
                             <th>Credit</th>
                             <th>Debit</th>
-                            <th>Running Balance</th>
+                            <th>Balance</th>
                           </tr>
        <!--=========== Openning Balance================-->
                           <tr>
@@ -145,29 +146,30 @@
 
   <!--=========== End Opening Openning Balance================-->
 
-
+                    @php($sl = 0)
                     @foreach($ledgers as $ledger)
 
-                      @php
-                          $totalCredit+=App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-                          $totalDebit+=App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no);
-                          $totalBalance+=App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id);
-                      @endphp
+                      
+                    @php($totalCredit+=App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no))
+                    @php($totalDebit+=App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no))
+                    @php($totalBalance+=App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id))
+                      
                           <tr>
+                            <td class="text-center">{{ ++$sl }}</td>
                             <td>
                               {{$ledger->inv_pro_inv_issue_date}}
                             </td>
                             <td>
-                              {{$ledger->inv_pro_inv_tran_desc}}
+                              {{$ledger->inv_pro_inv_tran_desc}} {{--$ledger->inv_pro_inv_party_id--}}
                             </td>
                             <td>
                               {{$ledger->inv_pro_inv_invoice_no}}
                             </td>
                             <td style="text-align: right;">
-                              {{App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} CR
+                              {{App\Inv_product_inventory::getCreditForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}}
                             </td>
                             <td style="text-align: right;">
-                              {{App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}} DR
+                              {{App\Inv_product_inventory::getDebitForLedgerByInvoice($ledger->inv_pro_inv_invoice_no)}}
                             </td>
                             <td style="text-align: right;">
                               {{ number_format(App\Inv_product_inventory::getRunningBalanceByDate($ledger->inv_pro_inv_issue_date,request()->supplier_id),2 )}}
@@ -180,7 +182,7 @@
                             <td style="text-align: center; font-weight: bolder;">
                               #
                             </td>
-                             <td style="text-align: right; font-weight: bolder;" colspan="2">
+                             <td style="text-align: right; font-weight: bolder;" colspan="3">
                               Total:
                             </td>
                              <td style="text-align: right; font-weight: bolder;">

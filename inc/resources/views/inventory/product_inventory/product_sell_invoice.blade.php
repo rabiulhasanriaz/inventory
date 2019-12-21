@@ -77,14 +77,14 @@
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
                                 <td class="text-left">
-                                    {{ $temp->inv_pro_temp_type_name }}
+                                    {{ $temp->pro_warranty['inv_pro_det_pro_description'] }}({{ $temp->inv_pro_temp_type_name }})
                                     <br>
                                     <b>
                                         {{ implode(', ', explode(',',$temp->inv_pro_temp_slno)) }}
                                     </b><br>
                                     @if ($temp->pro_warranty['inv_pro_det_pro_warranty'] == 0)
                                     @else
-                                        {{ $temp->pro_warranty['inv_pro_det_pro_warranty'] }}(Days)
+                                        <b>Warranty: </b>{{ $temp->pro_warranty['inv_pro_det_pro_warranty'] }}(Days)
                                     @endif
                                     
                                 </td>

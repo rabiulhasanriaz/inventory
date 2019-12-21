@@ -103,7 +103,7 @@ class InventoryCartController extends Controller
     public function addServiceCharges(Request $request)
     {
             $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_pro_id', $request->pro_id)
+                ->where('inv_pro_temp_pro_id', '')
                 ->where('inv_pro_temp_deal_type',5)
                 ->first();
             if(!empty($row)) {
@@ -530,7 +530,7 @@ class InventoryCartController extends Controller
                     $product_inventory->inv_pro_inv_debit = $debit;
                     $product_inventory->inv_pro_inv_credit = 0;
                     $product_inventory->inv_pro_inv_issue_date = Carbon::now();
-                    $product_inventory->inv_pro_inv_tran_desc = "Sell Product Service Charge";
+                    $product_inventory->inv_pro_inv_tran_desc = "Setup/Service/Install Charges";
                     $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
                     $product_inventory->inv_pro_inv_tran_type =  10;//10=serviceCharges,11=deliveryCharges
                     $product_inventory->inv_pro_inv_status = 1;

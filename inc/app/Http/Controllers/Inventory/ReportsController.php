@@ -214,8 +214,13 @@ class ReportsController extends Controller
                                         ->get();
                                         // dump($invoice);
                                         // dd($services_delivery);
-        return view('inventory.reports.sell_print',compact('invoice','invoice_detail','services_delivery'));
-
+        
+        if (isset($request->print)) {
+            session()->flash('print_invoice',true);
+            return view('inventory.reports.sell_print',compact('invoice','invoice_detail','services_delivery'));
+        }elseif(isset($request->view)){
+            return view('inventory.reports.sell_print',compact('invoice','invoice_detail','services_delivery'));
+        }
         $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }

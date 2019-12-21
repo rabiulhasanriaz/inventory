@@ -95,7 +95,7 @@
                               <input type="radio" {{ (old('bal_type')==1)?'checked':'' }} name="type" value="1">Regular
                           </label>
                           <label class="radio-inline">
-                              <input type="radio" {{ (old('bal_type')==2)?'checked':'' }} name="type" value="2">Eregular
+                              <input type="radio" {{ (old('bal_type')==2)?'checked':'' }} name="type" value="2">Irregular
                           </label>
                           <label class="radio-inline">
                               <input type="radio" {{ (old('bal_type')==3)?'checked':'' }} name="type" value="3">Corporate

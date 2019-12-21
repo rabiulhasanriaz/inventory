@@ -122,7 +122,7 @@
                           <input type="radio" name="type" value="1">Regular
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="type" value="2">Eregular
+                            <input type="radio" name="type" value="2">Irregular
                         </label>
                         <label class="radio-inline">
                             <input type="radio" name="type" value="3">Importer

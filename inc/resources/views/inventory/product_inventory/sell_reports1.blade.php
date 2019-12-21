@@ -45,7 +45,7 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                      <table id="example6" class="table table-bordered table-striped" style="margin-top: 20px;">
+                      <table id="example8" class="table table-bordered table-striped print" style="margin-top: 20px;">
                         <thead>
                         <tr>
                           <th>SL</th>
@@ -94,11 +94,7 @@
                                   </li>
                                   <li class="divider"></li>
                                   <li>
-                                    <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}?print=1" target="_blank">Print</a>
-                                  </li>
-                                  <li class="divider"></li>
-                                  <li>
-                                    <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}?view=1" target="_blank">View</a>
+                                    <a href="" onclick="printData()">Print</a>
                                   </li>
                                   <li class="divider"></li>
                                   <li>
@@ -215,7 +211,6 @@ $( "#to" ).datepicker({
         todayHighlight: true,
      });
 });
-
  $("#download_statement_btn").click(function () {
             let start_date = $("#start_date").val();
             let end_date = $("#end_date").val();
@@ -223,16 +218,6 @@ $( "#to" ).datepicker({
             window.open(route, '_blank');
         });
 
-        $(document).ready(function() {
-    var table = $('#example6').DataTable( {
-        rowReorder: {
-            selector: 'td:nth-child(2)'
-        },
-        responsive: true
-    } );
-} );
-
-  
 </script>
 <script type="text/javascript">
 
@@ -245,10 +230,28 @@ $( "#to" ).datepicker({
       url: url,
       data: { sell_id: sell_id,_token:_token},
       success: function (result) {
+        console.log(result);
        $("#sellModalDetails").html(result);
        $("#sellReports").modal("show");
       }
     });
   }
+
+ 
+
+  $(document).ready(function() {
+    var table = $('#example8').DataTable( {
+        rowReorder: {
+            selector: 'td:nth-child(2)'
+        },
+        responsive: true
+        
+    } );
+} );
 </script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
 @endsection

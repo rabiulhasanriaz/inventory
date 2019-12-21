@@ -62,7 +62,7 @@
                         <thead>
                         <tr>
                           <th>SL</th>
-                          <th>Transaction Date</th>
+                          <th>Date</th>
                           <th>Transaction Details</th>
                           <th>Debit</th>
                           <th>Credit</th>
@@ -104,10 +104,9 @@
                                 @endif
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
-                                <td>{{ $statement->inv_abs_transaction_date->format('d M,Y') }}</td>
+                                <td style="width: 100px;">{{ $statement->inv_abs_transaction_date->format('d-m-Y') }}</td>
                                 <td>
-                                  {{ $statement->inv_abs_description }}<br>
-                                  {{ $reference }}<br>{{$person}} 
+                                  {{ $statement->inv_abs_description }} | {{ $reference }} {{$person}} 
                                 </td>
                                
                                 <td style="text-align: right;">{{ number_format($debit,2) }}</td>

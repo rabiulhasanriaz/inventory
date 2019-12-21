@@ -94,11 +94,14 @@
                         <label for="inputEmail3" class="col-sm-2 control-label">Supplier Type</label>
                         <div class="col-sm-6">
                           <label class="radio-inline">
-                            <input type="radio" name="type" {{ ($sup->inv_sup_type==1)?'checked':'' }} value="1">Local
+                            <input type="radio" name="type" {{ ($sup->inv_sup_type==1)?'checked':'' }} value="1">Regular
                           </label>
                           <label class="radio-inline">
-                              <input type="radio" name="type" {{ ($sup->inv_sup_type==2)?'checked':'' }} value="2">Global
-                            </label>
+                            <input type="radio" name="type" {{ ($sup->inv_sup_type==2)?'checked':'' }} value="2">Irregular
+                          </label>
+                          <label class="radio-inline">
+                            <input type="radio" name="type" {{ ($sup->inv_sup_type==3)?'checked':'' }} value="3">Importer
+                          </label>
                         </div>
                         @if($errors->has('type'))
                           <p class="text-danger">{{ $errors->first('type') }}</p>

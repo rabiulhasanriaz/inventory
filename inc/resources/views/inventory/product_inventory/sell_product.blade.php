@@ -88,7 +88,7 @@
                             <tr>
                                 <th>SL</th>
                                 <th>Name</th>
-                                <th>Type</th>
+                                <th>Description</th>
                                 <th>A. Stock</th>
                                 <th>Price</th>
                                 <th style="width: 110px; text-align: center;">Sell</th>
@@ -100,7 +100,10 @@
                                 <tr>
                                     <td class="text-center">{{ ++$sl }}</td>
                                     <td>{{ $sell->inv_pro_det_pro_name }}</td>
-                                    <td>{{ $sell->type_info['inv_pro_type_name'] }}</td>
+                                    <td>
+                                        {{ $sell->inv_pro_det_pro_description }}
+                                        ({{ $sell->type_info['inv_pro_type_name'] }})
+                                    </td>
                                     <td align="center">{{ $sell->inv_pro_det_available_qty }}</td>
                                     <td class="text-center"><input type="text" autocomplete="off" class="form-control" id="pro_price_{{ $sell->inv_pro_det_id }}" style="width: 100px;" value="{{ $sell->inv_pro_det_sell_price }}"></td>
                                     <td class="text-center">
@@ -119,22 +122,39 @@
                                 </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <td class="text-center service">#</td>
+                                <td colspan="3" class="text-right service">
+                                    <b>Service Charges & Qty : </b>
+                                </td>
+                                <td class="text-center service" >
+                                    <input type="text" id="service" autocomplete="off" style="width:100px;" name="service" class="form-control" placeholder="Service">
+                                </td>
+                                <td class="text-center service">
+                                    <input type="text" id="qty" autocomplete="off" style="width:50px;" name="service" class="form-control" placeholder="Qty">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addServiceCharges()">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
-                    <div class="col-sm-12" style="text-align: center;">
-                    <table class="table table-bordered table-striped" style="width: auto;">
+                    {{-- <div class="col-sm-12">
+                    <table class="table table-bordered table-striped" style="width: auto; float: right; margin-right: 30px;">
                         <tbody>
                             <tr>
-                                <th>Service Charges & Qty</th>
+                                <td style="padding-top:5px;"><b>Service Charges & Qty : </b></td>
                                 <td>
-                                    <div class="form-group">
+                                    <div class="form-group" style="margin-bottom: 0px;">
                                         <div class="col-sm-3 product_category_wrapper">
-                                            <input type="text" id="service" autocomplete="off" style="width:200px;" name="service" class="form-control" placeholder="Service Charges">
+                                            <input type="text" id="service" autocomplete="off" style="width:200px;" name="service" class="form-control" placeholder="Service">
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="form-group">
+                                    <div class="form-group" style="margin-bottom: 0px;">
                                         <div class="col-sm-3 product_category_wrapper">
                                             <input type="text" id="qty" autocomplete="off" style="width:200px;" name="service" class="form-control" placeholder="Qty">
                                         </div>
@@ -148,7 +168,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    </div>
+                    </div> --}}
 
                   </div>
                   <div class="box-body">
@@ -163,6 +183,7 @@
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th>Sl</th>
                                                 <th>Description</th>
                                                 <th>Qty</th>
                                                 <th>Unit Price</th>
@@ -175,7 +196,14 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button class="btn btn-success btn-sm pull-right">Submit</button>
+                                <div class="form-group" style="float: right;">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">Total: </label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="text-right" disabled name="address" autocomplete="off" value="" class="form-control" id="total_sell">
+                                    </div>
+                                <button class="btn btn-success btn-sm pull-right">Continue</button>
+                            </div>
+                                
                             {{ Form::close() }}
                         </div>
                         </div>
@@ -218,6 +246,10 @@
     .btn-sm {
         padding: 3px 8px;
     }
+    .service{
+        padding: 2px 0 !important;
+        
+    }
 </style>
 @endsection
 @section('custom_script')
@@ -254,7 +286,7 @@
     $(document).ready(function(){
 
     @if(session()->has('print_invoice'))
-    let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";     
+        let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";     
         let newTab = window.open(sell_print, '_blank');
         newTab.location.href = url
     @endif
@@ -274,6 +306,42 @@
             lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']]
         } );
     });
+
+
+
+        function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
+        try {
+            decimalCount = Math.abs(decimalCount);
+            decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+            const negativeSign = amount < 0 ? "-" : "";
+
+            let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+            let j = (i.length > 3) ? i.length % 3 : 0;
+
+            return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+        } catch (e) {
+            console.log(e)
+        }
+        }
+
+
+    function total_sell_amount(){
+        let amount = 0;
+        $('.temp_cart').each(function(i, obj) {
+            amount = amount + parseFloat(obj.innerText.split(',').join(''));
+        });
+        let discount = parseFloat($(".temp_cart_discount").val());
+        let delivery = parseFloat($(".temp_cart_delivery").val());
+        if (isNaN(discount)) {
+           discount = 0;
+        }
+        if (isNaN(delivery)) {
+            delivery = 0;
+        }
+        amount = amount + delivery - discount;
+        $('#total_sell').val(formatMoney(amount));
+    }
 
     $(document).ready(function(){
         getCartProduct();
@@ -348,8 +416,9 @@
             url: route_url,
             data: {},
             success: function (result) {
-                console.log("Riaz");
+                
                 $("#show-cart-conten").html(result);
+                total_sell_amount();
             }
         });
     }

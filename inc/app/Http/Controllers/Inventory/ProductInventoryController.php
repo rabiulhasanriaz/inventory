@@ -15,6 +15,7 @@ use App\Inv_product_type;
 use App\Inv_product_groups;
 use App\Inv_product_inventory;
 use App\Inv_supplier_inventory;
+use App\Inv_product_temporary;
 use App\Inv_product_inventory_detail;
 use Illiminate\Support\Facades\DB;
 
@@ -158,9 +159,20 @@ class ProductInventoryController extends Controller
                                     ->where('inv_pro_det_status',1)
                                     ->get();
         }
+
+        $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+            ->whereIn('inv_pro_temp_deal_type',[2,5])
+            ->orderBy('inv_pro_temp_deal_type','asc')
+            ->get();
+            $total = 0;
+            $amount = 0;
+            foreach ($cart_content as $content) {
+                $amount = $content->inv_pro_temp_unit_price * $content->inv_pro_temp_qty; 
+            }
+            $total += $amount;
                                     
         
-        return view('inventory.product_inventory.sell_product',compact('sell_pro','customers','groups'));
+        return view('inventory.product_inventory.sell_product',compact('sell_pro','customers','groups','total'));
     }
 
     public function show_pro_type_ajax(Request $request) {

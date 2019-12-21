@@ -24,13 +24,13 @@
 @endif
 
               <h1>
-                Bank
+                Contra
               </h1>
         
             </section>
             <div class="box">
                     <div class="box-header">
-                      <h3 class="box-title">Bank List</h3>
+                      <h3 class="box-title">Contra List</h3>
                     </div>
                    
                     <!-- /.box-header -->
@@ -60,8 +60,8 @@
                             <td>{{ App\Inv_acc_bank_statement::get_Bank_Name_By_Bank_ID($contra->inv_abs_bank_id)->bank_name}}</td>
                             <td>{{ $contra->inv_abs_description}}</td>
                             <td>{{ App\Inv_acc_bank_statement::get_Bank_Name_By_Refer_ID($contra->inv_abs_reference_id)->bank_name }}</td>
-                            <td>{{ $contra->inv_abs_credit}}</td>
-                            <td>{{ $contra->inv_abs_debit }}</td>
+                            <td class="text-right">{{ $contra->inv_abs_credit}}</td>
+                            <td class="text-right">{{ $contra->inv_abs_debit }}</td>
                           
 
                           </tr>

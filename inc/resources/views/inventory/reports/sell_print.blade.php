@@ -248,16 +248,16 @@ footer {
                   <td class="qty">
                     @if ($sell->inv_pro_inv_tran_type == 10)
                     {{ $sell->inv_pro_inv_tran_desc }} 
+                    @elseif($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
+                    {{ $sell->getProductWarranty['inv_pro_det_pro_description'] }}
+                    ({{ $sell->getProductWarranty->type_info['inv_pro_type_name'] }})<br>
                     @else
-                    {{ $sell->getProductWarranty->type_info['inv_pro_type_name'] }}<br>
-                    {{ $sell->getProductWarranty['inv_pro_det_pro_name'] }}<br>
-                    @endif
-                    @if ($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
-                    
-                    @else
+                    {{ $sell->getProductWarranty['inv_pro_det_pro_description'] }}
+                    ({{ $sell->getProductWarranty->type_info['inv_pro_type_name'] }})<br>
                     {{ implode(', ', $slno) }}<br>
-                    {{ $sell->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
+                    <b>Warranty: </b>{{ $sell->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
                     @endif
+                    
                   </td>
                   <td style="text-align:center;">{{ $sell->inv_pro_inv_qty }}</td>
                   <td class="total">{{ number_format($sell->inv_pro_inv_unit_price,2) }}</td>
@@ -318,9 +318,11 @@ footer {
       Powered By: IGL Web Ltd.
     </footer>
     <script>
-       $(document).ready(function(){
-         window.print();
-        });
+       (function(){
+        @if(session()->has('print_invoice'))
+          window.print();
+        @endif
+        })();
      </script>
   </body>
 </html>
