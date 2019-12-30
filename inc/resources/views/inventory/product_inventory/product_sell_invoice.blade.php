@@ -99,56 +99,27 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="3" class="text-right">Total Amount</td>
-                                    <td></td>
+                                    <td colspan="4" class="text-right">Total Amount</td>
                                     <td class="text-right">{{ number_format($balance,2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="text-right"><span class="underline"><b>Discount</b></span></td>
-                                    <td></td>
+                                    <td colspan="4" class="text-right"><span class="underline"><b>Discount</b></span></td>
+                                    
                                     <td class="text-right"><span class="underline">{{ number_format($discount,2) }}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="text-right"><span class="underline"><b>Delivery Charges</b></span></td>
-                                    <td></td>
+                                    <td colspan="4" class="text-right"><span class="underline"><b>Delivery Charges</b></span></td>
+                                    
                                     <td class="text-right"><span class="underline">{{ number_format($delivery,2) }}</span></td>
                                 </tr>
                                 @php($total = ($balance +  $delivery) - $discount)
-                                {{-- <tr>
-                                    <td colspan="4" class="text-right">Add Vat</td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr>
+                                
                                 <tr>
-                                    <td colspan="4" class="text-right">Less Discount</td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-right">Add Installation/Service Charges</td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr> --}}
-                                <tr>
-                                    <td colspan="3" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
-                                    <td></td>
+                                    <td colspan="4" class="text-right"><span class="underline"><b>Net Payable Amount</b></span></td>
+                                    
                                     <td class="text-right"><span class="underline">{{ number_format($total,2) }}</span></td>
                                 </tr>
-                                {{-- <tr>
-                                    <td colspan="4" class="text-right"><b>Received Amount</b></td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-right"><span class="underline underline--dotted"><b>Previous Deu Amount</b></span></td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-right"><b>Current Deu Amount</b></td>
-                                    <td></td>
-                                    <td class="text-right"></td>
-                                </tr> --}}
+                                
                             </tfoot>
                           </table>
                           {{ Form::open(['action' => 'Inventory\InventoryCartController@cartSubmit','method' => 'post' , 'class' => 'form-horizontal']) }}

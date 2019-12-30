@@ -54,17 +54,19 @@ class ReportsController extends Controller
                                             ->where('inv_pro_inv_issue_date','<=',$request->end_date)
                                             ->where('inv_pro_inv_status',1)
                                             ->where('inv_pro_inv_deal_type',2)
-                                            ->where('inv_pro_inv_tran_type',1)
+                                            ->whereIn('inv_pro_inv_tran_type',[1,10,11,12])
                                             ->where('inv_pro_inv_confirm',0)
                                             ->groupBy('inv_pro_inv_invoice_no')
                                             ->get();
+                                            
         }else{
             $sell_reports = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
                                                 ->where('inv_pro_inv_deal_type',2)
-                                                ->where('inv_pro_inv_tran_type',1)
+                                                ->whereIn('inv_pro_inv_tran_type',[1,10,11,12])
                                                 ->where('inv_pro_inv_confirm',0)
                                                 ->groupBy('inv_pro_inv_invoice_no')
                                                 ->get();
+                                                
         }
         return view('inventory.product_inventory.sell_reports',compact('sell_reports'));
     }
@@ -98,8 +100,22 @@ class ReportsController extends Controller
     }
 
     public function sell_report_ajax(Request $request){
-        $detail_ajax = Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->sell_id)->get();
-        return view('pages.ajax.sell_reports_ajax',compact('detail_ajax'));
+        $detail_ajax = Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->sell_id)
+                                            ->where('inv_pro_inv_deal_type',2)
+                                            ->whereIn('inv_pro_inv_tran_type',[1,10,11])
+                                            ->get();
+
+        $discount = Inv_product_inventory::where('inv_pro_inv_invoice_no',$request->sell_id)
+                                        ->where('inv_pro_inv_deal_type',2)
+                                        ->where('inv_pro_inv_tran_type',12)
+                                        ->first();
+        if (!empty($discount)) {
+            $discount_amount = $discount->inv_pro_inv_credit;
+        }else {
+            $discount_amount = 0;
+        }
+                        
+        return view('pages.ajax.sell_reports_ajax',compact('detail_ajax','discount_amount'));
 
     }
 
@@ -190,6 +206,7 @@ class ReportsController extends Controller
     }
 
     public function sell_reports_pdf(Request $request,$invoice_r){
+        // dd($request->all());
         $com = Auth::user()->au_company_id;
 
         $invoice_detail = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
@@ -221,6 +238,7 @@ class ReportsController extends Controller
         }elseif(isset($request->view)){
             return view('inventory.reports.sell_print',compact('invoice','invoice_detail','services_delivery'));
         }
+
         $pdf = PDF::loadView('inventory.reports.SellIndividualInvoicePdf',compact('invoice','invoice_detail'));
         return $pdf->download($invoice_detail->inv_pro_inv_invoice_no.'.pdf');
     }

@@ -245,5 +245,18 @@ class Inv_product_inventory extends Model
                                             return $pro_loss;
     }
 
+    public static function get_discount_amount($inv_id){
+        $discount = Inv_product_inventory::where('inv_pro_inv_invoice_no',$inv_id)
+                                                ->where('inv_pro_inv_deal_type',2)
+                                                ->where('inv_pro_inv_tran_type',12)
+                                                ->first();
+        if (!empty($discount)) {
+            $discount_amount = $discount->inv_pro_inv_credit;
+        }else {
+            $discount_amount = 0;
+        }
+        return $discount_amount;
+    }
+
     
 }

@@ -276,7 +276,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
     Route::group(['prefix' => 'product_inventory' , 'as' => 'buy.'],function(){
         Route::get('buy_product','Inventory\ProductInventoryController@buy_product_add')->name('buy_add');
         Route::post('buy_product_add','Inventory\ProductInventoryController@buy_product_submit')->name('buy_submit');
-        Route::get('buy-product-new','Inventory\ProductInventoryController@buy_product_new')->name('buy-product-new');
+        Route::get('buy-product-new','Inventory\ProductInventoryController@buy_product_new')->name('buy-product-new')->middleware('au_access:purchase_product');
         Route::get('buy_product/add-to-cart','Inventory\InventoryPurchaseCartController@addToCart')->name('buy-add-to-cart');
         Route::get('buy_product/add-to-cart-warrenty-product','Inventory\InventoryPurchaseCartController@addToCartWarrentyProduct')->name('buy-add-to-cart-warrenty-product');
         Route::get('buy_product/add-warrenty-product-sl-no','Inventory\InventoryPurchaseCartController@addWarrentyProductSlNo')->name('buy-add-warrenty-product-sl-no');
@@ -288,7 +288,7 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('buy_prodect/buy_product_invoice','Inventory\InventoryPurchaseCartController@invTemporaryBuy')->name('buy-temporary');
         Route::get('available_list','Inventory\ProductInventoryController@available_list')->name('available');
 
-        Route::get('sell_product','Inventory\ProductInventoryController@sell_product')->name('pro_sell');
+        Route::get('sell_product','Inventory\ProductInventoryController@sell_product')->name('pro_sell')->middleware('au_access:sell_product');
         Route::get('sell_product/add-to-cart','Inventory\InventoryCartController@addToCart')->name('add-to-cart');
         Route::get('sell_product/add-to-cart-warrenty-product','Inventory\InventoryCartController@addToCartWarrentyProduct')->name('add-to-cart-warrenty-product');
         Route::get('sell_product/add-warrenty-product-sl-no','Inventory\InventoryCartController@addWarrentyProductSlNo')->name('add-warrenty-product-sl-no');
@@ -347,6 +347,8 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('sell_edit/sell-confirm','Inventory\ProductSellEditController@sellEditConfirmFormShow')->name('sll-confirm');
         Route::post('sell_edit/cart-submit','Inventory\ProductSellEditController@cartSubmit')->name('cart-submit');
 
+        Route::get('sell_edit_service_charge','Inventory\ProductSellEditController@addServiceCharges')->name('sell-edit-service-charge');
+        
 
         Route::get('sell_edit_again/{invoice}','Inventory\ProductSellEditController@sell_edit_again')->name('sell-edit-again');
         

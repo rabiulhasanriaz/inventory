@@ -24,6 +24,7 @@ class ProductSellEditController extends Controller
         try {
             $user_id = Auth::user()->au_id;
             $com = Auth::user()->au_company_id;
+            
             $customers = Inv_customer::where('inv_cus_com_id',$com)
                                     ->where('inv_cus_status',1)
                                     ->get();
@@ -43,8 +44,9 @@ class ProductSellEditController extends Controller
                             ->where('inv_pro_inv_invoice_no',$id)
                             ->where('inv_pro_inv_status',1)
                             ->where('inv_pro_inv_deal_type', 2)
-                            ->where('inv_pro_inv_tran_type', 1)
+                            ->whereIn('inv_pro_inv_tran_type', [1,10,11,12])
                             ->get();
+            
 
             
             if (count($invoice_products)>0) { 
@@ -52,10 +54,13 @@ class ProductSellEditController extends Controller
                 $sell_customer = $invoice_products->first()->inv_pro_inv_party_id;
                 
                 $check_inv_temp = Inv_product_temporary::where('inv_pro_temp_invoice_no', $invoice_no)
-                    ->where('inv_pro_temp_deal_type', 4)
+                    ->whereIn('inv_pro_temp_deal_type', [4,6,7,8])
                     ->get();
+                
                 if(count($check_inv_temp) > 0) {
-
+                  if ($check_inv_temp->first()->inv_pro_temp_user_id != $user_id) {
+                      return redirect()->back()->with(['check' => 'Someone is Edit this Invoice']);
+                  }  
                 } else {
                     Inv_product_temporary::where('inv_pro_temp_user_id', $user_id)->delete();
                     foreach ($invoice_products as $invoice_product) {
@@ -74,17 +79,34 @@ class ProductSellEditController extends Controller
                         $edit_pro_temp = new Inv_product_temporary();
 
                         $edit_pro_temp->inv_pro_temp_user_id = $user_id;
-                        $edit_pro_temp->inv_pro_temp_pro_id = $invoice_product->inv_pro_inv_prodet_id;
-                        $edit_pro_temp->inv_pro_temp_pro_name = $invoice_product->getProductInfo['inv_pro_det_pro_name'];
-                        $edit_pro_temp->inv_pro_temp_type_name = $invoice_product->getProductInfo->type_info['inv_pro_type_name'];
                         $edit_pro_temp->inv_pro_temp_qty = $invoice_product->inv_pro_inv_qty;
                         $edit_pro_temp->inv_pro_temp_invoice_no = $invoice_product->inv_pro_inv_invoice_no;
                         $edit_pro_temp->inv_pro_temp_unit_price = $invoice_product->inv_pro_inv_unit_price;
-                        $edit_pro_temp->inv_pro_temp_deal_type = 4;
                         $edit_pro_temp->inv_pro_temp_slno = $pro_sl;
                         $edit_pro_temp->inv_pro_temp_status = 1;
                         $edit_pro_temp->inv_pro_temp_type = 2;
                         $edit_pro_temp->inv_pro_temp_created_at = Carbon::now();
+                        if ($invoice_product->inv_pro_inv_tran_type == 1) {
+                            $edit_pro_temp->inv_pro_temp_deal_type = 4;
+                            $edit_pro_temp->inv_pro_temp_pro_id = $invoice_product->inv_pro_inv_prodet_id;
+                            $edit_pro_temp->inv_pro_temp_pro_name = $invoice_product->getProductInfo['inv_pro_det_pro_name'];
+                        $edit_pro_temp->inv_pro_temp_type_name = $invoice_product->getProductInfo->type_info['inv_pro_type_name'];
+                        } elseif ($invoice_product->inv_pro_inv_tran_type == 10) {
+                            $edit_pro_temp->inv_pro_temp_deal_type = 6;
+                            $edit_pro_temp->inv_pro_temp_pro_id = '';
+                            $edit_pro_temp->inv_pro_temp_pro_name = "Sell Service Charge";
+                            $edit_pro_temp->inv_pro_temp_type_name = "Sell Service Charge";
+                        } elseif ($invoice_product->inv_pro_inv_tran_type == 11) {
+                            $edit_pro_temp->inv_pro_temp_deal_type = 7;
+                            $edit_pro_temp->inv_pro_temp_pro_id = '';
+                            $edit_pro_temp->inv_pro_temp_pro_name = "Sell Delivery Charge";
+                            $edit_pro_temp->inv_pro_temp_type_name = "Sell Delivery Charge";
+                        } elseif ($invoice_product->inv_pro_inv_tran_type == 12) {
+                            $edit_pro_temp->inv_pro_temp_deal_type = 8;
+                            $edit_pro_temp->inv_pro_temp_pro_id = '';
+                            $edit_pro_temp->inv_pro_temp_pro_name = "Sell Discount";
+                            $edit_pro_temp->inv_pro_temp_type_name = "Sell Discount";
+                        }
                         $edit_pro_temp->save();
                     }
                 }
@@ -96,7 +118,7 @@ class ProductSellEditController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with(['sub_err' => 'Something went wrong']);
+            return redirect()->back()->with(['sub_err' => 'Something went wrong'.$e->getMessage()]);
         }
 
         DB::commit();
@@ -153,6 +175,40 @@ class ProductSellEditController extends Controller
         } else {
             return response()->json(['status' => 404]);
         }
+    }
+
+    public function addServiceCharges(Request $request)
+    {
+            $row = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+                ->where('inv_pro_temp_pro_id', '')
+                ->where('inv_pro_temp_deal_type',6)
+                ->first();
+            if(!empty($row)) {
+                $row->inv_pro_temp_pro_name = 'Sell Service Charge';
+                $row->inv_pro_temp_type_name = 'Sell Service Charge';
+                $row->inv_pro_temp_qty = $request->qty;
+                $row->inv_pro_temp_unit_price = $request->service;
+                $row->inv_pro_temp_updated_at = Carbon::now();
+
+                $row->save();
+
+            } else {
+                $pro_temp_add = new Inv_product_temporary;
+                $pro_temp_add->inv_pro_temp_user_id = Auth::user()->au_id;
+                $pro_temp_add->inv_pro_temp_pro_id = '';
+                $pro_temp_add->inv_pro_temp_pro_name = 'Sell Service Charge';
+                $pro_temp_add->inv_pro_temp_type_name = 'Sell Service Charge';
+                $pro_temp_add->inv_pro_temp_qty = $request->qty;
+                $pro_temp_add->inv_pro_temp_unit_price = $request->service;
+                $pro_temp_add->inv_pro_temp_slno = '';
+                $pro_temp_add->inv_pro_temp_deal_type = '6';//6=Sell Edit Service Charge
+                $pro_temp_add->inv_pro_temp_status = 1;
+                $pro_temp_add->inv_pro_temp_created_at = Carbon::now();
+
+                $pro_temp_add->save();
+            }
+
+        
     }
 
 
@@ -323,8 +379,10 @@ class ProductSellEditController extends Controller
     {
 
         $cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-        ->where('inv_pro_temp_deal_type',4)
+        ->whereIn('inv_pro_temp_deal_type', [4,6,7,8])
+        ->orderBy('inv_pro_temp_deal_type', 'ASC')
         ->get();
+
 
         return view('pages.ajax.sell_edit.get_cart_content', compact('cart_content'));
     }
@@ -354,12 +412,14 @@ class ProductSellEditController extends Controller
         $user = Auth::user()->au_id;
         $com = Auth::user()->au_company_id;
         $pro_temps = Inv_product_temporary::where('inv_pro_temp_user_id', $user)
-                                            ->where('inv_pro_temp_deal_type',4)
+                                            ->whereIn('inv_pro_temp_deal_type',[4,6])
                                             ->get();
+        $delivery = $request->delivery;
+        $discount = $request->discount;
         $pro_cus = Inv_customer::where('inv_cus_com_id', $com)
             ->where('inv_cus_id', $request->customer)
             ->first();
-        return view('inventory.product_return.product_sell_edit_invoice',compact('pro_temps','pro_cus'));
+        return view('inventory.product_return.product_sell_edit_invoice',compact('pro_temps','pro_cus', 'delivery', 'discount'));
     }
 
 
@@ -409,7 +469,7 @@ class ProductSellEditController extends Controller
             Inv_product_inventory::where('inv_pro_inv_invoice_no', $new_memo_no)
                 ->where('inv_pro_inv_com_id', $com)
                 ->where('inv_pro_inv_deal_type', 2)
-                ->where('inv_pro_inv_tran_type', 1)
+                ->whereIn('inv_pro_inv_tran_type', [1,10,11,12])
                 ->delete();
 
             Inv_product_inventory_detail::where('inv_pro_invdet_com_id',$com)
@@ -544,11 +604,76 @@ class ProductSellEditController extends Controller
 
             }
 
+            $service_charge_cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
+            ->where('inv_pro_temp_deal_type',6)
+            ->first(); 
+            if (!empty($service_charge_cart_content) > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $debit = $service_charge_cart_content->inv_pro_temp_unit_price * $service_charge_cart_content->inv_pro_temp_qty;
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = $service_charge_cart_content->inv_pro_temp_qty;
+                $product_inventory->inv_pro_inv_unit_price = $service_charge_cart_content->inv_pro_temp_unit_price;
+                $product_inventory->inv_pro_inv_debit = $debit;
+                $product_inventory->inv_pro_inv_credit = 0;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Setup/Service/Install Charges";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  10;//10=serviceCharges,11=deliveryCharges
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                $product_inventory->save();
+            }
+            if ($request->delivery > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = 0;
+                $product_inventory->inv_pro_inv_unit_price = $request->delivery;
+                $product_inventory->inv_pro_inv_debit = $request->delivery;
+                $product_inventory->inv_pro_inv_credit = 0;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product Delivery Charge";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  11;//10=serviceCharges,11=deliveryCharges
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                $product_inventory->save();
+            }
+
+            if ($request->discount > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = 0;
+                $product_inventory->inv_pro_inv_unit_price = $request->discount;
+                $product_inventory->inv_pro_inv_debit = 0;
+                $product_inventory->inv_pro_inv_credit = $request->discount;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Sell Product Discount";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  12;//10=serviceCharges,11=deliveryCharges,12-discount
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+
+                $product_inventory->save();
+            }
+
             
             Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
-                ->where('inv_pro_temp_deal_type',4)
+                ->whereIn('inv_pro_temp_deal_type',[4,6,7,8])
                 ->delete();
-
             
         } catch (\Exception $e) {
             DB::rollback();

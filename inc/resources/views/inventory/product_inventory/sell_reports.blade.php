@@ -4,6 +4,22 @@
 @section('sell_reports','active')
 @section('content')
 <section class="content">
+    @if(session()->has('check'))
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        {{ session('check') }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
+    @if(session()->has('sub_err'))
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        {{ session('sub_err') }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
     @if(session()->has('confirm'))
     <div class="alert alert-success alert-dismissible" role="alert">
           {{ session('confirm') }}
@@ -61,16 +77,19 @@
                         @php
                           $sl=0;
                           $balance = 0;
+                          $total = 0;
+                          $total_amount = 0;
                         @endphp
                         @foreach ($sell_reports as $sell)
-                        
+                        @php($total = App\Inv_product_inventory::getTotalDebit($sell->inv_pro_inv_invoice_no))
+                        @php ($total_amount = $total -  App\Inv_product_inventory::get_discount_amount($sell->inv_pro_inv_invoice_no))
                         <tr>
                             <td>{{ ++$sl }}</td>
                             <td>{{ $sell->inv_pro_inv_invoice_no }}</td>
                             <td>{{ $sell->inv_pro_inv_issue_date }}</td>
                             <td>{{ $sell->getCustomerInfo['inv_cus_name'] }}</td>
                             <td>{{ $sell->inv_pro_inv_tran_desc }}</td>
-                            <td class="text-right">{{ App\Inv_product_inventory::getTotalDebit($sell->inv_pro_inv_invoice_no) }}</td>
+                            <td class="text-right">{{ number_format($total_amount,2) }}</td>
                             <td style="text-align: center;">
                               <div class="btn-group">
                                 <button type="button" class="btn btn-info btn-xs">Action</button>
@@ -89,10 +108,12 @@
                                   </li>
                                   <li class="divider"></li>
                                   @endif --}}
+                                  @if (Auth::user()->au_user_type == 4)
                                   <li>
                                     <a href="{{ route('sell_edit.sell-pro-edit',['invoice' => $sell->inv_pro_inv_invoice_no]) }}">Edit</a>
                                   </li>
                                   <li class="divider"></li>
+                                  @endif
                                   <li>
                                     <a href="{{ route('reports.sell-pdf',['invoice' => $sell->inv_pro_inv_invoice_no]) }}?print=1" target="_blank">Print</a>
                                   </li>

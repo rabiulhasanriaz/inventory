@@ -22,7 +22,7 @@ class InvProductController extends Controller
                                          ->get();
         $suppliers = Inv_supplier::where('inv_sup_com_id', $com)
                                         ->where('inv_sup_status', 1)
-                                        ->where('inv_sup_type',2)
+                                        ->where('inv_sup_type',3)
                                         ->orderBy('inv_sup_com_name','ASC')
                                         ->get();
         return view('inventory.product.add',compact('pro_grp', 'suppliers'));
@@ -272,7 +272,7 @@ class InvProductController extends Controller
         
             $pro_det = Inv_product_detail::where('inv_pro_det_com_id',$com)
                                         ->where('inv_pro_det_status',1)
-                                        ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
+                                        ->whereRaw('inv_pro_det_available_qty < inv_pro_det_short_qty')
                                         ->where('inv_pro_det_short_qty','!=','')
                                         ->get();
             // dd($pro_det);

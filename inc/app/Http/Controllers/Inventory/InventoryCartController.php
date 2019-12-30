@@ -518,35 +518,35 @@ class InventoryCartController extends Controller
             $service_charge_cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
             ->where('inv_pro_temp_deal_type',5)
             ->first(); 
-                if (!empty($service_charge_cart_content) > 0) {
-                    $product_inventory = new Inv_product_inventory();
-                    $debit = $service_charge_cart_content->inv_pro_temp_unit_price * $service_charge_cart_content->inv_pro_temp_qty;
-                    $product_inventory->inv_pro_inv_com_id = $com;
-                    $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
-                    $product_inventory->inv_pro_inv_party_id = $request->customer;
-                    $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
-                    $product_inventory->inv_pro_inv_qty = $service_charge_cart_content->inv_pro_temp_qty;
-                    $product_inventory->inv_pro_inv_unit_price = $service_charge_cart_content->inv_pro_temp_unit_price;
-                    $product_inventory->inv_pro_inv_debit = $debit;
-                    $product_inventory->inv_pro_inv_credit = 0;
-                    $product_inventory->inv_pro_inv_issue_date = Carbon::now();
-                    $product_inventory->inv_pro_inv_tran_desc = "Setup/Service/Install Charges";
-                    $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
-                    $product_inventory->inv_pro_inv_tran_type =  10;//10=serviceCharges,11=deliveryCharges
-                    $product_inventory->inv_pro_inv_status = 1;
-                    $product_inventory->inv_pro_inv_submit_by = $user_id;
-                    $product_inventory->inv_pro_inv_submit_at = Carbon::now();
+            if (!empty($service_charge_cart_content) > 0) {
+                $product_inventory = new Inv_product_inventory();
+                $debit = $service_charge_cart_content->inv_pro_temp_unit_price * $service_charge_cart_content->inv_pro_temp_qty;
+                $product_inventory->inv_pro_inv_com_id = $com;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
+                $product_inventory->inv_pro_inv_party_id = $request->customer;
+                $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
+                $product_inventory->inv_pro_inv_qty = $service_charge_cart_content->inv_pro_temp_qty;
+                $product_inventory->inv_pro_inv_unit_price = $service_charge_cart_content->inv_pro_temp_unit_price;
+                $product_inventory->inv_pro_inv_debit = $debit;
+                $product_inventory->inv_pro_inv_credit = 0;
+                $product_inventory->inv_pro_inv_issue_date = Carbon::now();
+                $product_inventory->inv_pro_inv_tran_desc = "Setup/Service/Install Charges";
+                $product_inventory->inv_pro_inv_deal_type =  2;//2=customer
+                $product_inventory->inv_pro_inv_tran_type =  10;//10=serviceCharges,11=deliveryCharges
+                $product_inventory->inv_pro_inv_status = 1;
+                $product_inventory->inv_pro_inv_submit_by = $user_id;
+                $product_inventory->inv_pro_inv_submit_at = Carbon::now();
 
-                    $product_inventory->save();
-                }
+                $product_inventory->save();
+            }
             if ($request->delivery > 0) {
                 $product_inventory = new Inv_product_inventory();
                 $product_inventory->inv_pro_inv_com_id = $com;
-                $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
                 $product_inventory->inv_pro_inv_party_id = $request->customer;
                 $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
-                $product_inventory->inv_pro_inv_qty = $req_qty;
-                $product_inventory->inv_pro_inv_unit_price = $product_price;
+                $product_inventory->inv_pro_inv_qty = 0;
+                $product_inventory->inv_pro_inv_unit_price = $request->delivery;
                 $product_inventory->inv_pro_inv_debit = $request->delivery;
                 $product_inventory->inv_pro_inv_credit = 0;
                 $product_inventory->inv_pro_inv_issue_date = Carbon::now();
@@ -563,11 +563,11 @@ class InventoryCartController extends Controller
             if ($request->discount > 0) {
                 $product_inventory = new Inv_product_inventory();
                 $product_inventory->inv_pro_inv_com_id = $com;
-                $product_inventory->inv_pro_inv_prodet_id = $content->inv_pro_temp_pro_id;
+                $product_inventory->inv_pro_inv_prodet_id = NULL;
                 $product_inventory->inv_pro_inv_party_id = $request->customer;
                 $product_inventory->inv_pro_inv_invoice_no = $new_memo_no;
-                $product_inventory->inv_pro_inv_qty = $req_qty;
-                $product_inventory->inv_pro_inv_unit_price = $product_price;
+                $product_inventory->inv_pro_inv_qty = 0;
+                $product_inventory->inv_pro_inv_unit_price = $request->discount;
                 $product_inventory->inv_pro_inv_debit = 0;
                 $product_inventory->inv_pro_inv_credit = $request->discount;
                 $product_inventory->inv_pro_inv_issue_date = Carbon::now();

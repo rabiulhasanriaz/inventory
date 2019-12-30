@@ -58,29 +58,32 @@
                           $total_credit=0;
                           $total_debit=0;
                           $total_balance=0;
+                          $debit = 0;
+                          $credit = 0;
+                          $balance = 0;
                           
                         @endphp
 
                         @foreach($inv_cus_invts as $inv_cus_invt)
                        
-                         @php
+                         
 
-                            $total_credit+=App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id);
+                        @php ($total_credit+=App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id))
 
-                            $total_debit+=App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id);
-
-                            $total_balance+=App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id);
-
-                        @endphp
+                        @php($total_debit+=App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id))
+                        @php($total_balance+=App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id))
+                        @php($debit = App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id))
+                        @php($credit = App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id))
+                        @php($balance = $balance + $credit - $debit) 
 
                         <tr>
                           <td>{{ ++$sl }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_com_name }}</td>
                           <td>{{ $inv_cus_invt->inv_cus_name}}</td>
-                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusDebitByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                          <td style="text-align: right;">{{number_format($debit,2)}}</td>
                         
-                          <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusCreditByID($inv_cus_invt->inv_cus_id),2)}}</td>
-                           <td style="text-align: right;">{{number_format(App\Inv_product_inventory::getCusBalanceByID($inv_cus_invt->inv_cus_id),2)}}</td>
+                          <td style="text-align: right;">{{number_format($credit,2)}}</td>
+                           <td style="text-align: right;">{{number_format($balance,2)}}</td>
 
                           <td style="text-align: center;">
                             <a href="{{route('customer.accounts.account-statement-details',$inv_cus_invt->inv_cus_id)}}">

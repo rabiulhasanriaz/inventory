@@ -5,6 +5,7 @@
 @section('content')
 <section class="content">
     <section class="content-header">
+            
         @if(session()->has('sub_success'))
         <div class="alert alert-success alert-dismissible" role="alert">
             {{ session('sub_success') }}
@@ -119,6 +120,23 @@
                             </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-center service">#</td>
+                                    <td colspan="3" class="text-right service">
+                                        <b>Service Charges & Qty : </b>
+                                    </td>
+                                    <td class="text-center service" >
+                                        <input type="text" id="service" value="" autocomplete="off" style="width:100px;" name="service" class="form-control" placeholder="Service">
+                                    </td>
+                                    <td class="text-center service">
+                                        <input type="text" id="qty" value="" autocomplete="off" style="width:50px;" name="service" class="form-control" placeholder="Qty">
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addServiceCharges()">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tfoot>
                         </table>
                     </div>
 
@@ -141,8 +159,6 @@
                                                 <th>Expire Date</th>
                                                 <th>Unit Price</th>
                                                 <th>Amount</th>
-                                                <th>Short Qty</th>
-                                                <th>Short Qty Desc</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -151,13 +167,19 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button class="btn btn-success btn-sm pull-right">Submit</button>
+                                <div class="form-group" style="float: right;">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">Total: </label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="text-right" disabled name="address" autocomplete="off" value="" class="form-control" id="total_sell">
+                                    </div>
+                                <button class="btn btn-success btn-sm pull-right">Continue</button>
+                            </div>
                             {{ Form::close() }}
                         </div>
                         </div>
               </div>
              </section>
-
+             <button hidden id="open_sell_print_invoice_btn"></button>
              @include('pages.ajax.warrenty_product_get_sl_no');
 
              
@@ -279,6 +301,64 @@
                 type: "GET",
                 url: route_url,
                 data: { pro_id: pro_det_id, pro_qty: pro_qty, pro_price: pro_price, invoice_no: invoice_no},
+                success: function (result) {
+                    if(result.status == 400) {
+                        alert("Stock has been cross it's limit");
+                    } else {
+                        getCartProduct();
+                    }
+                }
+            });
+        }
+    }
+
+    function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
+        try {
+            decimalCount = Math.abs(decimalCount);
+            decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+            const negativeSign = amount < 0 ? "-" : "";
+
+            let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+            let j = (i.length > 3) ? i.length % 3 : 0;
+
+            return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+        } catch (e) {
+            console.log(e)
+        }
+        }
+
+    function total_sell_amount(){
+        let amount = 0;
+        $('.temp_cart').each(function(i, obj) {
+            amount = amount + parseFloat(obj.innerText.split(',').join(''));
+        });
+        let discount = parseFloat($(".temp_cart_discount").val());
+        let delivery = parseFloat($(".temp_cart_delivery").val());
+        if (isNaN(discount)) {
+           discount = 0;
+        }
+        if (isNaN(delivery)) {
+            delivery = 0;
+        }
+        amount = amount + delivery - discount;
+        $('#total_sell').val(formatMoney(amount));
+    }
+
+    function addServiceCharges() {
+        let service = parseInt($("#service").val());
+        let qty = parseFloat($("#qty").val());
+        if(isNaN(qty) || isNaN(service)) {
+            alert("quantity field can\'t be empty");
+        } else if(qty < 1) {
+            alert("minimum quantity at least 1");
+        } else {
+
+            let route_url = "{{ route('sell_edit.sell-edit-service-charge') }}";
+            $.ajax({
+                type: "GET",
+                url: route_url,
+                data: { qty: qty, service: service},
                 success: function (result) {
                     if(result.status == 400) {
                         alert("Stock has been cross it's limit");

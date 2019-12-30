@@ -28,8 +28,7 @@ body {
 }
 
 header {
-  padding: 10px 0;
-  margin-bottom: 30px;
+  padding: 10px 0 0 0;
 }
 
 #logo {
@@ -42,7 +41,7 @@ header {
 }
 
 .header_company {
-  border-top: 1px solid  #5D6975;
+  /* border-top: 1px solid  #5D6975; */
   border-bottom: 1px solid  #5D6975;
   color: #5D6975;
   line-height: 1.4em;
@@ -144,10 +143,12 @@ footer {
 }
 .invoice{
     border-radius: 10px;
+    border: 1px solid;
     background-color: lightblue;
     display: inline-block;
     /* margin-right: 70px; */
-    padding: 10px;
+    padding: 6px 10px;
+    
 }
 .qty{
   text-align: left;
@@ -169,7 +170,7 @@ footer {
       <div class="header_company">
           <div class="col-md-4">
               @php($company_logo = App\Admin_user::company_logo(Auth::user()->au_company_id))
-              <img src="{{ asset('/asset/image/')}}/{{ $company_logo->au_company_logo }}" style="float:left;height:132px; width:190px;">
+              <img src="{{ asset('/asset/image/')}}/{{ $company_logo->au_company_logo }}" style="float:left;height:115px; width:190px;">
           </div>
           <div class="col-md-8" style="margin-right:180px;">
             @php($company_info = App\Admin_user::company_info(Auth::user()->au_company_id))
@@ -180,23 +181,23 @@ footer {
           </div>
       </div>
       <div class="text-center">
-          <h3 class="invoice">Invoice</h3>
+          <h3 class="invoice" style="margin: 3px;">Invoice/Bill</h3>
       </div>
-      <div id="company" class="clearfix" style="margin-right:-64px;">
+      <div id="company" class="clearfix">
           <table class="table">
               <tr>
                   <td id="text" style="text-align: left; width:100px;">Customer Name</td>
                   <td style="text-align:center;">:</td>
-                  <td id="desc" style="float:left;">{{ $invoice_detail->getCustomerInfo['inv_cus_name'] }}</td>
-                  <td id="text" style="width:320px;">Invoice No</td>
+                  <td id="desc" style="float:left; width: 280px;">{{ $invoice_detail->getCustomerInfo['inv_cus_name'] }}</td>
+                  <td id="text" style="width:200px;">Invoice No</td>
                   <td>:</td>
                   <td id="desc" style="text-align:left;">{{ $invoice_detail->inv_pro_inv_invoice_no }}</td>
               </tr>
               <tr>
                   <td id="text" style="text-align: left; width:100px;">Address</td>
                   <td style="text-align:center;">:</td>
-                  <td id="desc" style="float:left;">{{ $invoice_detail->getCustomerInfo['inv_cus_address'] }}</td>
-                  <td id="text" style="width:320px;">Sold By</td>
+                  <td id="desc" style="float:left; width: 280px;">{{ $invoice_detail->getCustomerInfo['inv_cus_address'] }}</td>
+                  <td id="text" style="width:200px;">Sold By</td>
                   <td>:</td>
                   <td id="desc" style="text-align:left;">{{ $invoice_detail->getSoldByInfo['au_name'] }}</td>
                   
@@ -204,8 +205,8 @@ footer {
               <tr>
                   <td id="text" style="text-align: left; width:100px;">Mobile</td>
                   <td style="text-align:center;">:</td>
-                  <td id="desc" style="float:left;">{{ $invoice_detail->getCustomerInfo['inv_cus_mobile'] }}</td>
-                  <td id="text" style="width:320px;">Date & Time</td>
+                  <td id="desc" style="float:left; width: 280px;">{{ $invoice_detail->getCustomerInfo['inv_cus_mobile'] }}</td>
+                  <td id="text" style="width:200px;">Date & Time</td>
                   <td>:</td>
                   <td id="desc" style="text-align:left;">{{ $invoice_detail->inv_pro_inv_submit_at }}</td>
               </tr>
@@ -226,13 +227,13 @@ footer {
     </header>
     <main>
         <table border="1">
-            <thead style="background-color:#ddd;">
+            <thead style="background-color:#aabbcc; font-size: 15px; ">
               <tr>
-                <th class="service" style="text-align:center; width:5px;">Sl</th>
-                <th>Description</th>
-                <th style="width:5px;">Qty</th>
-                <th style="width:5px;">Unit Price</th>
-                <th style="width:5px;">Amount</th>
+                <th class="service" style="text-align:center; width:5px; color:black; font-weight:bold;">Sl</th>
+                <th style="color:black; font-weight:bold;">Description</th>
+                <th style="width:5px; color:black; font-weight:bold;">Qty</th>
+                <th style="width:5px; color:black; font-weight:bold;">Unit Price</th>
+                <th style="width:5px; color:black; font-weight:bold;">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -244,16 +245,18 @@ footer {
               @foreach ($invoice as $sell)
               @php($slno = App\Inv_product_inventory::ProductSerialSell($sell->inv_pro_inv_id))
               <tr>
-                  <td class="service" style="text-align:center;">{{ ++$sl }}</td>
+                  <td class="service" style="text-align:center;">
+                    {{ ($sl<10)?'0':'' }}{{ ++$sl }}
+                  </td>
                   <td class="qty">
                     @if ($sell->inv_pro_inv_tran_type == 10)
                     {{ $sell->inv_pro_inv_tran_desc }} 
                     @elseif($sell->getProductWarranty['inv_pro_det_pro_warranty'] == 0)
                     {{ $sell->getProductWarranty['inv_pro_det_pro_description'] }}
-                    ({{ $sell->getProductWarranty->type_info['inv_pro_type_name'] }})<br>
+                    ({{ $sell->getProductWarranty['inv_pro_det_pro_name'] }})<br>
                     @else
                     {{ $sell->getProductWarranty['inv_pro_det_pro_description'] }}
-                    ({{ $sell->getProductWarranty->type_info['inv_pro_type_name'] }})<br>
+                    ({{ $sell->getProductWarranty['inv_pro_det_pro_name'] }})<br>
                     {{ implode(', ', $slno) }}<br>
                     <b>Warranty: </b>{{ $sell->getProductWarranty['inv_pro_det_pro_warranty'] }} Days
                     @endif
@@ -305,17 +308,19 @@ footer {
         <table>
           <tr>
             <td style="text-align:left;">------------------------------</td>
+            <td style="text-align:center;">------------------------------</td>
             <td>------------------------------</td>
           </tr>
           <tr>
             <td style="text-align:left;">Customer Signature</td>
-            <td>Supplier Signature</td>
+            <td style="text-align:center;">Sales Person</td>
+            <td>Authorized Signature</td>
           </tr>
         </table>
       </div>
     </main>
     <footer>
-      Powered By: IGL Web Ltd.
+      Powered By: IGL Web Ltd. | +880-1958-666999
     </footer>
     <script>
        (function(){

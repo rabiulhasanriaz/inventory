@@ -38,7 +38,6 @@
                   @else
                   <td>{{ $today->cus_mobile->entry_staff['au_name'] }}<br>( Admin Reference )</td>
                   @endif
-                  <td></td>
                   <td>{{ $today->cus_mobile['qb_serial'] }}</td>
                   <td>
                     <a href="{{ url('/client_feedback',['id' => $today->cus_mobile['qb_id']]) }}" title="{{ $today->cus_mobile['qb_company_name'] }}" class="opener" target="_blank">

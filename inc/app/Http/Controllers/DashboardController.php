@@ -40,17 +40,23 @@ class DashboardController extends Controller
         //     ->toArray();
 
         if (Auth::user()->au_user_type == 6) {
+          
+          $my_clients = Sds_query_book::where('qb_company_id',$com)
+                                      ->where('qb_entry_by',$user)
+                                      ->pluck('qb_id')->toArray();
+                                      
          $all_clients = Client_feedback::select('cf_qb_id')
               ->where('cf_company_id',$com)
-              ->where('cf_entry_by',$user)
+              ->whereIn('cf_qb_id',$my_clients)
               ->where('cf_next_date',$today)
               ->pluck('cf_qb_id')
               ->toArray();
+          
 
          $all_latest_feedback_id = array();
          foreach ($all_clients as $client_id) {
            $client_last_feedback = Client_feedback::select('cf_id')->where('cf_company_id',$com)
-                                     ->where('cf_entry_by',$user)
+                                     ->whereIn('cf_qb_id',$my_clients)
                                      ->where('cf_qb_id', $client_id)
                                      ->orderBy('cf_id', 'DESC')
                                      ->first();
@@ -58,12 +64,14 @@ class DashboardController extends Controller
              $all_latest_feedback_id[] = $client_last_feedback->cf_id;
            }
          }
-
+         
+        //  dd($all_latest_feedback_id);
          $todays = Client_feedback::where('cf_company_id',$com)
-             ->where('cf_entry_by',$user)
+             ->whereIn('cf_qb_id',$my_clients)
              ->whereIn('cf_id', $all_latest_feedback_id)
              ->where('cf_next_date',$today)
              ->get();
+          // dd($todays);
                                      // where('cf_next_date',$today)
         }elseif (Auth::user()->au_user_type == 5) {
           $team_m_f[] = $admin->au_id;

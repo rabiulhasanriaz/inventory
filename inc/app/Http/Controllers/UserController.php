@@ -109,9 +109,13 @@ class UserController extends Controller
                                  ->where('qb_company_id',$com)
                                  ->where('qb_entry_by',$user)
                                  ->get();
+
+        $my_clients = Sds_query_book::where('qb_company_id',$com)
+                                 ->where('qb_entry_by',$user)
+                                 ->pluck('qb_id')->toArray();
        $all_clients = Client_feedback::select('cf_qb_id')
             ->where('cf_company_id',$com)
-            ->where('cf_entry_by',$user)
+            ->whereIn('cf_qb_id',$my_clients)
             ->where('cf_next_date',$today)
             ->pluck('cf_qb_id')
             ->toArray();
@@ -119,7 +123,7 @@ class UserController extends Controller
        $all_latest_feedback_id = array();
        foreach ($all_clients as $client_id) {
          $client_last_feedback = Client_feedback::select('cf_id')->where('cf_company_id',$com)
-                                   ->where('cf_entry_by',$user)
+                                    ->whereIn('cf_qb_id',$my_clients)
                                    ->where('cf_qb_id', $client_id)
                                    ->orderBy('cf_id', 'DESC')
                                    ->first();
@@ -129,7 +133,7 @@ class UserController extends Controller
        }
 
        $today = Client_feedback::where('cf_company_id',$com)
-           ->where('cf_entry_by',$user)
+           ->whereIn('cf_qb_id',$my_clients)
            ->whereIn('cf_id', $all_latest_feedback_id)
            ->where('cf_next_date',$today)
            ->get();

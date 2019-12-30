@@ -40,15 +40,12 @@
 
                   $short_notify = App\Inv_product_detail::where('inv_pro_det_com_id',$com)
                       ->where('inv_pro_det_status',1)
-                      ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
-                      ->where('inv_pro_det_short_qty','!=','')
+                      ->whereRaw('inv_pro_det_available_qty < inv_pro_det_short_qty')
                       ->count();
                   
                   $short_detail = App\Inv_product_detail::where('inv_pro_det_com_id',$com)
                       ->where('inv_pro_det_status',1)
-                      ->whereRaw('inv_pro_det_available_qty <= inv_pro_det_short_qty')
-                      ->where('inv_pro_det_short_qty','!=','')
-                      
+                      ->whereRaw('inv_pro_det_available_qty < inv_pro_det_short_qty')
                       ->get();
                 @endphp
                 <i class="fa fa-bell-o"></i>

@@ -174,12 +174,13 @@
                   <div class="box-body">
 
                     <div class="col-sm-12">
+                            <div class="box-header with-border">
+                                    <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
+                                        Sales Invoice
+                                    </h3>
+                                    </div>   
                                 <div class="box shopping_cart">
-                                        <div class="box-header with-border">
-                                                <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
-                                                    Sales Invoice
-                                                </h3>
-                                                </div>   
+                                        
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -209,7 +210,7 @@
                         </div>
               </div>
              </section>
-
+             <button hidden id="open_sell_print_invoice_btn"></button>
              @include('pages.ajax.warrenty_product_get_sl_no');
 
              
@@ -250,6 +251,7 @@
         padding: 2px 0 !important;
         
     }
+    
 </style>
 @endsection
 @section('custom_script')
@@ -283,12 +285,38 @@
             });
         });
 
+    function open_sell_print_invoice() {
+        @if(session()->has('print_invoice'))
+            let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}?print=1";     
+            let newTab = window.open(sell_print, '_blank');
+            newTab.location.href = url
+        @else
+            return true;
+        @endif
+    }
+
     $(document).ready(function(){
 
     @if(session()->has('print_invoice'))
-        let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}";     
-        let newTab = window.open(sell_print, '_blank');
-        newTab.location.href = url
+        
+        let sell_print = "{!! route('reports.sell-print', session()->get('print_invoice')) !!}?print=1";     
+        // setTimeout(() => window.open(sell_print, '_blank'), 1000);
+        let route_url = "{{ route('buy.add-to-cart') }}";
+        $.ajax({
+            type: "GET",
+            url: sell_print,
+            data: {_token:'1212'},
+            success: function (result) {
+                html = result;
+                var printWin = window.open('','','left=0,top=0,width=1,height=1,toolbar=0,scrollbars=0,status  =0');
+                printWin.document.write(html);
+                printWin.document.close();
+                printWin.focus();
+                printWin.print();
+                printWin.close();
+            }
+        });
+        
     @endif
 
     $( "#from" ).datepicker({
