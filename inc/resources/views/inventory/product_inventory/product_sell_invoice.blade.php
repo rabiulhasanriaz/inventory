@@ -77,7 +77,7 @@
                             <tr>
                                 <td class="text-center">{{ ++$sl }}</td>
                                 <td class="text-left">
-                                    {{ $temp->pro_warranty['inv_pro_det_pro_description'] }}({{ $temp->inv_pro_temp_type_name }})
+                                    {{ $temp->pro_warranty['inv_pro_det_pro_description'] }}({{ $temp->inv_pro_temp_pro_name }})
                                     <br>
                                     <b>
                                         {{ implode(', ', explode(',',$temp->inv_pro_temp_slno)) }}

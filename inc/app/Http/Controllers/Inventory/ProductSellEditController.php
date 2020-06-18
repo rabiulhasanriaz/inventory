@@ -511,6 +511,7 @@ class ProductSellEditController extends Controller
                 if($check_product->inv_pro_det_pro_warranty == 0) {
                     $req_qty = $content->inv_pro_temp_qty;
                 }  else {
+                    $new_req_sl_ids = array();
                     $req_sl_ids = explode(',', $content->inv_pro_temp_slno);
                     $k = 0;
                     foreach ($req_sl_ids as $sl_id) {
@@ -525,9 +526,11 @@ class ProductSellEditController extends Controller
                     if (!isset($new_req_sl_ids)) {
                         $new_req_sl_ids = array();
                     }
+                    
                     $req_sl_ids = $new_req_sl_ids;
                     $req_qty = count($req_sl_ids);
                 }
+                
                 
 
                 $product_inventory = new Inv_product_inventory();
@@ -603,6 +606,7 @@ class ProductSellEditController extends Controller
 
 
             }
+            
 
             $service_charge_cart_content = Inv_product_temporary::where('inv_pro_temp_user_id', Auth::user()->au_id)
             ->where('inv_pro_temp_deal_type',6)

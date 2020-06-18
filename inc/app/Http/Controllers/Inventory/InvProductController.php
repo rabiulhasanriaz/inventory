@@ -29,31 +29,39 @@ class InvProductController extends Controller
     }
 
     public function product_detail_submit(Request $request){
-        
-        $submit_by = Auth::user()->au_id;
-        $submit_at = Carbon::now()->format('Y-m-d H:i:s');
-        $com = Auth::user()->au_company_id;
-        $inv_pro_det = new Inv_product_detail;
+        // dd($request->all());
+        $message = [
+            'pro_desc.max' => 'Desciption Need To be Maximum 50 Characters Long',
+        ];
         $request->validate([
             'type' => 'required',
             'pro_name' => 'required',
             'pro_buy' => 'required',
             'pro_sell' => 'required',
-            'pro_desc' => 'max:40',
-        ]);
-        $inv_pro_det->inv_pro_det_com_id = $com;
-        $inv_pro_det->inv_pro_det_type_id = Input::get('type');
-        $inv_pro_det->inv_pro_det_sup = implode('-',Input::get('supplier'));
-        $inv_pro_det->inv_pro_det_pro_name = Input::get('pro_name');
-        $inv_pro_det->inv_pro_det_buy_price = Input::get('pro_buy');
-        $inv_pro_det->inv_pro_det_sell_price = Input::get('pro_sell');
-        $inv_pro_det->inv_pro_det_pro_warranty = Input::get('pro_warranty');
-        $inv_pro_det->inv_pro_det_pro_description = Input::get('pro_desc');
-        $inv_pro_det->inv_pro_det_short_qty = Input::get('pro_short');
-        $inv_pro_det->inv_pro_det_status = 1;
-        $inv_pro_det->inv_pro_det_submit_by = $submit_by;
-        $inv_pro_det->inv_pro_det_submit_at = $submit_at;
-        $inv_pro_det->save();
+            'pro_desc' => 'max:50',
+        ],$message);
+            try{
+            $submit_by = Auth::user()->au_id;
+            $submit_at = Carbon::now()->format('Y-m-d H:i:s');
+            $com = Auth::user()->au_company_id;
+            $inv_pro_det = new Inv_product_detail;
+            $inv_pro_det->inv_pro_det_com_id = $com;
+            $inv_pro_det->inv_pro_det_type_id = Input::get('type');
+            $inv_pro_det->inv_pro_det_sup = implode('-',Input::get('supplier'));
+            $inv_pro_det->inv_pro_det_pro_name = Input::get('pro_name');
+            $inv_pro_det->inv_pro_det_buy_price = Input::get('pro_buy');
+            $inv_pro_det->inv_pro_det_sell_price = Input::get('pro_sell');
+            $inv_pro_det->inv_pro_det_pro_warranty = Input::get('pro_warranty');
+            $inv_pro_det->inv_pro_det_pro_description = Input::get('pro_desc');
+            $inv_pro_det->inv_pro_det_short_qty = Input::get('pro_short');
+            $inv_pro_det->inv_pro_det_status = 1;
+            $inv_pro_det->inv_pro_det_submit_by = $submit_by;
+            $inv_pro_det->inv_pro_det_submit_at = $submit_at;
+            $inv_pro_det->save();
+            }catch(\Exception $e){
+                return redirect()->back()->with(['err' => $e->getMessage()]);
+            }
+       
         
         return redirect()->back()->with(['det_add' => 'Product Detail Added Successfully']);
     }

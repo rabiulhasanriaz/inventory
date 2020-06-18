@@ -38,6 +38,11 @@ class Inv_acc_bank_statement extends Model
     public $incrementing = true;
     public $timestamps = false;
 
+    public function bank_ledger_detail(){
+        return $this->belongsTo('App\Inv_product_inventory','inv_abs_inventory_id','inv_pro_inv_id');
+    }
+    
+
     public static function get_Bank_Name_By_Bank_ID($id)
     {
         $acc_bank= Inv_acc_bank_info::where('inv_abi_id' , $id)->first();
@@ -71,14 +76,38 @@ class Inv_acc_bank_statement extends Model
 
     public static function getTotalExpensesByCategory($exCatId){
         $expensesId=Inv_acc_expense::getTotalExpensesIdByCategoryId($exCatId);
-        //dd($expensesId);
-        $expenses=Inv_acc_bank_statement::whereIn('inv_abs_reference_id',$expensesId)->where('inv_abs_company_id',Auth::user()->au_company_id)->where('inv_abs_status',1)->where('inv_abs_reference_type',3)->orWhere('inv_abs_reference_type',4)->sum('inv_abs_debit');
+        // dd($expensesId);
+        $expenses=Inv_acc_bank_statement::whereIn('inv_abs_reference_id',$expensesId)
+                                        ->where('inv_abs_company_id',Auth::user()->au_company_id)
+                                        ->where('inv_abs_status',1)
+                                        ->whereIn('inv_abs_reference_type',[3,4])
+                                        // ->orWhere('inv_abs_reference_type',4)
+                                        ->sum('inv_abs_debit');
         return $expenses;
+    }
+
+    public static function getTotalLedgerByCategory($ledgcat){
+        $com = Auth::user()->au_company_id;
+        $ledg_catId=Inv_ledger::getTotalLedgerIdByCategoryId($ledgcat);
+        // dd($ledg_catId);
+        $inv_id = Inv_product_inventory::where('inv_pro_inv_com_id',$com)
+                                        ->where('inv_pro_inv_exp_id',$ledg_catId)
+                                        ->pluck('inv_pro_inv_id')->toArray();
+        return $ledger=Inv_acc_bank_statement::whereIn('inv_abs_inventory_id',$inv_id)
+                                        ->where('inv_abs_company_id',$com)
+                                        ->where('inv_abs_status',1)
+                                        ->whereIn('inv_abs_reference_type',[8,9])
+                                        // ->orWhere('inv_abs_reference_type',4)
+                                        ->sum('inv_abs_credit');
     }
 
     public static function getTotalExpensesByExpenses($expId)
     {
-        $expenses=Inv_acc_bank_statement::where('inv_abs_reference_id',$expId)->where('inv_abs_status',1)->where('inv_abs_reference_type',3)->orWhere('inv_abs_reference_type',4)->sum('inv_abs_debit');
+        $expenses=Inv_acc_bank_statement::where('inv_abs_reference_id',$expId)
+                                        ->where('inv_abs_status',1)
+                                        ->whereIn('inv_abs_reference_type',[3,4])
+                                        // ->orWhere('inv_abs_reference_type',4)
+                                        ->sum('inv_abs_debit');
         return $expenses;
     }
     public static function getAvailableBalanceByBankId($bankId)

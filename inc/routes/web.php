@@ -429,8 +429,29 @@ Route::group(['middleware' => 'au_company_access:inventory'], function() {
         Route::get('expenses','Inventory\ExpenseCategoryController@showExpenses')->name('expenses');
         Route::post('expense-categories','Inventory\ExpenseCategoryController@storeExpenseCategory')->name('expense-categories');
         //Riaz's Created
+        Route::get('expense_add','Inventory\ExpenseCategoryController@add_expense_form')->name('cost-add');
+        Route::post('expense_cost_add','Inventory\ExpenseCategoryController@add_expense_cost')->name('expense-cost-add');
         Route::get('expense_category_edit/{cat_id}','Inventory\ExpenseCategoryController@expense_category_edit')->name('expense-category-edit');
         Route::post('expense_category_update/{id}','Inventory\ExpenseCategoryController@expense_category_update')->name('expense-category-update');
+        //
+
+        //ledger
+        Route::get('ledger','Inventory\InvLedgerController@ledger_insert_form')->name('ledger');
+        Route::get('ledger-categories','Inventory\InvLedgerController@ledger_categories')->name('ledger-category');
+        Route::post('ledger-category-insert','Inventory\InvLedgerController@insert_ledger_category')->name('ledger-category-insert');
+        Route::get('ledger-category-update','Inventory\InvLedgerController@ledger_category_edit_ajax')->name('ledger-category-update');
+        Route::post('ledger-category-update-submit','Inventory\InvLedgerController@ledger_category_update')->name('ledger-category-update-submit');
+        Route::post('ledger-insert','Inventory\InvLedgerController@ledger_insert')->name('ledger-insert');
+        Route::get('ledger-categories-load-ajax','Inventory\InvLedgerController@showAjaxLoadedLedgerCategory')->name('ledger-categories-load-ajax');
+        Route::get('ledger-add','Inventory\InvLedgerController@ledger_add')->name('ledger-add');
+        Route::post('ledger-data','Inventory\InvLedgerController@insert_ledger_data')->name('ledger-data');
+        Route::get('ledger_cash_in_edit','Inventory\InvLedgerController@ledger_cash_in_ajax')->name('ledger-cash-in-edit');
+        Route::get('ledger_cash_out_edit','Inventory\InvLedgerController@ledger_cash_out_ajax')->name('ledger-cash-out-edit');
+        Route::post('update-ledger-data','Inventory\InvLedgerController@update_ledger_data')->name('update-ledger-data');
+        Route::post('update-ledger-cash-out-data','Inventory\InvLedgerController@update_ledger_cash_out_data')->name('update-ledger-cash-out-data');
+        Route::get('ledger-bank','Inventory\InvLedgerController@bank_ledger')->name('bank');
+        Route::get('ledger-bank-balance','Inventory\InvLedgerController@ajaxBankBalance')->name('ledger-bank-balance');
+        Route::post('ledger-bank-data-submit','Inventory\InvLedgerController@bank_ledger_submit')->name('ledger-bank-data-submit');
         //
         Route::post('expenses','Inventory\ExpenseCategoryController@storeExpenses')->name('expenses');
         Route::get('ajax-load_expense','Inventory\ExpenseCategoryController@ajaxLoadExpense')->name('ajax-load_expense');

@@ -117,7 +117,7 @@ class SupplierAccountsController extends Controller
 
 
 			
-			 $inv_Acc_Bank_Statement = new Inv_acc_bank_statement();
+			$inv_Acc_Bank_Statement = new Inv_acc_bank_statement();
             $inv_Acc_Bank_Statement->inv_abs_company_id = Auth::user()->au_company_id;
             $inv_Acc_Bank_Statement->inv_abs_reference_id = $request->supplier_id;
             $inv_Acc_Bank_Statement->inv_abs_bank_id = $request->bank_id;

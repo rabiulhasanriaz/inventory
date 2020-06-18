@@ -1,21 +1,21 @@
 @extends('layout.master')
 @section('inventory_class','menu-open')
 @section('accounts_class','menu-open')
-@section('expense_class','menu-open')
-@section('expenses','active')
+@section('ledger_class','menu-open')
+@section('ledger','active')
 @section('content')
 <section class="content">
-        @if(Session::has('errmsg'))
+        @if(Session::has('err'))
               <div class="alert alert-danger alert-dismissible" role="alert">
-              {{ session('errmsg') }}
+              {{ session('err') }}
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>
               </div>
               @endif
-              @if(Session::has('msg'))
+              @if(Session::has('success'))
               <div class="alert alert-success alert-dismissible" role="alert">
-              {{ session('msg') }}
+              {{ session('success') }}
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>
@@ -24,7 +24,7 @@
                 
                    <div class="box">
                     <div class="box-header with-border">
-                      <h3 class="box-title">Expenses</h3>
+                      <h3 class="box-title">Ledger</h3>
                     </div>
                     
                     <!-- /.box-header -->
@@ -33,26 +33,26 @@
                     <div class="col-sm-4" style="border: 1px solid grey;padding:15px; margin-right: 7px;">
                       <div class="card card-primary">
                         <div class="card-header">
-                          <h3 class="card-title" style="font-size:24px; margin-top:-5px;">Add Expense</h3>
+                          <h3 class="card-title" style="font-size:24px; margin-top:-5px;">Add Ledger</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form role="form" action="{{route('accounts.expenses')}}" method="post">
+                        <form role="form" action="{{route('accounts.ledger-insert')}}" method="post">
                           @csrf
                           <div class="card-body">
                             <div class="form-group">
                               <label for="exampleInputEmail1">Category Name</label>
 
-                              <select required name="exp_category_id" class="form-control select2" id="exampleInputEmail1">
+                              <select required name="category_id" class="form-control select2" id="">
                                 <option value="">-- Select A Category --</option>
                                 @foreach($categories as $category)
-                                <option value="{{$category->inv_acc_exp_cat_category_id}}">{{ $category->inv_acc_exp_cat_category_name }}</option>
+                                <option value="{{$category->inv_ledg_cat_cat_id}}">{{ $category->inv_ledg_cat_category_name }}</option>
                                 @endforeach
                               </select>
                             </div>
                              <div class="form-group">
-                              <label for="exampleInputEmail1">Expense Name</label>
-                              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Write Expense Name Here" required name="exp_name" ">
+                              <label for="exampleInputEmail1">Ledger Name</label>
+                              <input type="text" class="form-control" id="" placeholder="Write Expense Name Here" required name="name">
                             </div>
                           </div>
                           <!-- /.card-body -->
@@ -67,7 +67,7 @@
                     <div class="col-sm-1" style="margin-right: -10px; margin-left: -10px;"></div>
                     <div class="col-sm-7" style="border: 1px solid grey;padding:15px;margin-left:5px; ">
                       <div class="box-header with-border">
-                      <h3 class="box-title">Expenses List</h3>
+                      <h3 class="box-title">Ledger List</h3>
                     </div>
                       <table id="example1" class="table table-bordered table-striped">
                         <thead>
@@ -85,21 +85,21 @@
 
                     
                         @php($total_expenses=0)
-                        @if(!empty($expenses))
-                            @foreach($expenses as $row)
-                              @php($total_expenses+=App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id))
+                        @if(!empty($show_cat))
+                            @foreach($show_cat as $row)
+                              {{-- @php($total_expenses+=App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id)) --}}
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $row->inv_acc_exp_expense_name }}</td>
+                                    <td>{{ $row->inv_ledg_ledger_name }}</td>
                                     <td>
-                                      {{ $row->getCategoryByCatID['inv_acc_exp_cat_category_name'] }}
+                                      {{ $row->getLedgersname['inv_ledg_cat_category_name'] }}
                                     </td>
-                                    <td>{{ ($row->inv_acc_exp_cat_status==1)? 'Active':'In-Active' }}</td>
+                                    <td>{{ ($row->inv_ledg_status==1)? 'Active':'In-Active' }}</td>
                                     <td class="text-right">
-                                      {{ number_format(App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id),2)}}
+                                      {{-- {{ number_format(App\Inv_acc_bank_statement::getTotalExpensesByExpenses($row->inv_acc_exp_id),2)}} --}}
                                     </td>
                                     <td style="text-align: center;">
-                                  <a href="#" onclick="showExpensesDetails('{{ $row->inv_acc_exp_id }}')" data-toggle="modal" data-target="#details">
+                                  <a href="#" onclick="" data-toggle="modal" data-target="#details">
 
                                   <i class="fa fa-eye"></i>
                                 </a>
@@ -128,7 +128,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Expense Details</h4>
+        <h4 class="modal-title">Ledger Details</h4>
       </div>
       <div class="modal-body">
         <div class="load-details"></div>

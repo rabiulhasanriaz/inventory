@@ -6,6 +6,23 @@
 @section('content')
 <section class="content">
         <section class="content-header">
+            @if(session()->has('err'))
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                {{ session('err') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             @if(session()->has('det_add'))
             <div class="alert alert-success alert-dismissible" role="alert">
                 {{ session('det_add') }}
@@ -127,7 +144,7 @@
                         <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2 control-label">Product Description</label>
                                 <div class="col-sm-6">
-                                  <input type="text" name="pro_desc" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" placeholder="Enter Product Description">
+                                  <input type="text" name="pro_desc" maxlength="50" autocomplete="off" value="{{ old('pro_desc') }}" class="form-control" placeholder="Enter Product Description">
                                 </div> 
                         </div>
                         <div class="form-group">

@@ -27,10 +27,11 @@ body {
   font-family: Arial;
 }
 
-header {
+/* header {
   padding: 10px 0;
   margin-bottom: 30px;
-}
+} */
+
 
 #logo {
   text-align: center;
@@ -65,7 +66,7 @@ header {
 }
 
 #company {
-  float: right;
+  /* float: right; */
   text-align: right;
 }
 
@@ -275,8 +276,8 @@ footer {
                 <td class="grand total">{{ number_format($balance,2) }}</td>
               </tr>
               <tr>
-                <td class="grand total" style="text-align:center;">In Word:</td>
-                <td colspan="5" class="grand total" style="text-align:left;">{{ App\NumberConverter::number_to_text($balance) }}</td>
+                
+                <td colspan="6" class="grand total" style="text-align:left;">In Word: {{ App\NumberConverter::number_to_text($balance) }}</td>
               </tr>
             </tbody>
           </table>

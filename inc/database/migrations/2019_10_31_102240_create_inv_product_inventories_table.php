@@ -17,6 +17,7 @@ class CreateInvProductInventoriesTable extends Migration
             $table->bigIncrements('inv_pro_inv_id');
             $table->unsignedInteger('inv_pro_inv_com_id');
             $table->unsignedInteger('inv_pro_inv_party_id')->comments('supplier and customer id');
+            $table->tinyInteger('inv_pro_inv_exp_id')->nullable();
             $table->unsignedInteger('inv_pro_inv_prodet_id')->nullable();
             $table->string('inv_pro_inv_invoice_no');
             $table->decimal('inv_pro_inv_total_qty',8,2);

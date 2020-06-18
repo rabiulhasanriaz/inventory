@@ -36,6 +36,9 @@ class Inv_supplier extends Model
         return $this->belongsTo('App\Admin_user','inv_sup_submit_by','au_id');
     }
 
+    public function supplier_info(){
+        return $this->belongsTo('App\Inv_product_inventory','inv_pro_inv_party_id','inv_sup_id');
+    }
     
     public static function getSupplierCompany($supplier_id)
     {

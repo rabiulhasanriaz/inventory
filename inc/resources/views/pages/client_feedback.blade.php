@@ -55,11 +55,11 @@
                 	<th>Mobile Number</th>
                 	<td>
                    @if( ($customer->qb_mobile && $customer->qb_mobile1 && $customer->qb_mobile2) == true )
-                      {{ $customer->qb_mobile }},{{ $customer->qb_mobile1 }},{{ $customer->qb_mobile2 }}
+                      <a href="tel:{{ $customer->qb_mobile }}" style="text-decoration: none;">{{ $customer->qb_mobile }}</a>,<a href="tel:{{ $customer->qb_mobile1 }}" style="text-decoration: none;">{{ $customer->qb_mobile1 }}</a>,<a href="tel:{{ $customer->qb_mobile2 }}" style="text-decoration: none;">{{ $customer->qb_mobile2 }}</a>
                       @elseif( ( $customer->qb_mobile && $customer->qb_mobile1 ) == true )
-                      {{ $customer->qb_mobile }},{{ $customer->qb_mobile1 }}
+                      <a href="tel:{{ $customer->qb_mobile }}" style="text-decoration: none;">{{ $customer->qb_mobile }}</a>,<a href="tel:{{ $customer->qb_mobile1 }}" style="text-decoration: none;">{{ $customer->qb_mobile1 }}</a>
                       @else
-                      {{ $customer->qb_mobile }}
+                      <a href="tel:{{ $customer->qb_mobile }}" style="text-decoration: none;">{{ $customer->qb_mobile }}</a>
                       @endif
                   </td>
                 	<th class="hidden-xs">Find Us</th>

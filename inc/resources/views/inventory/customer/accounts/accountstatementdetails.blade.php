@@ -112,7 +112,7 @@
                           <td>
                             {{$inv_cust->inv_pro_inv_invoice_no}}
                           </td>
-                          <td class="text-center">
+                          <td class="text-left">
                             {{$inv_cust->inv_pro_inv_tran_desc}}
                           </td>
                          

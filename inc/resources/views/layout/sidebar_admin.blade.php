@@ -529,6 +529,11 @@
                                             </a>
                             
                                             <ul class="treeview-menu">
+                                              <li class="@yield('expense_add')">
+                                                  <a href="{{ route('accounts.cost-add') }}">
+                                                    <i class="fa fa-circle-o"></i> Add
+                                                  </a>
+                                              </li>
                                               <li class="@yield('expense_category')">
                                                 <a href="{{ route('accounts.expense-categories') }}">
                                                   <i class="fa fa-circle-o"></i> Expense Categories
@@ -543,6 +548,41 @@
                                             </ul>
                                           </li>
                                         </ul>
+
+                                        <ul class="treeview-menu">
+                                            <li class="treeview @yield('ledger_class')">
+                                                <a href="#" style="text-decoration: none;">
+                                                  <i class="fa fa-dashboard"></i> <span>Ledger</span>
+                                                  <span class="pull-right-container">
+                                                    <i class="fa fa-angle-left pull-right"></i>
+                                                  </span>
+                                                </a>
+                                
+                                                <ul class="treeview-menu">
+                                                  <li class="@yield('ledger_add')">
+                                                      <a href="{{ route('accounts.ledger-add') }}">
+                                                        <i class="fa fa-circle-o"></i> Cash
+                                                      </a>
+                                                  </li>
+                                                  <li class="@yield('ledger_bank')">
+                                                    <a href="{{ route('accounts.bank') }}">
+                                                      <i class="fa fa-circle-o"></i> Bank
+                                                    </a>
+                                                  </li>
+                                                  <li class="@yield('ledger_category')">
+                                                    <a href="{{ route('accounts.ledger-category') }}">
+                                                      <i class="fa fa-circle-o"></i> Ledger Categories
+                                                    </a>
+                                                  </li>
+                                                  
+                                                  <li class="@yield('ledger')">
+                                                    <a href="{{ route('accounts.ledger') }}">
+                                                      <i class="fa fa-circle-o"></i> Ledger
+                                                    </a>
+                                                  </li>
+                                                </ul>
+                                              </li>
+                                            </ul>
                                           <!--   End Expenses -->
                                           <!-- Strat Contra Menu -->
                                           <!-- Start Expenses -->

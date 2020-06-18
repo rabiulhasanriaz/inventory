@@ -219,6 +219,7 @@ class SdsController extends Controller
         return view('pages.create_customer',compact('finds','customers','reasons','users','categories'));
     }
     public function create_customer_submit(Request $request){
+      
          $table = Input::all();
          $message =
         [
@@ -232,6 +233,7 @@ class SdsController extends Controller
             'qb_mobile' => 'required|regex:/01[0-9]\d{8}$/',
             'qb_result' => 'required',
             'qb_staff_id' => 'required',
+            
           ], $message);
         }else {
           $request->validate([
@@ -243,7 +245,7 @@ class SdsController extends Controller
         $entry = Auth::user()->au_id;
         $date = Carbon::now()->format('Y-m-d');
         $com = Auth::user()->au_company_id;
-
+        try{
         $table = new Sds_query_book;
         $table->qb_mobile = Input::get('qb_mobile');
         $table->qb_entry_by = $entry;
@@ -263,6 +265,9 @@ class SdsController extends Controller
         $table->qb_result = Input::get('qb_result');
         $table->qb_staff_id = Input::get('qb_staff_id');
         $table->save();
+        }catch(\Exception $e){
+          return redirect()->back()->with(['err' => $e->getMessage()]);
+        }
         return redirect('/create_customer')->with(['msgcustomer' => 'Customer Added Successfully']);
     }
     public function mobile_num_exist(Request $request){
@@ -493,7 +498,8 @@ class SdsController extends Controller
     public function client_feedback_edit_update(Request $request,$id){
 
         $customer_edit = Sds_query_book::find($id);
-        $customer_edit ->qb_address = $request->input('qb_address');
+        try {
+          $customer_edit ->qb_address = $request->input('qb_address');
         $customer_edit ->qb_name = $request->input('qb_name');
         $customer_edit ->qb_email = $request->input('qb_email');
         if (($customer_edit ->qb_mobile1 || $customer_edit ->qb_mobile2) == '') {
@@ -502,14 +508,20 @@ class SdsController extends Controller
         }elseif ($customer_edit ->qb_mobile2 == '') {
           $customer_edit ->qb_mobile2 = $request->input('qb_mobile2');
         }
+        if(Auth::user()->au_user_type == 4){  /// Ediited Part
         if ($customer_edit->qb_staff_id == '' || $customer_edit->qb_staff_id == 0) {
           $customer_edit ->qb_entry_by = $request->input('qb_entry_by');
         }
+      }else{
+        $customer_edit->qb_entry_by = Auth::user()->au_id;
+      } /// Edited Part
         $customer_edit ->qb_company_name = $request->input('company');
         $customer_edit ->qb_birth_date = $request->input('birth');
         $customer_edit ->qb_marriage_date = $request->input('marriage');
         $customer_edit->save();
-
+        } catch (\Exception $e) {
+          return redirect()->back()->with(['err' => $e->getMessage()]);
+        }
         return redirect()->route('pages.client_feedback', $id);
     }
     

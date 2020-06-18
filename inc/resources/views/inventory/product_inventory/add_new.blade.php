@@ -35,7 +35,7 @@
           </h1>
         </section>
         {{ Form::open(['action' => 'Inventory\InventoryPurchaseCartController@invTemporaryBuy' , 'method' => 'get' , 'class' => ' form-inline']) }}
-               <div class="box">
+               <div class="box" id="total">
                 <div class="box-header with-border">
                   <h3 class="box-title">Add Product</h3>
                 </div>
@@ -153,13 +153,13 @@
 
                   </div>
                   <div class="box-body">
+                        <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
+                                    Buy Invoice
+                                </h3>
+                                </div>  
                         <div class="col-sm-12">                
-                                    <div class="box shopping_cart">
-                                            <div class="box-header with-border">
-                                                    <h3 class="box-title"><i class="fa fa-shopping-cart"></i>
-                                                        Buy Invoice
-                                                    </h3>
-                                                    </div>   
+                                    <div class="box shopping_cart"> 
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
@@ -178,9 +178,15 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <button class="btn btn-success btn-sm pull-right">Submit</button>
-                                
+                                    <div class="form-group" style="float: right;">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Total: </label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="text-right" disabled name="address" autocomplete="off" value="" class="form-control" id="total_buy">
+                                            </div>
+                                        <button class="btn btn-success btn-sm pull-right">Continue</button>
+                                    </div>
                             </div>
+                            
                   </div>
               </div>
               {{ Form::close() }}
@@ -231,7 +237,44 @@
 </style>
 @endsection
 @section('custom_script')
+{{-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> --}}
 <script>
+    // var price = new Vue({
+    //     el: '#total',
+    //     methods:{
+    //         total_amount:function(){
+    //             console.log('adssdf');
+    //         },
+    //     },
+
+    // });
+    function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
+        try {
+            decimalCount = Math.abs(decimalCount);
+            decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+            const negativeSign = amount < 0 ? "-" : "";
+
+            let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+            let j = (i.length > 3) ? i.length % 3 : 0;
+
+            return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+        } catch (e) {
+            console.log(e)
+        }
+        }
+
+    function total_buy_amount(){
+        let amount = 0;
+        $('.temp_cart').each(function(i, obj) {
+            amount = amount + parseFloat(obj.innerText.split(',').join(''));
+        });
+        if (isNaN(amount)) {
+            amount = 0;
+        }
+
+        $('#total_buy').val(formatMoney(amount));
+    }
 
     $(document).ready(function(){
 
@@ -311,6 +354,7 @@
             data: {},
             success: function (result) {
                 $("#show-cart-conten").html(result);
+                total_buy_amount();
             }
         });
     }

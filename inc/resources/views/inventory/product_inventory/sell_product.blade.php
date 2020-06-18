@@ -200,7 +200,7 @@
                                 <div class="form-group" style="float: right;">
                                     <label for="inputEmail3" class="col-sm-2 control-label">Total: </label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="text-right" disabled name="address" autocomplete="off" value="" class="form-control" id="total_sell">
+                                        <input type="text" class="text-right" disabled autocomplete="off" value="" class="form-control" id="total_sell">
                                     </div>
                                 <button class="btn btn-success btn-sm pull-right">Continue</button>
                             </div>

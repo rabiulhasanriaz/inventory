@@ -2,6 +2,14 @@
 @section('content')
 <section class="content">
 <section class="content-header">
+    @if(session()->has('err'))
+    <div class="alert alert-danger alert-dismissible" role="alert">
+    {{ session('err') }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    @endif 
       <h1>
         Customer Details
       </h1>
